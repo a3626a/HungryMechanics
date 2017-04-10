@@ -1,0 +1,18 @@
+package oortcloud.hungrymechanics.api.nei;
+
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.API;
+import oortcloud.hungrymechanics.blocks.ModBlocks;
+
+public class NEIHandler {
+
+	public static void init() {
+		API.registerRecipeHandler(new BlenderRecipeHandler());
+		API.registerUsageHandler(new BlenderRecipeHandler());
+		
+		API.hideItem(new ItemStack(ModBlocks.crankAnimal));
+		API.hideItem(new ItemStack(ModBlocks.poppy));
+		API.hideItem(new ItemStack(ModBlocks.trough));
+	}
+
+}

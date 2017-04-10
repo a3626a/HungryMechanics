@@ -1,0 +1,22 @@
+itemGroup.tabHungryMechanics=Hungry Mechanics
+
+tile.axle.name=Axle
+tile.belt.name=Belt
+tile.crankplayer.name=Small Crank
+tile.millstone.name=Millstone
+tile.thresher.name=Thresher
+tile.poppy.name=Poppy
+tile.blender.name=Blender
+tile.crankanimal.name=Large Crank
+item.wheel.name=Wheel
+item.straw.name=Straw
+item.poppyseed.name=Poppy Seeds
+item.poppycrop.name=Poppy
+item.mixedfeed.name=Mixed Feed
+item.compositewoodcasing.name=Composite Wood Casing
+item.blade.name=Blade
+item.itemcrankanimal.name=Large Crank
+item.oilpipet.name=Oil Pipet
+item.belt.name=Belt
+
+api.nei.hanlder.blender=Blender
