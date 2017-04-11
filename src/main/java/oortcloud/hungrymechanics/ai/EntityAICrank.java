@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import oortcloud.hungryanimals.entities.capability.ICapabilityHungryAnimal;
 import oortcloud.hungryanimals.entities.capability.ICapabilityTamableAnimal;
+import oortcloud.hungryanimals.entities.capability.ProviderHungryAnimal;
 import oortcloud.hungrymechanics.tileentities.TileEntityCrankAnimal;
 
 public class EntityAICrank extends EntityAIBase {
@@ -17,6 +18,7 @@ public class EntityAICrank extends EntityAIBase {
 	public TileEntityCrankAnimal crankAnimal;
 	private ICapabilityHungryAnimal capHungry;
 	private ICapabilityTamableAnimal capTaming;
+	private EntityAnimal entity;
 	private World world;
 
 	private double speed = 1.5D;
@@ -26,7 +28,8 @@ public class EntityAICrank extends EntityAIBase {
 	
 	public EntityAICrank(EntityAnimal entity) {
 		this.entity = entity;
-		this.property = property;
+		this.capHungry = entity.getCapability(ProviderHungryAnimal.CAP, null);
+		this.capTaming = entity.getCapability(ProviderTamableAnimal.CAP, null);
 		this.world = this.entity.worldObj;
 		this.setMutexBits(1);
 	}

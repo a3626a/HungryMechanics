@@ -12,9 +12,10 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -30,15 +31,22 @@ public class BlockAxle extends BlockContainer {
 	public static final PropertyBool VARIANT = PropertyBool.create("hasWheel");
 
 	public BlockAxle() {
-		super(Material.wood);
+		super(Material.WOOD);
 		this.setHarvestLevel("axe", 0);
 		this.setHardness(2.0F);
 		
 		this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, false));
 		this.setBlockBounds((float) 0.375, 0, (float) 0.375, (float) 0.625, 1, (float) 0.625);
-		this.setUnlocalizedName(Strings.blockAxleName);
+		this.setRegistryName(Strings.blockAxleName);
+		this.setUnlocalizedName(References.MODID+"."+Strings.blockAxleName);
 		this.setCreativeTab(HungryMechanics.tabHungryMechanics);
 		ModBlocks.register(this);
+	}
+
+	@Override
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+		
+		return super.getBoundingBox(state, source, pos);
 	}
 	
 	@Override
