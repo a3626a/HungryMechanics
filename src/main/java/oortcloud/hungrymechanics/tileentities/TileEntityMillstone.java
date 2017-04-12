@@ -46,7 +46,7 @@ public class TileEntityMillstone extends TileEntityPowerTransporter implements I
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
 
 			if (needSync) {
-				// TODO NOTIFY BLOCK
+				getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 3);
 				markDirty();
 				needSync = false;
 			}

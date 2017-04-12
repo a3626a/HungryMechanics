@@ -49,7 +49,7 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements IIn
 
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
 			if (needSync) {
-				// TODO NOTIFY BLOCK UPDATE
+				getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 3);
 				markDirty();
 				needSync=false;
 			}

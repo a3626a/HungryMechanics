@@ -45,7 +45,7 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements II
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
 
 			if (needSync) {
-				// TODO Not to notify?
+				getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 3);
 				markDirty();
 				needSync = false;
 			}
