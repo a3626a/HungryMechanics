@@ -36,12 +36,12 @@ public class ConfigurationHandlerRecipe {
 		String[] recipeString;
 		recipeString = config.get(CATEGORY_Thresher, KEY_thresherRecipeList,
 				new String[] {
-						"(" + Item.itemRegistry.getNameForObject(Items.wheat) + ")=((0.5,"
-								+ Item.itemRegistry.getNameForObject(Items.wheat_seeds) + "),(1.0,"
-								+ Item.itemRegistry.getNameForObject(ModItems.straw) + "))",
-						"(" + Item.itemRegistry.getNameForObject(ModItems.poppycrop) + ")=((0.5,"
-								+ Item.itemRegistry.getNameForObject(ModItems.poppyseed) + "),(1.0,"
-								+ Item.itemRegistry.getNameForObject(ModItems.straw) + "))" })
+						"(" + Item.REGISTRY.getNameForObject(Items.WHEAT) + ")=((0.5,"
+								+ Item.REGISTRY.getNameForObject(Items.WHEAT_SEEDS) + "),(1.0,"
+								+ Item.REGISTRY.getNameForObject(ModItems.straw) + "))",
+						"(" + Item.REGISTRY.getNameForObject(ModItems.poppycrop) + ")=((0.5,"
+								+ Item.REGISTRY.getNameForObject(ModItems.poppyseed) + "),(1.0,"
+								+ Item.REGISTRY.getNameForObject(ModItems.straw) + "))" })
 				.getStringList();
 
 		for (String i : recipeString) {
@@ -51,10 +51,10 @@ public class ConfigurationHandlerRecipe {
 		HungryMechanics.logger.info("Configuration: Read and Register Millstone Recipe");
 		recipeString = config
 				.get(CATEGORY_Millstone, KEY_millstoneRecipeList,
-						new String[] { "(" + Item.itemRegistry.getNameForObject(Items.wheat_seeds) + ")=(10)",
-								"(" + Item.itemRegistry.getNameForObject(Items.pumpkin_seeds) + ")=(10)",
-								"(" + Item.itemRegistry.getNameForObject(Items.melon_seeds) + ")=(10)",
-								"(" + Item.itemRegistry.getNameForObject(ModItems.poppyseed) + ")=(50)" })
+						new String[] { "(" + Item.REGISTRY.getNameForObject(Items.WHEAT_SEEDS) + ")=(10)",
+								"(" + Item.REGISTRY.getNameForObject(Items.PUMPKIN_SEEDS) + ")=(10)",
+								"(" + Item.REGISTRY.getNameForObject(Items.MELON_SEEDS) + ")=(10)",
+								"(" + Item.REGISTRY.getNameForObject(ModItems.poppyseed) + ")=(50)" })
 				.getStringList();
 
 		for (String i : recipeString) {
@@ -64,12 +64,12 @@ public class ConfigurationHandlerRecipe {
 		HungryMechanics.logger.info("Configuration: Read and Register Blender Recipe");
 		recipeString = config.get(CATEGORY_Blender, KEY_blenderRecipeList,
 				new String[] {
-						"(" + Item.itemRegistry.getNameForObject(Items.carrot) + "),("
-								+ Item.itemRegistry.getNameForObject(Items.potato) + ")=("
-								+ Item.itemRegistry.getNameForObject(ModItems.mixedFeed) + ")",
-						"(" + Item.itemRegistry.getNameForObject(oortcloud.hungryanimals.items.ModItems.saltpeter) + "),("
-								+ Item.itemRegistry.getNameForObject(oortcloud.hungryanimals.items.ModItems.manure) + ")=("
-								+ Item.itemRegistry.getNameForObject(Items.dye) + ",6,15)" })
+						"(" + Item.REGISTRY.getNameForObject(Items.CARROT) + "),("
+								+ Item.REGISTRY.getNameForObject(Items.POTATO) + ")=("
+								+ Item.REGISTRY.getNameForObject(ModItems.mixedFeed) + ")",
+						"(" + Item.REGISTRY.getNameForObject(oortcloud.hungryanimals.items.ModItems.saltpeter) + "),("
+								+ Item.REGISTRY.getNameForObject(oortcloud.hungryanimals.items.ModItems.manure) + ")=("
+								+ Item.REGISTRY.getNameForObject(Items.DYE) + ",6,15)" })
 				.getStringList();
 
 		for (String i : recipeString) {

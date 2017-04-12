@@ -1,6 +1,6 @@
 package oortcloud.hungrymechanics.energy;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -81,12 +81,12 @@ public class PowerNetwork {
 				float angularSpeed = (float) (angularVelocityFactor*powerStored/powerCapacity);
 				this.angle = (this.angle+angularSpeed)%360;
 				if (lastAngle != angle) {
-					PacketTileEntityClient msg = new PacketTileEntityClient(SyncIndex.IENERGYTRANSPORTER_SYNC_ANGLE, world.provider.getDimensionId(), pos);
+					PacketTileEntityClient msg = new PacketTileEntityClient(SyncIndex.IENERGYTRANSPORTER_SYNC_ANGLE, world.provider.getDimension(), pos);
 					msg.setFloat(angle);
 					HungryMechanics.simpleChannel.sendToAll(msg);
 				}
 				if (lastPowerStored != powerStored) {
-					PacketTileEntityClient msg = new PacketTileEntityClient(SyncIndex.IENERGYTRANSPORTER_SYNC_ANGULARVELOCITY, world.provider.getDimensionId(), pos);
+					PacketTileEntityClient msg = new PacketTileEntityClient(SyncIndex.IENERGYTRANSPORTER_SYNC_ANGULARVELOCITY, world.provider.getDimension(), pos);
 					msg.setFloat(angularSpeed);
 					HungryMechanics.simpleChannel.sendToAll(msg);
 				}

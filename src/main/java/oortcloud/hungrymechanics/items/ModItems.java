@@ -3,7 +3,6 @@ package oortcloud.hungrymechanics.items;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import oortcloud.hungrymechanics.HungryMechanics;
-import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.core.lib.Strings;
 
 public class ModItems {

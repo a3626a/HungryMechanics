@@ -13,7 +13,7 @@ import oortcloud.hungrymechanics.items.ModItems;
 public class RecipeConnectBelt implements IRecipe {
 
 	public boolean matches(InventoryCrafting p_77569_1_, World worldIn) {
-		ArrayList arraylist = Lists.newArrayList();
+		ArrayList<ItemStack> arraylist = Lists.newArrayList();
 
 		for (int i = 0; i < p_77569_1_.getSizeInventory(); ++i) {
 			ItemStack itemstack = p_77569_1_.getStackInSlot(i);
@@ -28,7 +28,7 @@ public class RecipeConnectBelt implements IRecipe {
 
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting p_77572_1_) {
-		ArrayList arraylist = Lists.newArrayList();
+		ArrayList<ItemStack> arraylist = Lists.newArrayList();
 		ItemStack itemstack;
 
 		int length = 0;

@@ -2,8 +2,6 @@ package oortcloud.hungrymechanics.configuration.util;
 
 import java.util.ArrayList;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 public class StringParser {
 	
 	/**

@@ -1,13 +1,7 @@
 package oortcloud.hungrymechanics.configuration.util;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
-import com.google.common.collect.ImmutableSet;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import oortcloud.hungrymechanics.HungryMechanics;
@@ -139,7 +133,6 @@ public class ConfigurationHelper {
 	public ValueProbabilityItemStack getProbItemStack(String input) {
 		String[] split = StringParser.splitByLevel(StringParser.reduceLevel(input));
 		if (split.length == 2) {
-			ArrayList<ValueProbabilityItemStack> output = new ArrayList<ValueProbabilityItemStack>();
 			ItemStack itemStack = getItemStack(split[1]);
 			if (itemStack == null) {
 				exceptionInvalidFormat(split[1]);

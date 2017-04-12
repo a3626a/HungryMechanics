@@ -8,7 +8,6 @@ public class ModBlocks {
 	public static Block crankPlayer;
 	public static Block thresher;
 	public static Block poppy;
-	public static Block millstone;
 	public static Block blender;
 	public static Block crankAnimal;
 	
@@ -17,7 +16,7 @@ public class ModBlocks {
 		crankPlayer = new BlockCrankPlayer();
 		thresher = new BlockThresher();
 		poppy = new BlockPoppy();
-		millstone = new BlockMillstone();
+		millStone = new BlockMillstone();
 		blender = new BlockBlender();
 		crankAnimal = new BlockCrankAnimal();
 	}

@@ -1,7 +1,6 @@
 package oortcloud.hungrymechanics.core.proxy;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import oortcloud.hungrymechanics.configuration.ConfigurationEventHandler;
 import oortcloud.hungrymechanics.core.handler.ForgeEventHandler;
@@ -31,7 +30,7 @@ public class CommonProxy {
 	}
 
 	public void registerEventHandler() {
-		FMLCommonHandler.instance().bus().register(new ConfigurationEventHandler());
+		MinecraftForge.EVENT_BUS.register(new ConfigurationEventHandler());
 		MinecraftForge.EVENT_BUS.register(new ForgeEventHandler());
 	}
 

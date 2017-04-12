@@ -11,7 +11,7 @@ public class HandlerTileEntityClient implements IMessageHandler<PacketTileEntity
 	@Override
 	public PacketTileEntityServer onMessage(PacketTileEntityClient message, MessageContext ctx) {
 
-		if (Minecraft.getMinecraft().theWorld.provider.getDimensionId() == message.dim) {
+		if (Minecraft.getMinecraft().theWorld.provider.getDimension() == message.dim) {
 			TileEntity te = Minecraft.getMinecraft().theWorld.getTileEntity(message.pos);
 			if (te != null) {
 				switch (message.index) {
