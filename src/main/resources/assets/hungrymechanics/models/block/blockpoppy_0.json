@@ -1,7 +1,7 @@
 {
     "parent": "block/cross",
     "textures": {
-        "cross": "hungryanimals:blocks/blockpoppy_0"
+        "cross": "hungrymechanics:blocks/blockpoppy_0"
     }
 }
 

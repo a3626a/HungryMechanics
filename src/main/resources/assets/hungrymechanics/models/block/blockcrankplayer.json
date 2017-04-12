@@ -1,6 +1,6 @@
 {
     "textures": {
-        "particle": "hungryanimals:blocks/blockcrankplayer"
+        "particle": "hungrymechanics:blocks/blockcrankplayer"
     },
     "elements": [
         {   "from": [ 0, 0, 0 ],

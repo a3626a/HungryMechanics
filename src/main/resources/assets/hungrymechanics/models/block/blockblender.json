@@ -1,6 +1,6 @@
 {
     "textures": {
-        "particle": "hungryanimals:blocks/blockblender"
+        "particle": "hungrymechanics:blocks/blockblender"
     },
     "elements": [
         {   "from": [ 0, 0, 0 ],

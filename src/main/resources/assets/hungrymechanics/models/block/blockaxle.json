@@ -1,6 +1,6 @@
 {
     "textures": {
-        "particle": "hungryanimals:blocks/blockaxle"
+        "particle": "hungrymechanics:blocks/blockaxle"
     },
     "elements": [
         {   "from": [ 0, 0, 0 ],

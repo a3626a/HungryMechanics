@@ -1,6 +1,6 @@
 {
     "textures": {
-        "particle": "hungryanimals:blocks/blockmillstone"
+        "particle": "hungrymechanics:blocks/blockmillstone"
     },
     "elements": [
         {   "from": [ 0, 0, 0 ],
