@@ -1,11 +1,11 @@
 {
   "modListVersion": 2,
   "modList": [{
-    "modid": "hungryanimals",
-    "name": "Hungry Animals",
+    "modid": "hungrymechanics",
+    "name": "Hungry Mechanics",
     "description": "More Realistic Animals.This mod changes vanila animals' AI and feeding activity. Now they would die when hungry, eat fallen foods!",
-    "version": "2.1",
-    "mcversion": "1.8",
+    "version": "3.0.0.0",
+    "mcversion": "1.10.2",
     "url": "http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2228763-hungry-animals-more-realistic-animals",
     "updateUrl": "",
     "authorList": [ "Oort Cloud" ],
@@ -13,8 +13,8 @@
     "logoFile": "",
     "screenshots": [],
     "parent": "",
-    "requiredMods": [ "Forge" ],
-    "dependencies": [MoCreatures,animalsplus,lom],
+    "requiredMods": [ "Forge", "hungryanimals"],
+    "dependencies": ["hungryanimals"],
     "dependants": [],
     "useDependencyInformation": true
   }]
