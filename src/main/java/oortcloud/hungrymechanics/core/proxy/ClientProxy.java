@@ -1,12 +1,12 @@
 package oortcloud.hungrymechanics.core.proxy;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.renderer.ItemModelMesher;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import oortcloud.hungrymechanics.blocks.ModBlocks;
 import oortcloud.hungrymechanics.blocks.render.RenderTileEntityAxle;
 import oortcloud.hungrymechanics.blocks.render.RenderTileEntityBlender;
 import oortcloud.hungrymechanics.blocks.render.RenderTileEntityCrankAnimal;
@@ -26,25 +26,27 @@ import oortcloud.hungrymechanics.tileentities.TileEntityThresher;
 public class ClientProxy extends CommonProxy {
 
 	public void registerItemRendering() {
-		ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-
-		mesher.register(GameRegistry.findItem(References.MODID, Strings.blockAxleName), 0, new ModelResourceLocation(References.RESOURCESPREFIX + Strings.blockAxleName, "inventory"));
-		mesher.register(GameRegistry.findItem(References.MODID, Strings.blockCrankPlayerName), 0, new ModelResourceLocation(References.RESOURCESPREFIX + Strings.blockCrankPlayerName, "inventory"));
-		mesher.register(GameRegistry.findItem(References.MODID, Strings.blockMillstoneName), 0, new ModelResourceLocation(References.RESOURCESPREFIX + Strings.blockMillstoneName, "inventory"));
-		mesher.register(GameRegistry.findItem(References.MODID, Strings.blockThresherName), 0, new ModelResourceLocation(References.RESOURCESPREFIX + Strings.blockThresherName, "inventory"));
-		mesher.register(GameRegistry.findItem(References.MODID, Strings.blockBlenderName), 0, new ModelResourceLocation(References.RESOURCESPREFIX + Strings.blockBlenderName, "inventory"));
-		mesher.register(GameRegistry.findItem(References.MODID, Strings.blockPoppyName), 0, new ModelResourceLocation(References.RESOURCESPREFIX + Strings.blockPoppyName, "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ItemBlock.getItemFromBlock(ModBlocks.axle), 0,
+				new ModelResourceLocation(ModBlocks.axle.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ItemBlock.getItemFromBlock(ModBlocks.crankPlayer), 0,
+				new ModelResourceLocation(ModBlocks.crankPlayer.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ItemBlock.getItemFromBlock(ModBlocks.millStone), 0,
+				new ModelResourceLocation(ModBlocks.millStone.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ItemBlock.getItemFromBlock(ModBlocks.thresher), 0,
+				new ModelResourceLocation(ModBlocks.thresher.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ItemBlock.getItemFromBlock(ModBlocks.blender), 0,
+				new ModelResourceLocation(ModBlocks.blender.getRegistryName(), "inventory"));
 		
-		mesher.register(ModItems.wheel, 0, new ModelResourceLocation(References.RESOURCESPREFIX + Strings.itemWheelName, "inventory"));
-		mesher.register(ModItems.straw, 0, new ModelResourceLocation(References.RESOURCESPREFIX + Strings.itemStrawName, "inventory"));
-		mesher.register(ModItems.poppycrop, 0, new ModelResourceLocation(References.RESOURCESPREFIX + Strings.itemPoppyCropName, "inventory"));
-		mesher.register(ModItems.poppyseed, 0, new ModelResourceLocation(References.RESOURCESPREFIX + Strings.itemPoppySeedName, "inventory"));
-		mesher.register(ModItems.mixedFeed, 0, new ModelResourceLocation(References.RESOURCESPREFIX + Strings.itemMixedFeedName, "inventory"));
-		mesher.register(ModItems.compositeWoodCasing, 0, new ModelResourceLocation(References.RESOURCESPREFIX + Strings.itemCompositeWoodCasingName, "inventory"));
-		mesher.register(ModItems.blade, 0, new ModelResourceLocation(References.RESOURCESPREFIX + Strings.itemBladeName, "inventory"));
-		mesher.register(ModItems.crankAnimal, 0, new ModelResourceLocation(References.RESOURCESPREFIX + Strings.itemCrankAnimalName, "inventory"));
-		mesher.register(ModItems.oilpipet, 0, new ModelResourceLocation(References.RESOURCESPREFIX + Strings.itemOilPipetName, "inventory"));
-		mesher.register(ModItems.belt, new ItemMeshDefinition() {
+		ModelLoader.setCustomModelResourceLocation(ModItems.wheel, 0, new ModelResourceLocation(ModItems.wheel.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ModItems.straw, 0, new ModelResourceLocation(ModItems.straw.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ModItems.poppycrop, 0, new ModelResourceLocation(ModItems.poppycrop.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ModItems.poppyseed, 0, new ModelResourceLocation(ModItems.poppyseed.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ModItems.mixedFeed, 0, new ModelResourceLocation(ModItems.mixedFeed.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ModItems.compositeWoodCasing, 0, new ModelResourceLocation(ModItems.compositeWoodCasing.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ModItems.blade, 0, new ModelResourceLocation(ModItems.blade.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ModItems.crankAnimal, 0, new ModelResourceLocation(ModItems.crankAnimal.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ModItems.oilpipet, 0, new ModelResourceLocation(ModItems.oilpipet.getRegistryName(), "inventory"));
+		ModelLoader.setCustomMeshDefinition(ModItems.belt, new ItemMeshDefinition() {
 			@Override
 			public ModelResourceLocation getModelLocation(ItemStack stack) {
 				return new ModelResourceLocation(References.RESOURCESPREFIX + Strings.itemBeltName, "inventory");

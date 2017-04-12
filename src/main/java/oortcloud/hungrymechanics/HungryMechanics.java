@@ -61,12 +61,13 @@ public class HungryMechanics {
 		ModFluids.init();
 		proxy.registerTileEntityRendering();
 		proxy.registerTileEntities();
+		proxy.registerItemRendering();
 		ConfigurationHandler.sync();
 	}
 
 	@Mod.EventHandler
 	public static void Init(FMLInitializationEvent event) {
-		proxy.registerItemRendering();
+		
 
 		CraftingHandler.init();
 		proxy.registerEventHandler();
