@@ -15,9 +15,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import oortcloud.hungryanimals.core.lib.References;
 import oortcloud.hungrymechanics.HungryMechanics;
 import oortcloud.hungrymechanics.blocks.ModBlocks;
+import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.core.lib.Strings;
 
 public class ItemPoppySeed extends Item implements IPlantable {

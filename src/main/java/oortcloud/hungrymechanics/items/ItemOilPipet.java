@@ -16,8 +16,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import oortcloud.hungryanimals.core.lib.References;
 import oortcloud.hungrymechanics.HungryMechanics;
+import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.core.lib.Strings;
 import oortcloud.hungrymechanics.fluids.ModFluids;
 
