@@ -31,7 +31,7 @@ import oortcloud.hungrymechanics.tileentities.TileEntityAxle;
 
 public class BlockAxle extends BlockContainer {
 
-	public static final PropertyBool VARIANT = PropertyBool.create("hasWheel");
+	public static final PropertyBool VARIANT = PropertyBool.create("has_wheel");
 
 	public BlockAxle() {
 		super(Material.WOOD);

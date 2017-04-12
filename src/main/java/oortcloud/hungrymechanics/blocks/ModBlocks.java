@@ -13,6 +13,7 @@ public class ModBlocks {
 	
 	public static void init()
 	{
+		axle = new BlockAxle();
 		crankPlayer = new BlockCrankPlayer();
 		thresher = new BlockThresher();
 		poppy = new BlockPoppy();
