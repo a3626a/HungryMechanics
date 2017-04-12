@@ -7,14 +7,13 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import oortcloud.hungrymechanics.blocks.BlockMillstone;
 import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.tileentities.TileEntityMillstone;
 
-public class RenderTileEntityMillstone extends TileEntitySpecialRenderer {
+public class RenderTileEntityMillstone extends TileEntitySpecialRenderer<TileEntityMillstone> {
 
 	public static final ResourceLocation texture = new ResourceLocation(References.MODID, "textures/blocks/ModelMillstone.png");
 	private ModelMillstone modelMillstone;
@@ -24,9 +23,8 @@ public class RenderTileEntityMillstone extends TileEntitySpecialRenderer {
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float partialTick, int parInt) {
-		TileEntityMillstone millstone = (TileEntityMillstone) tileentity;
-		int rotation = ((EnumFacing) tileentity.getWorld().getBlockState(tileentity.getPos()).getValue(BlockMillstone.FACING)).getHorizontalIndex();
+	public void renderTileEntityAt(TileEntityMillstone millstone, double x, double y, double z, float partialTick, int parInt) {
+		int rotation = ((EnumFacing) millstone.getWorld().getBlockState(millstone.getPos()).getValue(BlockMillstone.FACING)).getHorizontalIndex();
 
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
@@ -48,7 +46,7 @@ public class RenderTileEntityMillstone extends TileEntitySpecialRenderer {
 		GL11.glPushMatrix();
 		if (millstone.getStackInSlot(0) != null) {
 			ItemStack stack = millstone.getStackInSlot(0).copy();
-			EntityItem item = new EntityItem(tileentity.getWorld(), 0, 0, 0, stack);
+			EntityItem item = new EntityItem(millstone.getWorld(), 0, 0, 0, stack);
 			item.hoverStart = angle / 20.F;
 
 			RenderManager render = Minecraft.getMinecraft().getRenderManager();

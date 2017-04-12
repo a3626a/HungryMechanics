@@ -5,15 +5,15 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import oortcloud.hungrymechanics.blocks.BlockAxle;
 import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.tileentities.TileEntityAxle;
 
-public class RenderTileEntityAxle extends TileEntitySpecialRenderer {
+public class RenderTileEntityAxle extends TileEntitySpecialRenderer<TileEntityAxle> {
 
 	public static final ResourceLocation texture_Axle = new ResourceLocation(References.MODID, "textures/blocks/ModelAxle.png");
 	public static final ResourceLocation texture_Wheel = new ResourceLocation(References.MODID, "textures/blocks/ModelWheel.png");
@@ -26,9 +26,8 @@ public class RenderTileEntityAxle extends TileEntitySpecialRenderer {
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float partialTick, int p_180535_9_) {
-		TileEntityAxle axle = (TileEntityAxle) tileentity;
-		IBlockState state = tileentity.getWorld().getBlockState(tileentity.getPos());
+	public void renderTileEntityAt(TileEntityAxle axle, double x, double y, double z, float partialTick, int p_180535_9_) {
+		IBlockState state = axle.getWorld().getBlockState(axle.getPos());
 		
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x + 0.5, y + 1.5, z + 0.5);
@@ -61,7 +60,7 @@ public class RenderTileEntityAxle extends TileEntitySpecialRenderer {
 				externalAngle = (externalAngle - 45*((int)externalAngle/45) + 360) % 360;
 
 				Tessellator tessellator = Tessellator.getInstance();
-				WorldRenderer renderer = tessellator.getWorldRenderer();
+				VertexBuffer renderer = tessellator.getBuffer();
 				GlStateManager.disableTexture2D();
 				GlStateManager.disableLighting();
 				GlStateManager.shadeModel(GL11.GL_SMOOTH);
@@ -78,125 +77,125 @@ public class RenderTileEntityAxle extends TileEntitySpecialRenderer {
 		GlStateManager.popMatrix();
 	}
 
-	public void drawBelt1(Tessellator tessellator, WorldRenderer renderer, double x1, double z1, double x2, double z2) {
-		renderer.startDrawingQuads();
-		renderer.setColorRGBA(198, 92, 53, 255);
-		renderer.addVertex(x1, 2 / 16.0, z1);
-		renderer.addVertex(x2, 2 / 16.0, z2);
-		renderer.setColorRGBA(158, 73, 42, 255);
-		renderer.addVertex(x2, -2 / 16.0, z2);
-		renderer.addVertex(x1, -2 / 16.0, z1);
+	public void drawBelt1(Tessellator tessellator, VertexBuffer renderer, double x1, double z1, double x2, double z2) {
+		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+		renderer.color(198, 92, 53, 255);
+		renderer.pos(x1, 2 / 16.0, z1);
+		renderer.pos(x2, 2 / 16.0, z2);
+		renderer.color(158, 73, 42, 255);
+		renderer.pos(x2, -2 / 16.0, z2);
+		renderer.pos(x1, -2 / 16.0, z1);
 		tessellator.draw();
 
 		double radius = 0.125;
 		double length = Math.sqrt(x1 * x1 + z1 * z1);
-		renderer.startDrawingQuads();
-		renderer.setColorRGBA(198, 92, 53, 255);
-		renderer.addVertex(x2 + radius * (x2 / length), 2 / 16.0, z2 + radius * (z2 / length));
-		renderer.addVertex(x1 + radius * (x1 / length), 2 / 16.0, z1 + radius * (z1 / length));
-		renderer.setColorRGBA(158, 73, 42, 255);
-		renderer.addVertex(x1 + radius * (x1 / length), -2 / 16.0, z1 + radius * (z1 / length));
-		renderer.addVertex(x2 + radius * (x2 / length), -2 / 16.0, z2 + radius * (z2 / length));
+		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+		renderer.color(198, 92, 53, 255);
+		renderer.pos(x2 + radius * (x2 / length), 2 / 16.0, z2 + radius * (z2 / length));
+		renderer.pos(x1 + radius * (x1 / length), 2 / 16.0, z1 + radius * (z1 / length));
+		renderer.color(158, 73, 42, 255);
+		renderer.pos(x1 + radius * (x1 / length), -2 / 16.0, z1 + radius * (z1 / length));
+		renderer.pos(x2 + radius * (x2 / length), -2 / 16.0, z2 + radius * (z2 / length));
 		tessellator.draw();
 
-		renderer.startDrawingQuads();
-		renderer.setColorRGBA(223, 104, 60, 255);
-		renderer.addVertex(x2, +2 / 16.0, z2);
-		renderer.addVertex(x1, +2 / 16.0, z1);
-		renderer.addVertex(x1 + radius * (x1 / length), +2 / 16.0, z1 + radius * (z1 / length));
-		renderer.addVertex(x2 + radius * (x2 / length), +2 / 16.0, z2 + radius * (z2 / length));
+		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+		renderer.color(223, 104, 60, 255);
+		renderer.pos(x2, +2 / 16.0, z2);
+		renderer.pos(x1, +2 / 16.0, z1);
+		renderer.pos(x1 + radius * (x1 / length), +2 / 16.0, z1 + radius * (z1 / length));
+		renderer.pos(x2 + radius * (x2 / length), +2 / 16.0, z2 + radius * (z2 / length));
 		tessellator.draw();
 
-		renderer.startDrawingQuads();
-		renderer.setColorRGBA(136, 63, 36, 255);
-		renderer.addVertex(x2 + radius * (x2 / length), -2 / 16.0, z2 + radius * (z2 / length));
-		renderer.addVertex(x1 + radius * (x1 / length), -2 / 16.0, z1 + radius * (z1 / length));
-		renderer.addVertex(x1, -2 / 16.0, z1);
-		renderer.addVertex(x2, -2 / 16.0, z2);
+		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+		renderer.color(136, 63, 36, 255);
+		renderer.pos(x2 + radius * (x2 / length), -2 / 16.0, z2 + radius * (z2 / length));
+		renderer.pos(x1 + radius * (x1 / length), -2 / 16.0, z1 + radius * (z1 / length));
+		renderer.pos(x1, -2 / 16.0, z1);
+		renderer.pos(x2, -2 / 16.0, z2);
 		tessellator.draw();
 	}
 
-	public void drawBelt2(Tessellator tessellator, WorldRenderer renderer, double x, double z, double distance, double angle) {
+	public void drawBelt2(Tessellator tessellator, VertexBuffer renderer, double x, double z, double distance, double angle) {
 		double dx = distance / 2.0 * Math.cos(Math.toRadians(angle));
 		double dz = distance / 2.0 * Math.sin(Math.toRadians(angle));
-		renderer.startDrawingQuads();
-		renderer.setColorRGBA(198, 92, 53, 255);
-		renderer.addVertex(x, 2 / 16.0, z);
-		renderer.addVertex(x + dx, 2 / 16.0, z + dz);
-		renderer.setColorRGBA(158, 73, 42, 255);
-		renderer.addVertex(x + dx, -2 / 16.0, z + dz);
-		renderer.addVertex(x, -2 / 16.0, z);
+		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+		renderer.color(198, 92, 53, 255);
+		renderer.pos(x, 2 / 16.0, z);
+		renderer.pos(x + dx, 2 / 16.0, z + dz);
+		renderer.color(158, 73, 42, 255);
+		renderer.pos(x + dx, -2 / 16.0, z + dz);
+		renderer.pos(x, -2 / 16.0, z);
 		tessellator.draw();
 
 		double radius = 0.125;
 		double length = Math.sqrt(x * x + z * z);
 		double ddx = radius * Math.cos(Math.toRadians(angle + 90));
 		double ddz = radius * Math.sin(Math.toRadians(angle + 90));
-		renderer.startDrawingQuads();
-		renderer.setColorRGBA(198, 92, 53, 255);
-		renderer.addVertex(x + dx + ddx, 2 / 16.0, z + dz + ddz);
-		renderer.addVertex(x + radius * (x / length), 2 / 16.0, z + radius * (z / length));
-		renderer.setColorRGBA(158, 73, 42, 255);
-		renderer.addVertex(x + radius * (x / length), -2 / 16.0, z + radius * (z / length));
-		renderer.addVertex(x + dx + ddx, -2 / 16.0, z + dz + ddz);
+		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+		renderer.color(198, 92, 53, 255);
+		renderer.pos(x + dx + ddx, 2 / 16.0, z + dz + ddz);
+		renderer.pos(x + radius * (x / length), 2 / 16.0, z + radius * (z / length));
+		renderer.color(158, 73, 42, 255);
+		renderer.pos(x + radius * (x / length), -2 / 16.0, z + radius * (z / length));
+		renderer.pos(x + dx + ddx, -2 / 16.0, z + dz + ddz);
 		tessellator.draw();
 
-		renderer.startDrawingQuads();
-		renderer.setColorRGBA(136, 63, 36, 255);
-		renderer.addVertex(x, -2 / 16.0, z);
-		renderer.addVertex(x + dx, -2 / 16.0, z + dz);
-		renderer.addVertex(x + dx + ddx, -2 / 16.0, z + dz + ddz);
-		renderer.addVertex(x + radius * (x / length), -2 / 16.0, z + radius * (z / length));
+		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+		renderer.color(136, 63, 36, 255);
+		renderer.pos(x, -2 / 16.0, z);
+		renderer.pos(x + dx, -2 / 16.0, z + dz);
+		renderer.pos(x + dx + ddx, -2 / 16.0, z + dz + ddz);
+		renderer.pos(x + radius * (x / length), -2 / 16.0, z + radius * (z / length));
 		tessellator.draw();
 
-		renderer.startDrawingQuads();
-		renderer.setColorRGBA(223, 104, 60, 255);
-		renderer.addVertex(x + radius * (x / length), 2 / 16.0, z + radius * (z / length));
-		renderer.addVertex(x + dx + ddx, 2 / 16.0, z + dz + ddz);
-		renderer.addVertex(x + dx, 2 / 16.0, z + dz);
-		renderer.addVertex(x, 2 / 16.0, z);
+		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+		renderer.color(223, 104, 60, 255);
+		renderer.pos(x + radius * (x / length), 2 / 16.0, z + radius * (z / length));
+		renderer.pos(x + dx + ddx, 2 / 16.0, z + dz + ddz);
+		renderer.pos(x + dx, 2 / 16.0, z + dz);
+		renderer.pos(x, 2 / 16.0, z);
 		tessellator.draw();
 	}
 
-	public void drawBelt3(Tessellator tessellator, WorldRenderer renderer, double x, double z, double distance, double angle) {
+	public void drawBelt3(Tessellator tessellator, VertexBuffer renderer, double x, double z, double distance, double angle) {
 		double dx = distance / 2.0 * Math.cos(Math.toRadians(angle));
 		double dz = distance / 2.0 * Math.sin(Math.toRadians(angle));
-		renderer.startDrawingQuads();
-		renderer.setColorRGBA(198, 92, 53, 255);
-		renderer.addVertex(x + dx, 2 / 16.0, z + dz);
-		renderer.addVertex(x, 2 / 16.0, z);
-		renderer.setColorRGBA(158, 73, 42, 255);
-		renderer.addVertex(x, -2 / 16.0, z);
-		renderer.addVertex(x + dx, -2 / 16.0, z + dz);
+		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+		renderer.color(198, 92, 53, 255);
+		renderer.pos(x + dx, 2 / 16.0, z + dz);
+		renderer.pos(x, 2 / 16.0, z);
+		renderer.color(158, 73, 42, 255);
+		renderer.pos(x, -2 / 16.0, z);
+		renderer.pos(x + dx, -2 / 16.0, z + dz);
 		tessellator.draw();
 
 		double radius = 0.125;
 		double length = Math.sqrt(x * x + z * z);
 		double ddx = radius * Math.cos(Math.toRadians(angle - 90));
 		double ddz = radius * Math.sin(Math.toRadians(angle - 90));
-		renderer.startDrawingQuads();
-		renderer.setColorRGBA(198, 92, 53, 255);
-		renderer.addVertex(x + radius * (x / length), 2 / 16.0, z + radius * (z / length));
-		renderer.addVertex(x + dx + ddx, 2 / 16.0, z + dz + ddz);
-		renderer.setColorRGBA(158, 73, 42, 255);
-		renderer.addVertex(x + dx + ddx, -2 / 16.0, z + dz + ddz);
-		renderer.addVertex(x + radius * (x / length), -2 / 16.0, z + radius * (z / length));
+		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+		renderer.color(198, 92, 53, 255);
+		renderer.pos(x + radius * (x / length), 2 / 16.0, z + radius * (z / length));
+		renderer.pos(x + dx + ddx, 2 / 16.0, z + dz + ddz);
+		renderer.color(158, 73, 42, 255);
+		renderer.pos(x + dx + ddx, -2 / 16.0, z + dz + ddz);
+		renderer.pos(x + radius * (x / length), -2 / 16.0, z + radius * (z / length));
 		tessellator.draw();
 
-		renderer.startDrawingQuads();
-		renderer.setColorRGBA(223, 104, 60, 255);
-		renderer.addVertex(x, 2 / 16.0, z);
-		renderer.addVertex(x + dx, 2 / 16.0, z + dz);
-		renderer.addVertex(x + dx + ddx, 2 / 16.0, z + dz + ddz);
-		renderer.addVertex(x + radius * (x / length), 2 / 16.0, z + radius * (z / length));
+		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+		renderer.color(223, 104, 60, 255);
+		renderer.pos(x, 2 / 16.0, z);
+		renderer.pos(x + dx, 2 / 16.0, z + dz);
+		renderer.pos(x + dx + ddx, 2 / 16.0, z + dz + ddz);
+		renderer.pos(x + radius * (x / length), 2 / 16.0, z + radius * (z / length));
 		tessellator.draw();
 
-		renderer.startDrawingQuads();
-		renderer.setColorRGBA(136, 63, 36, 255);
-		renderer.addVertex(x + radius * (x / length), -2 / 16.0, z + radius * (z / length));
-		renderer.addVertex(x + dx + ddx, -2 / 16.0, z + dz + ddz);
-		renderer.addVertex(x + dx, -2 / 16.0, z + dz);
-		renderer.addVertex(x, -2 / 16.0, z);
+		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+		renderer.color(136, 63, 36, 255);
+		renderer.pos(x + radius * (x / length), -2 / 16.0, z + radius * (z / length));
+		renderer.pos(x + dx + ddx, -2 / 16.0, z + dz + ddz);
+		renderer.pos(x + dx, -2 / 16.0, z + dz);
+		renderer.pos(x, -2 / 16.0, z);
 		tessellator.draw();
 	}
 }

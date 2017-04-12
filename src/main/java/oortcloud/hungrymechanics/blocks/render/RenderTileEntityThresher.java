@@ -7,12 +7,11 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.tileentities.TileEntityThresher;
 
-public class RenderTileEntityThresher extends TileEntitySpecialRenderer {
+public class RenderTileEntityThresher extends TileEntitySpecialRenderer<TileEntityThresher> {
 
 	public static final ResourceLocation texture = new ResourceLocation(References.MODID, "textures/blocks/ModelThresher.png");
 	private ModelThresher modelThresher;
@@ -22,9 +21,7 @@ public class RenderTileEntityThresher extends TileEntitySpecialRenderer {
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float partialTick, int parInt) {
-
-		TileEntityThresher thresher = (TileEntityThresher) tileentity;
+	public void renderTileEntityAt(TileEntityThresher thresher, double x, double y, double z, float partialTick, int parInt) {
 		float angle = thresher.getPowerNetwork().getAngle(partialTick);
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
@@ -39,7 +36,7 @@ public class RenderTileEntityThresher extends TileEntitySpecialRenderer {
 
 		if (thresher.getStackInSlot(0) != null) {
 			ItemStack stack = thresher.getStackInSlot(0).copy();
-			EntityItem item = new EntityItem(tileentity.getWorld(), 0, 0, 0, stack);
+			EntityItem item = new EntityItem(thresher.getWorld(), 0, 0, 0, stack);
 			item.hoverStart = angle / 20.F;
 
 			RenderManager render = Minecraft.getMinecraft().getRenderManager();

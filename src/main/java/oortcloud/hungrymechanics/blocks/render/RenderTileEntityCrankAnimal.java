@@ -4,15 +4,15 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.tileentities.TileEntityCrankAnimal;
 
-public class RenderTileEntityCrankAnimal extends TileEntitySpecialRenderer {
+public class RenderTileEntityCrankAnimal extends TileEntitySpecialRenderer<TileEntityCrankAnimal> {
 
 	public static final ResourceLocation texture = new ResourceLocation(References.MODID, "textures/blocks/ModelCrankAnimal.png");
 	private ModelCrankAnimal modelCrank;
@@ -26,10 +26,8 @@ public class RenderTileEntityCrankAnimal extends TileEntitySpecialRenderer {
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float partialTick, int p_180535_9_) {
-
-		TileEntityCrankAnimal crank = (TileEntityCrankAnimal) tileentity;
-
+	public void renderTileEntityAt(TileEntityCrankAnimal crank, double x, double y, double z, float partialTick, int p_180535_9_) {
+		// TODO Copy Leash Rendering From Vanilla Leash
 		if (!crank.isPrimary())
 			return;
 
@@ -55,10 +53,9 @@ public class RenderTileEntityCrankAnimal extends TileEntitySpecialRenderer {
 			double posZ = crank.getPos().getZ() + 0.5 + 1.3 * Math.sin(angle);
 
 			Tessellator tessellator = Tessellator.getInstance();
-			WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+			VertexBuffer worldrenderer = tessellator.getBuffer();
 			double d12 = this.interpolateValue((double) leashedAnimal.prevRenderYawOffset, (double) leashedAnimal.renderYawOffset, (double) partialTick) * 0.01745329238474369D + (Math.PI / 2D);
 			double d5 = Math.cos(d12) * (double) leashedAnimal.width * 0.4D;
-			double d6 = Math.sin(d12) * (double) leashedAnimal.width * 0.4D;
 			x += +0.5 + 1.3 * Math.cos(angle);
 			y += -1;
 			z += +0.5 + 1.3 * Math.sin(angle);
@@ -71,37 +68,35 @@ public class RenderTileEntityCrankAnimal extends TileEntitySpecialRenderer {
 			GlStateManager.disableTexture2D();
 			GlStateManager.disableLighting();
 			GlStateManager.disableCull();
-			boolean flag = true;
-			double d19 = 0.025D;
-			worldrenderer.startDrawing(5);
+			worldrenderer.begin(5, DefaultVertexFormats.POSITION);
 			int i;
 			float f2;
 
 			for (i = 0; i <= 24; ++i) {
 				if (i % 2 == 0) {
-					worldrenderer.setColorRGBA_F(0.5F, 0.4F, 0.3F, 1.0F);
+					worldrenderer.color(0.5F, 0.4F, 0.3F, 1.0F);
 				} else {
-					worldrenderer.setColorRGBA_F(0.35F, 0.28F, 0.21F, 1.0F);
+					worldrenderer.color(0.35F, 0.28F, 0.21F, 1.0F);
 				}
 
 				f2 = (float) i / 24.0F;
-				worldrenderer.addVertex(x + d16 * (double) f2 + 0.0D, y + d17 * (double) (f2 * f2 + f2) * 0.5D + (double) ((24.0F - (float) i) / 18.0F + 0.125F), z + d18 * (double) f2);
-				worldrenderer.addVertex(x + d16 * (double) f2 + 0.025D, y + d17 * (double) (f2 * f2 + f2) * 0.5D + (double) ((24.0F - (float) i) / 18.0F + 0.125F) + 0.025D, z + d18 * (double) f2);
+				worldrenderer.pos(x + d16 * (double) f2 + 0.0D, y + d17 * (double) (f2 * f2 + f2) * 0.5D + (double) ((24.0F - (float) i) / 18.0F + 0.125F), z + d18 * (double) f2);
+				worldrenderer.pos(x + d16 * (double) f2 + 0.025D, y + d17 * (double) (f2 * f2 + f2) * 0.5D + (double) ((24.0F - (float) i) / 18.0F + 0.125F) + 0.025D, z + d18 * (double) f2);
 			}
 
 			tessellator.draw();
-			worldrenderer.startDrawing(5);
+			worldrenderer.begin(5, DefaultVertexFormats.POSITION);
 
 			for (i = 0; i <= 24; ++i) {
 				if (i % 2 == 0) {
-					worldrenderer.setColorRGBA_F(0.5F, 0.4F, 0.3F, 1.0F);
+					worldrenderer.color(0.5F, 0.4F, 0.3F, 1.0F);
 				} else {
-					worldrenderer.setColorRGBA_F(0.35F, 0.28F, 0.21000001F, 1.0F);
+					worldrenderer.color(0.35F, 0.28F, 0.21000001F, 1.0F);
 				}
 
 				f2 = (float) i / 24.0F;
-				worldrenderer.addVertex(x + d16 * (double) f2 + 0.0D, y + d17 * (double) (f2 * f2 + f2) * 0.5D + (double) ((24.0F - (float) i) / 18.0F + 0.125F) + 0.025D, z + d18 * (double) f2);
-				worldrenderer.addVertex(x + d16 * (double) f2 + 0.025D, y + d17 * (double) (f2 * f2 + f2) * 0.5D + (double) ((24.0F - (float) i) / 18.0F + 0.125F), z + d18 * (double) f2 + 0.025D);
+				worldrenderer.pos(x + d16 * (double) f2 + 0.0D, y + d17 * (double) (f2 * f2 + f2) * 0.5D + (double) ((24.0F - (float) i) / 18.0F + 0.125F) + 0.025D, z + d18 * (double) f2);
+				worldrenderer.pos(x + d16 * (double) f2 + 0.025D, y + d17 * (double) (f2 * f2 + f2) * 0.5D + (double) ((24.0F - (float) i) / 18.0F + 0.125F), z + d18 * (double) f2 + 0.025D);
 			}
 
 			tessellator.draw();

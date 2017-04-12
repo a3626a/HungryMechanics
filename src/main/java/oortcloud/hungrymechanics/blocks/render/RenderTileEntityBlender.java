@@ -7,12 +7,11 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.tileentities.TileEntityBlender;
 
-public class RenderTileEntityBlender extends TileEntitySpecialRenderer {
+public class RenderTileEntityBlender extends TileEntitySpecialRenderer<TileEntityBlender> {
 
 	public static final ResourceLocation texture = new ResourceLocation(References.MODID, "textures/blocks/ModelBlender.png");
 	private ModelBlender modelBlender;
@@ -22,10 +21,7 @@ public class RenderTileEntityBlender extends TileEntitySpecialRenderer {
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float partialTick, int parInt) {
-
-		TileEntityBlender blender = (TileEntityBlender) tileentity;
-
+	public void renderTileEntityAt(TileEntityBlender blender, double x, double y, double z, float partialTick, int parInt) {
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
 		GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
@@ -46,7 +42,7 @@ public class RenderTileEntityBlender extends TileEntitySpecialRenderer {
 		for (int i = 0; i < blender.getSizeInventory(); i++) {
 			ItemStack stack = blender.getStackInSlot(i);
 			if (stack != null) {
-				EntityItem item = new EntityItem(tileentity.getWorld(), 0, 0, 0, stack);
+				EntityItem item = new EntityItem(blender.getWorld(), 0, 0, 0, stack);
 				item.hoverStart = blender.getPowerNetwork().getAngle(partialTick) / 20.0F;
 				RenderManager render = Minecraft.getMinecraft().getRenderManager();
 				switch (i) {
