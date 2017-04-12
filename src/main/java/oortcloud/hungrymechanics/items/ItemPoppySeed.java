@@ -6,54 +6,54 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import oortcloud.hungryanimals.core.lib.References;
 import oortcloud.hungrymechanics.HungryMechanics;
 import oortcloud.hungrymechanics.blocks.ModBlocks;
-import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.core.lib.Strings;
 
 public class ItemPoppySeed extends Item implements IPlantable {
 
 	public ItemPoppySeed() {
 		super();
-		setUnlocalizedName(Strings.itemPoppySeedName);
+
+		setRegistryName(Strings.itemPoppySeedName);
+		setUnlocalizedName(References.MODID+"."+Strings.itemPoppySeedName);
 		setCreativeTab(HungryMechanics.tabHungryMechanics);
-	
-		ModItems.register(this);
+		GameRegistry.register(this);
 	}
 
-	/*
-	 * @SideOnly(Side.CLIENT)
-	 * 
-	 * @Override public void registerIcons(IIconRegister iconRegister) {
-	 * this.itemIcon = iconRegister.registerIcon(ModItems
-	 * .getUnwrappedUnlocalizedName(super.getUnlocalizedName())); }
-	 */
-
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
-		if (side != EnumFacing.UP) {
-			return false;
-		} else if (playerIn.canPlayerEdit(pos.up(), side, stack)) {
-			if (worldIn.getBlockState(pos).getBlock().canSustainPlant(worldIn, pos, EnumFacing.UP, this) && worldIn.isAirBlock(pos.up())) {
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX,
+			float hitY, float hitZ) {
+		if (facing != EnumFacing.UP) {
+			return EnumActionResult.PASS;
+		} else if (playerIn.canPlayerEdit(pos.up(), facing, stack)) {
+			if (worldIn.getBlockState(pos).getBlock().canSustainPlant(worldIn.getBlockState(pos), worldIn, pos, EnumFacing.UP, this) && worldIn.isAirBlock(pos.up())) {
 				worldIn.setBlockState(pos.up(), ModBlocks.poppy.getDefaultState());
 				--stack.stackSize;
-				return true;
+				if (stack.stackSize == 0) {
+					playerIn.inventory.deleteStack(stack);
+				}
+				return EnumActionResult.SUCCESS;
 			} else {
-				return false;
+				return EnumActionResult.FAIL;
 			}
 		} else {
-			return false;
+			return EnumActionResult.PASS;
 		}
 	}
 
 	public Block getSoilId() {
-		return Blocks.farmland;
+		return Blocks.FARMLAND;
 	}
 
 	@Override

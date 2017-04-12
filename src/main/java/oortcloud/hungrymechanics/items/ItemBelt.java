@@ -7,10 +7,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import oortcloud.hungrymechanics.HungryMechanics;
+import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.core.lib.Strings;
 import oortcloud.hungrymechanics.energy.PowerNetwork;
 import oortcloud.hungrymechanics.tileentities.TileEntityAxle;
@@ -21,21 +25,24 @@ public class ItemBelt extends Item {
 
 	public ItemBelt() {
 		super();
-		setUnlocalizedName(Strings.itemBeltName);
+		setRegistryName(Strings.itemBeltName);
+		setUnlocalizedName(References.MODID+"."+Strings.itemBeltName);
 		setCreativeTab(HungryMechanics.tabHungryMechanics);
 
 		setMaxStackSize(1);
-		ModItems.register(this);
+		GameRegistry.register(this);
 	}
 
+	
+	
 	@Override
-	public void getSubItems(Item itemIn, CreativeTabs tab, List subItems) {
+	public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 		ItemStack itemStack = new ItemStack(this,1,16);
 		subItems.add(itemStack);
 	}
 	
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer playerIn, List tooltip, boolean advanced) {
+	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
 		tooltip.add("Length: " + stack.getItemDamage() + " m");
 		if (stack.hasTagCompound() && stack.getTagCompound().hasKey("SelectedBlockPos")) {
 			tooltip.add("Connected to: " + BlockPos.fromLong(stack.getTagCompound().getLong("SelectedBlockPos")));
@@ -43,30 +50,32 @@ public class ItemBelt extends Item {
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX,
+			float hitY, float hitZ) {
+		// TODO Study EnumActionResult in detail
 		if (!TileEntityAxle.isValidAxle(worldIn, pos)) {
-			return false;
+			return EnumActionResult.PASS;
 		}
 		if (stack.hasTagCompound() && stack.getTagCompound().hasKey("SelectedBlockPos")) {
 			BlockPos selectedPos = BlockPos.fromLong(stack.getTagCompound().getLong("SelectedBlockPos"));
 			if (pos.equals(selectedPos)) {
-				return false;
+				return EnumActionResult.PASS;
 			}
 			if (pos.getY()!=selectedPos.getY()) {
-				return false;
+				return EnumActionResult.PASS;
 			}
 			if (!TileEntityAxle.isValidAxle(worldIn, selectedPos)) {
 				stack.getTagCompound().removeTag("SelectedBlockPos");
-				return false;
+				return EnumActionResult.PASS;
 			}
 			TileEntityAxle axle1 = (TileEntityAxle) worldIn.getTileEntity(selectedPos);
 			TileEntityAxle axle2 = (TileEntityAxle) worldIn.getTileEntity(pos);
 			if (axle1 == null || axle1.isConnected()) {
 				stack.getTagCompound().removeTag("SelectedBlockPos");
-				return false;
+				return EnumActionResult.PASS;
 			}
 			if (axle2 == null || axle2.isConnected()) {
-				return false;
+				return EnumActionResult.PASS;
 			}
 			double dist = pos.distanceSq(selectedPos);
 			int requiredBelt = (int) (Math.ceil(Math.sqrt(dist)));
@@ -77,11 +86,11 @@ public class ItemBelt extends Item {
 				axle1.mergePowerNetwork(new PowerNetwork(0));
 				stack.getTagCompound().removeTag("SelectedBlockPos");
 				if (stack.getItemDamage() == 0) {
-					playerIn.inventory.setInventorySlotContents(playerIn.inventory.currentItem, null);
+					playerIn.inventory.deleteStack(stack);
 				}
-				return true;
+				return EnumActionResult.SUCCESS;
 			}
-			return false;
+			return EnumActionResult.FAIL;
 		} else {
 			TileEntityAxle axle = (TileEntityAxle) worldIn.getTileEntity(pos);
 			if (axle != null && !axle.isConnected()) {
@@ -89,10 +98,10 @@ public class ItemBelt extends Item {
 					stack.setTagCompound(new NBTTagCompound());
 				}
 				stack.getTagCompound().setLong("SelectedBlockPos", pos.toLong());
-				return true;
+				return EnumActionResult.SUCCESS;
 			}
-			return false;
+			return EnumActionResult.PASS;
 		}
 	}
-
+	
 }
