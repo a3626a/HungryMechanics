@@ -4,16 +4,22 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import oortcloud.hungrymechanics.HungryMechanics;
+import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.core.lib.Strings;
 import oortcloud.hungrymechanics.tileentities.TileEntityMillstone;
 import oortcloud.hungrymechanics.utils.InventoryUtil;
@@ -25,33 +31,40 @@ public class BlockMillstone extends BlockContainer {
 	public static final float exhaustion = 0.5F;
 
 	protected BlockMillstone() {
-		super(Material.wood);
-		this.setHarvestLevel("axe", 0);
-		this.setHardness(2.0F);
+		super(Material.WOOD);
+		setHarvestLevel("axe", 0);
+		setHardness(2.0F);
 
-		this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.SOUTH));
-		this.setBlockBounds(0, 0, 0, 1.0F, 0.625F, 1.0F);
-		this.setUnlocalizedName(Strings.blockMillstoneName);
-		this.setCreativeTab(HungryMechanics.tabHungryMechanics);
-		ModBlocks.register(this);
+		setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.SOUTH));
+		setRegistryName(Strings.blockMillstoneName);
+		setUnlocalizedName(References.MODID+"."+Strings.blockMillstoneName);
+		setCreativeTab(HungryMechanics.tabHungryMechanics);
+		GameRegistry.register(this);
+		GameRegistry.register(new ItemBlock(this), getRegistryName());
 	}
 
-	protected BlockState createBlockState() {
-		return new BlockState(this, new IProperty[] { FACING });
+	@Override
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+		return new AxisAlignedBB(0, 0, 0, 1.0, 0.625, 1.0);
 	}
-
+	
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, new IProperty[] { FACING });
+	}
+	
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
 		return new TileEntityMillstone();
 	}
 
 	@Override
-	public boolean isOpaqueCube() {
+	public boolean isFullBlock(IBlockState state) {
 		return false;
 	}
-
+	
 	@Override
-	public boolean isNormalCube() {
+	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
 
@@ -62,10 +75,10 @@ public class BlockMillstone extends BlockContainer {
 	}
 
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		TileEntityMillstone tileEntity = (TileEntityMillstone) worldIn.getTileEntity(pos);
 
-		return InventoryUtil.interactInventory(playerIn, tileEntity, 0);
+		return InventoryUtil.interactInventory(playerIn, hand, heldItem, tileEntity, 0);
 	}
 
 	@Override

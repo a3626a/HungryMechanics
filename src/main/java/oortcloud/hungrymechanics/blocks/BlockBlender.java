@@ -6,10 +6,16 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import oortcloud.hungrymechanics.HungryMechanics;
 import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.core.lib.Strings;
@@ -19,33 +25,39 @@ import oortcloud.hungrymechanics.utils.InventoryUtil;
 public class BlockBlender extends BlockContainer {
 
 	protected BlockBlender() {
-		super(Material.wood);
+		super(Material.WOOD);
 		setHarvestLevel("axe", 0);
 		setHardness(2.0F);
 		
-		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F);
-		setUnlocalizedName(Strings.blockBlenderName);
+		setRegistryName(Strings.blockBlenderName);
+		setUnlocalizedName(References.MODID + "." + Strings.blockBlenderName);
 		setCreativeTab(HungryMechanics.tabHungryMechanics);
-		ModBlocks.register(this);
+		GameRegistry.register(this);
+		GameRegistry.register(new ItemBlock(this), getRegistryName());
 	}
 
+	@Override
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+		return new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.5, 1.0);
+	}
+	
 	@Override
 	public TileEntity createNewTileEntity(World wolrd, int meta) {
 		return new TileEntityBlender();
 	}
 
 	@Override
-	public boolean isOpaqueCube() {
+	public boolean isFullBlock(IBlockState state) {
+		return false;
+	}
+	
+	@Override
+	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
 
 	@Override
-	public boolean isNormalCube() {
-		return false;
-	}
-
-	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (side == EnumFacing.UP) {
 			TileEntity tileEntity = worldIn.getTileEntity(pos);
 			if (tileEntity != null) {
@@ -79,7 +91,7 @@ public class BlockBlender extends BlockContainer {
 					}
 				}
 				index = (index - rotationalOffset + 4) % 4;
-				return InventoryUtil.interactInventory(playerIn, blender, index);
+				return InventoryUtil.interactInventory(playerIn, hand, heldItem, blender, index);
 			}
 		}
 		return true;

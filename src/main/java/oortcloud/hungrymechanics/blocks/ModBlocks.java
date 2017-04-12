@@ -1,10 +1,6 @@
 package oortcloud.hungrymechanics.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import oortcloud.hungrymechanics.core.lib.References;
-import oortcloud.hungrymechanics.core.lib.Strings;
 
 public class ModBlocks {
 	public static Block millStone;
@@ -15,10 +11,6 @@ public class ModBlocks {
 	public static Block millstone;
 	public static Block blender;
 	public static Block crankAnimal;
-	public static Block floorcover_leaf;
-	public static Block floorcover_wool;
-	public static Block floorcover_ironbar;
-	public static Block floorcover_hay;
 	
 	public static void init()
 	{
@@ -29,14 +21,5 @@ public class ModBlocks {
 		blender = new BlockBlender();
 		crankAnimal = new BlockCrankAnimal();
 	}
-
-	public static String getName(String unlocalizedName)
-	{
-		return unlocalizedName.substring(unlocalizedName.indexOf("tile.") + 5);
-		
-	}
 	
-	public static void register(Block block) {
-		GameRegistry.registerBlock(block, getName(block.getUnlocalizedName()));
-	}
 }

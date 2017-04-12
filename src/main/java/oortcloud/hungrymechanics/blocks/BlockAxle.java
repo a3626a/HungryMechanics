@@ -7,17 +7,20 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import oortcloud.hungrymechanics.HungryMechanics;
@@ -32,26 +35,25 @@ public class BlockAxle extends BlockContainer {
 
 	public BlockAxle() {
 		super(Material.WOOD);
-		this.setHarvestLevel("axe", 0);
-		this.setHardness(2.0F);
+		setHarvestLevel("axe", 0);
+		setHardness(2.0F);
 		
-		this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, false));
-		this.setBlockBounds((float) 0.375, 0, (float) 0.375, (float) 0.625, 1, (float) 0.625);
-		this.setRegistryName(Strings.blockAxleName);
-		this.setUnlocalizedName(References.MODID+"."+Strings.blockAxleName);
-		this.setCreativeTab(HungryMechanics.tabHungryMechanics);
-		ModBlocks.register(this);
+		setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, false));
+		setCreativeTab(HungryMechanics.tabHungryMechanics);
+		setRegistryName(Strings.blockAxleName);
+		setUnlocalizedName(References.MODID+"."+Strings.blockAxleName);
+		GameRegistry.register(this);
+		GameRegistry.register(new ItemBlock(this), getRegistryName());
 	}
 
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-		
-		return super.getBoundingBox(state, source, pos);
+		return new AxisAlignedBB(0.375, 0, 0.375, 0.625, 1, 0.625);
 	}
 	
 	@Override
-	protected BlockState createBlockState() {
-		return new BlockState(this, new IProperty[] { VARIANT });
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, new IProperty[] { VARIANT });
 	}
 	
 	@Override
@@ -59,23 +61,19 @@ public class BlockAxle extends BlockContainer {
 		return new TileEntityAxle();
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
-	public EnumWorldBlockLayer getBlockLayer() {
-		return EnumWorldBlockLayer.CUTOUT;
+	public BlockRenderLayer getBlockLayer() {
+		return BlockRenderLayer.CUTOUT;
 	}
 
 	@Override
-	public boolean isOpaqueCube() {
+	public boolean isFullBlock(IBlockState state) {
 		return false;
 	}
-
+	
 	@Override
-	public boolean isNormalCube() {
-		return false;
-	}
-
-	@Override
-	public boolean isFullCube() {
+	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
 
@@ -104,17 +102,16 @@ public class BlockAxle extends BlockContainer {
 	}
 	
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
-
-		ItemStack item = playerIn.inventory.getCurrentItem();
-		IBlockState meta = worldIn.getBlockState(pos);
-		if (item != null) {
-			if ((Boolean)meta.getValue(VARIANT) == false && item.getItem() == ModItems.wheel) {
-				worldIn.setBlockState(pos, meta.withProperty(VARIANT, true), 2);
-				if (!playerIn.capabilities.isCreativeMode)
-					if (--item.stackSize == 0) {
-						playerIn.inventory.setInventorySlotContents(playerIn.inventory.currentItem, null);
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+		if (heldItem != null) {
+			if ((Boolean)state.getValue(VARIANT) == false && heldItem.getItem() == ModItems.wheel) {
+				worldIn.setBlockState(pos, state.withProperty(VARIANT, true), 2);
+				if (!playerIn.capabilities.isCreativeMode) {
+					--heldItem.stackSize;
+					if (heldItem.stackSize == 0) {
+						playerIn.inventory.deleteStack(heldItem);
 					}
+				}
 				return true;
 			}
 		}

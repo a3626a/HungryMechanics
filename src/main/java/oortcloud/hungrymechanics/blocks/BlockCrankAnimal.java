@@ -1,6 +1,5 @@
 package oortcloud.hungrymechanics.blocks;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -13,11 +12,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import oortcloud.hungrymechanics.HungryMechanics;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import oortcloud.hungryanimals.core.lib.References;
 import oortcloud.hungrymechanics.core.lib.Strings;
 import oortcloud.hungrymechanics.items.ModItems;
 import oortcloud.hungrymechanics.tileentities.TileEntityCrankAnimal;
@@ -25,13 +26,15 @@ import oortcloud.hungrymechanics.tileentities.TileEntityCrankAnimal;
 public class BlockCrankAnimal extends BlockContainer {
 
 	protected BlockCrankAnimal() {
-		super(Material.wood);
+		super(Material.WOOD);
 		setHarvestLevel("axe", 0);
 		setHardness(2.0F);
-
-		setUnlocalizedName(Strings.blockCrankAnimalName);
+		
+		setRegistryName(Strings.blockCrankAnimalName);
+		setUnlocalizedName(References.MODID+"."+Strings.blockCrankAnimalName);
 		setCreativeTab(null);
-		ModBlocks.register(this);
+		GameRegistry.register(this);
+		//TODO Not register block item
 	}
 
 	@Override
@@ -40,7 +43,7 @@ public class BlockCrankAnimal extends BlockContainer {
 	}
 
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		TileEntityCrankAnimal crankAnimal = (TileEntityCrankAnimal) worldIn.getTileEntity(pos);
 
 		if (crankAnimal != null) {
@@ -49,11 +52,8 @@ public class BlockCrankAnimal extends BlockContainer {
 				if (crankAnimalPrimary.setLeashed(playerIn, worldIn)) {
 					// release leash from the player
 					double d0 = 7.0D;
-					List list = worldIn.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(pos.getX() - d0, pos.getY() - d0, pos.getZ() - d0, pos.getX() + d0, pos.getY() + d0, pos.getZ() + d0));
-					Iterator iterator = list.iterator();
-					while (iterator.hasNext()) {
-						EntityLiving entityliving = (EntityLiving) iterator.next();
-
+					List<EntityLiving> list = worldIn.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(pos.getX() - d0, pos.getY() - d0, pos.getZ() - d0, pos.getX() + d0, pos.getY() + d0, pos.getZ() + d0));
+					for (EntityLiving entityliving : list) {
 						if (entityliving.getLeashed() && entityliving.getLeashedToEntity() == playerIn) {
 							entityliving.clearLeashed(true, false);
 						}
@@ -81,9 +81,7 @@ public class BlockCrankAnimal extends BlockContainer {
 	}
 
 	@Override
-	public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
-		super.onNeighborBlockChange(worldIn, pos, state, neighborBlock);
-
+	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn) {
 		TileEntityCrankAnimal crankAnimal = (TileEntityCrankAnimal) worldIn.getTileEntity(pos);
 
 		if (crankAnimal != null) {
@@ -91,7 +89,6 @@ public class BlockCrankAnimal extends BlockContainer {
 				worldIn.destroyBlock(pos, false);
 			}
 		}
-
 	}
 
 	@Override
@@ -100,17 +97,12 @@ public class BlockCrankAnimal extends BlockContainer {
 	}
 
 	@Override
-	public boolean isOpaqueCube() {
+	public boolean isFullBlock(IBlockState state) {
 		return false;
 	}
-
+	
 	@Override
-	public boolean isNormalCube() {
-		return false;
-	}
-
-	@Override
-	public boolean isFullCube() {
+	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
 
