@@ -1,7 +1,7 @@
 package oortcloud.hungrymechanics.tileentities;
 
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import oortcloud.hungrymechanics.energy.PowerNetwork;

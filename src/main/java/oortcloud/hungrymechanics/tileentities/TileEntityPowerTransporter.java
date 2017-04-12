@@ -4,8 +4,8 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk.EnumCreateEntityType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -39,8 +39,8 @@ public abstract class TileEntityPowerTransporter extends TileEntity implements I
 			isInitialized=true;
 			
 			for (BlockPos i : this.getConnectedBlocks()) {
-				
-				if (getWorld().getChunkProvider().chunkExists(i.getX() >> 4, i.getZ() >> 4)) {
+				// TODO verify chunk loading condition
+				if (getWorld().getChunkProvider().getLoadedChunk(i.getX() >> 4, i.getZ() >> 4) != null) {
 					TileEntity tileEntity = getWorld().getChunkFromBlockCoords(i).getTileEntity(i, EnumCreateEntityType.CHECK);
 					if (tileEntity != null && !tileEntity.isInvalid() && tileEntity instanceof IPowerTransporter) {
 						IPowerTransporter nextPowerTransporter = (IPowerTransporter) tileEntity;
@@ -56,7 +56,8 @@ public abstract class TileEntityPowerTransporter extends TileEntity implements I
 	public void invalidate() {
 		super.invalidate();
 		for (BlockPos i : getConnectedBlocks()) {
-			if (getWorld().getChunkProvider().chunkExists(i.getX() >> 4, i.getZ() >> 4)) {
+			// TODO verify chunk loading condition
+			if (getWorld().getChunkProvider().getLoadedChunk(i.getX() >> 4, i.getZ() >> 4) != null) {
 				TileEntity tileEntity = getWorld().getChunkFromBlockCoords(i).getTileEntity(i, EnumCreateEntityType.CHECK);
 				if (tileEntity != null && !tileEntity.isInvalid() && tileEntity instanceof IPowerTransporter) {
 					IPowerTransporter powerTransporter = (IPowerTransporter) tileEntity;
@@ -83,9 +84,10 @@ public abstract class TileEntityPowerTransporter extends TileEntity implements I
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound compound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
 		compound.setDouble("powerStored", powerNetwork.getPowerStored() / powerNetwork.getPowerCapacity() * getPowerCapacity());
+		return compound;
 	}
 
 	@Override

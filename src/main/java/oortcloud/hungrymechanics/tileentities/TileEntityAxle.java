@@ -2,10 +2,9 @@ package oortcloud.hungrymechanics.tileentities;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import oortcloud.hungrymechanics.blocks.BlockAxle;
 import oortcloud.hungrymechanics.blocks.ModBlocks;
@@ -31,23 +30,24 @@ public class TileEntityAxle extends TileEntityPowerTransporter {
 	}
 
 	@Override
-	public Packet getDescriptionPacket() {
+	public SPacketUpdateTileEntity getUpdatePacket() {
 		NBTTagCompound compound = new NBTTagCompound();
 		writeToNBT(compound);
-		return  new S35PacketUpdateTileEntity(getPos(), getBlockMetadata(), compound);
+		return  new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), compound);
 	}
 	
 	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
 		NBTTagCompound compound = pkt.getNbtCompound();
 		readFromNBT(compound);
 	}
 	
 	@Override
-	public void writeToNBT(NBTTagCompound compound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
 		if (connectedAxle != null)
 			compound.setLong("connectedAxle", connectedAxle.toLong());
+		return compound;
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package oortcloud.hungrymechanics.tileentities;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import oortcloud.hungrymechanics.energy.PowerNetwork;
 
 public interface IPowerTransporter {

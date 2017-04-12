@@ -9,11 +9,10 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import oortcloud.hungrymechanics.configuration.util.ValueProbabilityItemStack;
@@ -46,7 +45,7 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements II
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
 
 			if (needSync) {
-				worldObj.markBlockForUpdate(pos);
+				// TODO Not to notify?
 				markDirty();
 				needSync = false;
 			}
@@ -105,7 +104,7 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements II
 	}
 
 	@Override
-	public IChatComponent getDisplayName() {
+	public ITextComponent getDisplayName() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -219,10 +218,11 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements II
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound compound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
 		compound.setInteger("leftAttempt", leftAttempt);
 		writeSyncableDataToNBT(compound);
+		return compound;
 	}
 
 	@Override
@@ -233,14 +233,14 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements II
 	}
 
 	@Override
-	public Packet getDescriptionPacket() {
+	public SPacketUpdateTileEntity getUpdatePacket() {
 		NBTTagCompound compound = new NBTTagCompound();
 		writeSyncableDataToNBT(compound);
-		return new S35PacketUpdateTileEntity(getPos(), getBlockMetadata(), compound);
+		return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), compound);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
 		NBTTagCompound compound = pkt.getNbtCompound();
 		readSyncableDataFromNBT(compound);
 	}

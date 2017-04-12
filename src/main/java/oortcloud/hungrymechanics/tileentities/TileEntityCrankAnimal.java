@@ -1,25 +1,36 @@
 package oortcloud.hungrymechanics.tileentities;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.EntityAITasks.EntityAITaskEntry;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import oortcloud.hungryanimals.core.lib.Strings;
-import oortcloud.hungryanimals.entities.properties.ExtendedPropertiesHungryAnimal;
+import oortcloud.hungryanimals.entities.capability.ICapabilityHungryAnimal;
+import oortcloud.hungryanimals.entities.capability.ICapabilityTamableAnimal;
+import oortcloud.hungryanimals.entities.capability.ProviderHungryAnimal;
+import oortcloud.hungryanimals.entities.capability.ProviderTamableAnimal;
+import oortcloud.hungryanimals.entities.handler.HungryAnimalManager;
+import oortcloud.hungrymechanics.ai.EntityAICrank;
 import oortcloud.hungrymechanics.energy.PowerNetwork;
+
+/**
+ * UUID and ID is different
+ * UUID is consistent for client and server
+ * ID does not.
+ * @author LeeChangHwan
+ *
+ */
 
 public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 
@@ -46,23 +57,30 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 		int i = pos.getX();
 		int j = pos.getY();
 		int k = pos.getZ();
-		List list = worldIn.getEntitiesWithinAABB(EntityAnimal.class, new AxisAlignedBB((double) i - d0, (double) j - d0, (double) k - d0, (double) i + d0, (double) j + d0, (double) k + d0));
-		Iterator iterator = list.iterator();
+		List<EntityAnimal> list = worldIn.getEntitiesWithinAABB(EntityAnimal.class,
+				new AxisAlignedBB((double) i - d0, (double) j - d0, (double) k - d0, (double) i + d0, (double) j + d0, (double) k + d0));
 
-		while (iterator.hasNext()) {
-			EntityAnimal entityliving = (EntityAnimal) iterator.next();
+		for (EntityAnimal animal : list) {
+			if (animal.getLeashed() && animal.getLeashedToEntity() == player) {
 
-			if (entityliving.getLeashed() && entityliving.getLeashedToEntity() == player) {
+				if (!HungryAnimalManager.getInstance().isRegistered(animal.getClass()))
+					continue;
 
-				ExtendedPropertiesHungryAnimal property = (ExtendedPropertiesHungryAnimal) entityliving.getExtendedProperties(Strings.extendedPropertiesKey);
+				ICapabilityTamableAnimal capTaming = animal.getCapability(ProviderTamableAnimal.CAP, null);
 
-				if (property != null && property.crank_production > 0 && property.taming >= 1) {
-					leashedAnimal = entityliving;
-					property.ai_crank.crankAnimal = this;
+				// TODO add attribute check for crank production
+
+				if (property.crank_production > 0 && capTaming.getTaming() >= 1) {
+					leashedAnimal = animal;
+					for (EntityAITaskEntry entry : leashedAnimal.tasks.taskEntries) {
+						if (entry.action instanceof EntityAICrank)
+							((EntityAICrank) entry.action).crankAnimal = this;
+					}
 					return true;
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -78,37 +96,75 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 		super.update();
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
 			if (leashedAnimal != null) {
-				ExtendedPropertiesHungryAnimal property = (ExtendedPropertiesHungryAnimal) leashedAnimal.getExtendedProperties(Strings.extendedPropertiesKey);
-				if (property != null) {
-					double angleDifference = property.ai_crank.getAngleDifference();
-					this.getPowerNetwork().producePower(property.crank_production * (1 - Math.abs(90 - angleDifference) / 90.0));
-					property.subHunger(property.crank_food_consumption);
+				// CASE 1 NORMAL
+				ICapabilityHungryAnimal capHungry = leashedAnimal.getCapability(ProviderHungryAnimal.CAP, null);
+				EntityAICrank aiCrank = null;
+				for (EntityAITaskEntry entry : leashedAnimal.tasks.taskEntries) {
+					if (entry.action instanceof EntityAICrank)
+						aiCrank = (EntityAICrank) entry.action;
 				}
+				// TODO Error handling for aiCrank==null
+				double angleDifference = aiCrank.getAngleDifference();
 
+				// TODO add attribute check for crank production & crank food
+				// consumption
+				this.getPowerNetwork().producePower(property.crank_production * (1 - Math.abs(90 - angleDifference) / 90.0));
+				capHungry.addHunger(-property.crank_food_consumption);
 			}
 			if (leashedAnimal == null && leashedAnimalUUID != null) {
-				for (Object i : worldObj.loadedEntityList) {
-					if (((Entity) i).getUniqueID().equals(leashedAnimalUUID)) {
-						EntityAnimal entity = (EntityAnimal) i;
-						ExtendedPropertiesHungryAnimal property = (ExtendedPropertiesHungryAnimal) entity.getExtendedProperties(Strings.extendedPropertiesKey);
-						if (property != null) {
-							leashedAnimal = entity;
-							property.ai_crank.crankAnimal = this;
+				// CASE 2 LOADED
+				// STEP TO LOAD ENTITY BY UUID
+				for (Entity i : worldObj.loadedEntityList) {
+					if (i.getUniqueID().equals(leashedAnimalUUID)) {
+						if (!(i instanceof EntityAnimal)) {
+							leashedAnimalUUID = null;
+							break;
 						}
+
+						EntityAnimal animal = (EntityAnimal) i;
+						if (!HungryAnimalManager.getInstance().isRegistered(animal.getClass())) {
+							leashedAnimalUUID = null;
+							break;
+						}
+
+						leashedAnimal = animal;
+						EntityAICrank aiCrank = null;
+						for (EntityAITaskEntry entry : leashedAnimal.tasks.taskEntries) {
+							if (entry.action instanceof EntityAICrank)
+								aiCrank = (EntityAICrank) entry.action;
+						}
+						// TODO Error handling for aiCrank==null
+						aiCrank.crankAnimal = this;
 					}
 				}
 				leashedAnimalUUID = null;
 			}
 		}
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+			//
 			if (leashedAnimal == null && leashedAnimalID != -1) {
+				// CASE 3 LOADED
 				EntityAnimal entity = (EntityAnimal) worldObj.getEntityByID(leashedAnimalID);
 				if (entity != null) {
-					ExtendedPropertiesHungryAnimal property = (ExtendedPropertiesHungryAnimal) entity.getExtendedProperties(Strings.extendedPropertiesKey);
-					if (property != null) {
-						leashedAnimal = entity;
-						property.ai_crank.crankAnimal = this;
+					if (!(entity instanceof EntityAnimal)) {
+						leashedAnimalUUID = null;
+						break;
 					}
+
+					EntityAnimal animal = (EntityAnimal) entity;
+					if (!HungryAnimalManager.getInstance().isRegistered(animal.getClass())) {
+						leashedAnimalUUID = null;
+						break;
+					}
+
+					leashedAnimal = animal;
+					EntityAICrank aiCrank = null;
+					for (EntityAITaskEntry entry : leashedAnimal.tasks.taskEntries) {
+						if (entry.action instanceof EntityAICrank)
+							aiCrank = (EntityAICrank) entry.action;
+					}
+					// TODO Error handling for aiCrank==null
+					aiCrank.crankAnimal = this;
 				}
 			}
 			leashedAnimalID = -1;
@@ -131,12 +187,14 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound compound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
 
 		compound.setLong("primaryPos", primaryPos.toLong());
 		if (leashedAnimal != null)
 			compound.setString("leashedAnimalUUID", leashedAnimal.getUniqueID().toString());
+
+		return compound;
 	}
 
 	@Override
@@ -149,16 +207,16 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 	}
 
 	@Override
-	public Packet getDescriptionPacket() {
+	public SPacketUpdateTileEntity getUpdatePacket() {
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setLong("primaryPos", primaryPos.toLong());
 		if (leashedAnimal != null)
 			compound.setInteger("leashedAnimalID", leashedAnimal.getEntityId());
-		return new S35PacketUpdateTileEntity(getPos(), getBlockMetadata(), compound);
+		return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), compound);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
 		NBTTagCompound compound = pkt.getNbtCompound();
 		primaryPos = BlockPos.fromLong(compound.getLong("primaryPos"));
 		if (compound.hasKey("leashedAnimalID"))
