@@ -1,5 +1,6 @@
 package oortcloud.hungrymechanics.blocks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.BlockCrops;
@@ -26,7 +27,7 @@ public class BlockPoppy extends BlockCrops {
 
 	@Override
 	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		List<ItemStack> ret = super.getDrops(world, pos, state, fortune);
+		List<ItemStack> ret = new ArrayList<ItemStack>();
 		int age = ((Integer) state.getValue(AGE)).intValue();
 
 		if (age == 7) {
