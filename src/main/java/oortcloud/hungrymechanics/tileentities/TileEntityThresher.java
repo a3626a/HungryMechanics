@@ -46,47 +46,40 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements II
 
 			if (needSync) {
 				getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 3);
-				markDirty();
 				needSync = false;
 			}
 
 			if (getStackInSlot(0) != null) {
-				if (leftAttempt > 0) {
-					ArrayList<ValueProbabilityItemStack> output = RecipeThresher.getRecipe(getStackInSlot(0));
-					if (output != null && this.getPowerNetwork().getPowerStored() > powerUsage) {
-						this.getPowerNetwork().consumeEnergy(powerUsage);
-						this.threshTime += 1;
+				ArrayList<ValueProbabilityItemStack> output = RecipeThresher.getRecipe(getStackInSlot(0));
+				if (output != null && this.getPowerNetwork().getPowerStored() > powerUsage) {
+					this.getPowerNetwork().consumeEnergy(powerUsage);
+					this.threshTime += 1;
 
-						if (this.threshTime >= this.totalthreshTime) {
-							this.threshTime = 0;
+					if (this.threshTime >= this.totalthreshTime) {
+						if (leftAttempt == 0) {
+							decrStackSize(0, 1);
+							leftAttempt = 4;
+						}
 
-							for (ValueProbabilityItemStack i : output) {
-								if (this.worldObj.rand.nextDouble() < i.prob) {
+						this.threshTime = 0;
+						for (ValueProbabilityItemStack i : output) {
+							if (this.worldObj.rand.nextDouble() < i.prob) {
+								EntityItem entityitem = new EntityItem(this.worldObj, (double) ((float) this.pos.getX() + 0.5),
+										(double) ((float) this.pos.getY() + 0.5), (double) ((float) this.pos.getZ() + 0.5), i.item.copy());
 
-									float f = this.worldObj.rand.nextFloat() * 0.8F + 0.1F;
-									float f1 = this.worldObj.rand.nextFloat() * 0.8F + 0.1F;
-									float f2 = this.worldObj.rand.nextFloat() * 0.8F + 0.1F;
-
-									EntityItem entityitem = new EntityItem(this.worldObj, (double) ((float) this.pos.getX() + f), (double) ((float) this.pos.getY() + f1), (double) ((float) this.pos.getZ() + f2), i.item.copy());
-
-									float f3 = 0.05F;
-									entityitem.motionX = (double) ((float) this.worldObj.rand.nextGaussian() * f3);
-									entityitem.motionY = (double) ((float) this.worldObj.rand.nextGaussian() * f3 + 0.2F);
-									entityitem.motionZ = (double) ((float) this.worldObj.rand.nextGaussian() * f3);
-									this.worldObj.spawnEntityInWorld(entityitem);
-								}
-							}
-							this.leftAttempt--;
-							if (this.leftAttempt == 0) {
-								decrStackSize(0, 1);
-								if (getStackInSlot(0) != null)
-									leftAttempt = 4;
+								float f3 = 0.05F;
+								entityitem.motionX = (double) ((float) this.worldObj.rand.nextGaussian() * f3);
+								entityitem.motionY = (double) ((float) this.worldObj.rand.nextGaussian() * f3 + 0.2F);
+								entityitem.motionZ = (double) ((float) this.worldObj.rand.nextGaussian() * f3);
+								this.worldObj.spawnEntityInWorld(entityitem);
 							}
 						}
+						this.leftAttempt--;
 					}
-				} else {
-					leftAttempt = 4;
 				}
+			} else {
+				leftAttempt = 0;
+				threshTime = 0;
 			}
 		}
 	}
@@ -138,7 +131,6 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements II
 					this.inventory[index] = null;
 				}
 
-				this.markDirty();
 				return itemstack;
 			}
 		} else {
@@ -164,13 +156,11 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements II
 		needSync = true;
 
 		ItemStack ret = inventory[index];
-		inventory[index]= null;
+		inventory[index] = null;
 
-		this.markDirty();
-		
 		return ret;
 	}
-	
+
 	@Override
 	public int getInventoryStackLimit() {
 		return 64;
@@ -178,7 +168,8 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements II
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {
-		return this.worldObj.getTileEntity(this.pos) != this ? false : player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
+		return this.worldObj.getTileEntity(this.pos) != this ? false
+				: player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
 	}
 
 	@Override
@@ -230,6 +221,11 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements II
 		super.readFromNBT(compound);
 		this.leftAttempt = compound.getInteger("leftAttempt");
 		readSyncableDataFromNBT(compound);
+	}
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		return writeToNBT(new NBTTagCompound());
 	}
 
 	@Override

@@ -6,7 +6,6 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import oortcloud.hungrymechanics.HungryMechanics;
 import oortcloud.hungrymechanics.blocks.BlockAxle;
 import oortcloud.hungrymechanics.blocks.ModBlocks;
 
@@ -43,7 +42,6 @@ public class TileEntityAxle extends TileEntityPowerTransporter {
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
 		NBTTagCompound compound = pkt.getNbtCompound();
 		readFromNBT(compound);
-		HungryMechanics.logger.info(compound);
 	}
 	
 	@Override

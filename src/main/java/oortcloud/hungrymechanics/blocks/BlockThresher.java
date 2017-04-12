@@ -32,7 +32,7 @@ public class BlockThresher extends BlockContainer {
 		setHardness(2.0F);
 
 		setRegistryName(Strings.blockThresherName);
-		setUnlocalizedName(References.MODID+"."+Strings.blockThresherName);
+		setUnlocalizedName(References.MODID + "." + Strings.blockThresherName);
 		setCreativeTab(HungryMechanics.tabHungryMechanics);
 		GameRegistry.register(this);
 		GameRegistry.register(new ItemBlock(this), getRegistryName());
@@ -40,9 +40,9 @@ public class BlockThresher extends BlockContainer {
 
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-		return new AxisAlignedBB( 0.375, 0,  0.375,  0.625, 1,  0.625);
+		return new AxisAlignedBB(0.375, 0, 0.375, 0.625, 1, 0.625);
 	}
-	
+
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
 		return new TileEntityThresher();
@@ -52,21 +52,17 @@ public class BlockThresher extends BlockContainer {
 	public boolean isFullBlock(IBlockState state) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
 
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-		if (!worldIn.isRemote) {
-			TileEntityThresher tileEntity = (TileEntityThresher) worldIn.getTileEntity(pos);
-			if (tileEntity.canTakeOut()) {
-				return InventoryUtil.interactInventory(playerIn, hand, heldItem, tileEntity, 0);
-			}
-		}
-		return false;
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side,
+			float hitX, float hitY, float hitZ) {
+		TileEntityThresher tileEntity = (TileEntityThresher) worldIn.getTileEntity(pos);
+		return InventoryUtil.interactInventory(playerIn, hand, heldItem, tileEntity, 0);
 	}
 
 	@Override
