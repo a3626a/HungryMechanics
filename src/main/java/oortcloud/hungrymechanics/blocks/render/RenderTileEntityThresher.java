@@ -41,7 +41,7 @@ public class RenderTileEntityThresher extends TileEntitySpecialRenderer<TileEnti
 
 			RenderManager render = Minecraft.getMinecraft().getRenderManager();
 
-			render.doRenderEntity(item, x + 0.5, y + 0.2, z + 0.5, 0, 0, false);
+			render.doRenderEntity(item, x + 0.5, y, z + 0.5, 0, 0, false);
 		}
 	}
 

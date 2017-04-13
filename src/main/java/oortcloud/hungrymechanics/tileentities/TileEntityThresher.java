@@ -64,13 +64,32 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements II
 						this.threshTime = 0;
 						for (ValueProbabilityItemStack i : output) {
 							if (this.worldObj.rand.nextDouble() < i.prob) {
-								EntityItem entityitem = new EntityItem(this.worldObj, (double) ((float) this.pos.getX() + 0.5),
-										(double) ((float) this.pos.getY() + 0.5), (double) ((float) this.pos.getZ() + 0.5), i.item.copy());
+								// Spawn Item Along side the edge of block
+								double dx = 0;
+								double dz = 0;
+								double f = getWorld().rand.nextDouble()-0.5;
+								switch (getWorld().rand.nextInt(4)) {
+								case 0 :
+									dx = 0.5;
+									dz = f;
+									break;
+								case 1 :
+									dx = -0.5;
+									dz = f;
+									break;
+								case 2 :
+									dz = 0.5;
+									dx = f;
+									break;
+								case 3 :
+									dz = -0.5;
+									dx = f;
+									break;
+								}
+								
+								EntityItem entityitem = new EntityItem(this.worldObj, (double) ((float) this.pos.getX() + 0.5 + dx),
+										(double) ((float) this.pos.getY() + 0.5), (double) ((float) this.pos.getZ() + 0.5 + dz), i.item.copy());
 
-								float f3 = 0.05F;
-								entityitem.motionX = (double) ((float) this.worldObj.rand.nextGaussian() * f3);
-								entityitem.motionY = (double) ((float) this.worldObj.rand.nextGaussian() * f3 + 0.2F);
-								entityitem.motionZ = (double) ((float) this.worldObj.rand.nextGaussian() * f3);
 								this.worldObj.spawnEntityInWorld(entityitem);
 							}
 						}
