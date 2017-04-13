@@ -280,6 +280,11 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements IIn
 	}
 
 	@Override
+	public NBTTagCompound getUpdateTag() {
+		return writeToNBT(new NBTTagCompound());
+	}
+	
+	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
 		writeSyncableDataToNBT(compound);

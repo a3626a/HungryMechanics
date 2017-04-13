@@ -20,7 +20,6 @@ public class TileEntityAxle extends TileEntityPowerTransporter {
 	public void setConnectedAxle(BlockPos pos) {
 		connectedAxle=pos;
 		getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 3);
-		markDirty();
 	}
 	
 	@Override
@@ -42,6 +41,11 @@ public class TileEntityAxle extends TileEntityPowerTransporter {
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
 		NBTTagCompound compound = pkt.getNbtCompound();
 		readFromNBT(compound);
+	}
+	
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		return writeToNBT(new NBTTagCompound());
 	}
 	
 	@Override

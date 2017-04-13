@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 import oortcloud.hungryanimals.entities.capability.ICapabilityHungryAnimal;
 import oortcloud.hungryanimals.entities.capability.ICapabilityTamableAnimal;
 import oortcloud.hungryanimals.entities.capability.ProviderHungryAnimal;
+import oortcloud.hungryanimals.entities.capability.ProviderTamableAnimal;
 import oortcloud.hungrymechanics.tileentities.TileEntityCrankAnimal;
 
 public class EntityAICrank extends EntityAIBase {
@@ -54,7 +55,7 @@ public class EntityAICrank extends EntityAIBase {
 			this.entity.getNavigator().setHeightRequirement(1.0F);
 			return false;
 		}
-		if (property.getHungry() > 0.5 && property.taming >= 1 && crankAnimal != null && crankAnimal.getLeashedAnimal() == entity) {
+		if (capHungry.getHunger()/capHungry.getMaxHunger() > 0.5 && capTaming.getTaming() >= 1 && crankAnimal != null && crankAnimal.getLeashedAnimal() == entity) {
 			if (this.entity.getNavigator().noPath()) {
 				if (!tryMove()) {
 					this.entity.getNavigator().setHeightRequirement(1.0F);

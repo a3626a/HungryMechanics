@@ -72,7 +72,12 @@ public class TileEntityMillstone extends TileEntityPowerTransporter implements I
 			}
 		}
 	}
-
+	
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		return writeToNBT(new NBTTagCompound());
+	}
+	
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);

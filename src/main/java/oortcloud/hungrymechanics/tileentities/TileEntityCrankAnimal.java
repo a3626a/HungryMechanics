@@ -207,6 +207,11 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 	}
 
 	@Override
+	public NBTTagCompound getUpdateTag() {
+		return writeToNBT(new NBTTagCompound());
+	}
+	
+	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setLong("primaryPos", primaryPos.toLong());
