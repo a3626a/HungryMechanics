@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,14 +12,21 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import oortcloud.hungrymechanics.configuration.util.ValueProbabilityItemStack;
 import oortcloud.hungrymechanics.energy.PowerNetwork;
 import oortcloud.hungrymechanics.recipes.RecipeThresher;
 
-public class TileEntityThresher extends TileEntityPowerTransporter implements IInventory, ISidedInventory {
+public class TileEntityThresher extends TileEntityPowerTransporter implements ISidedInventory {
 
+	@CapabilityInject(IItemHandler.class)
+	static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = null;
+	
 	private ItemStack[] inventory = new ItemStack[getSizeInventory()];
 
 	private double powerUsage = 0.5;
@@ -33,12 +39,30 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements II
 
 	private static double powerCapacity = PowerNetwork.powerUnit * 3;
 
+	private IItemHandler handler = new SidedInvWrapper(this, EnumFacing.UP);
+	
 	public TileEntityThresher() {
 		super();
 		super.powerCapacity = TileEntityThresher.powerCapacity;
 		leftAttempt = 0;
 	}
 
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+		if (capability == ITEM_HANDLER_CAPABILITY)
+			return true;
+		return super.hasCapability(capability, facing);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		if (capability == ITEM_HANDLER_CAPABILITY) {
+			return (T)handler;
+		}
+		return super.getCapability(capability, facing);
+	}
+	
 	@Override
 	public void update() {
 		super.update();

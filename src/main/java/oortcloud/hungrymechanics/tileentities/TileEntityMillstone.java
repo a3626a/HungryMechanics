@@ -1,7 +1,6 @@
 package oortcloud.hungrymechanics.tileentities;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,18 +9,28 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerFluidMap;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import oortcloud.hungrymechanics.fluids.ModFluids;
 import oortcloud.hungrymechanics.recipes.RecipeMillstone;
 
-public class TileEntityMillstone extends TileEntityPowerTransporter implements IInventory, IFluidHandler, ISidedInventory {
+public class TileEntityMillstone extends TileEntityPowerTransporter implements ISidedInventory {
 
+	@CapabilityInject(IItemHandler.class)
+	static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = null;
+	
+	@CapabilityInject(IFluidHandler.class)
+	static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY = null;
+	
 	private ItemStack[] inventory = new ItemStack[getSizeInventory()];
 
 	private int grindTime;
@@ -31,23 +40,42 @@ public class TileEntityMillstone extends TileEntityPowerTransporter implements I
 
 	private boolean needSync = true;
 
-	private FluidTank fluidTank;
-
 	private static int fluidCapacity = 1000;
 
+	private IItemHandler itemHandler = new SidedInvWrapper(this, EnumFacing.UP);
+	private FluidTank fluidHandler = new FluidTank(fluidCapacity);
+	private IFluidHandler fluidExpose = new FluidHandlerFluidMap().addHandler(ModFluids.seedoil, fluidHandler);
+	
 	public TileEntityMillstone() {
-		fluidTank = new FluidTank(fluidCapacity);
 	}
 
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+		if (capability == ITEM_HANDLER_CAPABILITY)
+			return true;
+		if (capability == FLUID_HANDLER_CAPABILITY)
+			return true;
+		return super.hasCapability(capability, facing);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		if (capability == ITEM_HANDLER_CAPABILITY) {
+			return (T)itemHandler;
+		}
+		if (capability == FLUID_HANDLER_CAPABILITY)
+			return (T)fluidExpose;
+		return super.getCapability(capability, facing);
+	}
+	
 	@Override
 	public void update() {
 		super.update();
 
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
-
 			if (needSync) {
 				getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 3);
-				markDirty();
 				needSync = false;
 			}
 
@@ -64,7 +92,7 @@ public class TileEntityMillstone extends TileEntityPowerTransporter implements I
 							this.grindTime = 0;
 
 							decrStackSize(0, 1);
-							fluidTank.fill(new FluidStack(ModFluids.seedoil, amount), true);
+							fluidHandler.fill(new FluidStack(ModFluids.seedoil, amount), true);
 						}
 					}
 				}
@@ -105,7 +133,7 @@ public class TileEntityMillstone extends TileEntityPowerTransporter implements I
 	}
 	
 	private void writeSyncableDataToNBT(NBTTagCompound compound) {
-		fluidTank.writeToNBT(compound);
+		fluidHandler.writeToNBT(compound);
 		for (int i = 0; i < getSizeInventory(); i++) {
 			NBTTagCompound tag = new NBTTagCompound();
 			ItemStack item = getStackInSlot(i);
@@ -117,7 +145,7 @@ public class TileEntityMillstone extends TileEntityPowerTransporter implements I
 	}
 
 	private void readSyncableDataFromNBT(NBTTagCompound compound) {
-		fluidTank.readFromNBT(compound);
+		fluidHandler.readFromNBT(compound);
 		for (int i = 0; i < getSizeInventory(); i++) {
 			if (compound.hasKey("items" + i)) {
 				NBTTagCompound tag = (NBTTagCompound) compound.getTag("items" + i);
@@ -129,7 +157,11 @@ public class TileEntityMillstone extends TileEntityPowerTransporter implements I
 	}
 
 	public double getHeight() {
-		return fluidTank.getFluidAmount() / (double) fluidTank.getCapacity();
+		IFluidTankProperties property = fluidHandler.getTankProperties()[0];
+		FluidStack fluidStack = property.getContents();
+		if (fluidStack == null)
+			return 0;
+		return (double)fluidStack.amount / property.getCapacity();
 	}
 
 	@Override
@@ -255,47 +287,6 @@ public class TileEntityMillstone extends TileEntityPowerTransporter implements I
 		for (int i = 0; i < this.inventory.length; ++i) {
 			this.inventory[i] = null;
 		}
-	}
-
-	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-		if (resource.getFluid() == ModFluids.seedoil)
-			return fluidTank.fill(resource, doFill);
-		else 
-			return 0;
-	}
-
-	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
-		if (resource.getFluid() == ModFluids.seedoil)
-			return fluidTank.drain(resource.amount, doDrain);
-		else {
-			return null;
-		}
-	}
-
-	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-		return fluidTank.drain(maxDrain, doDrain);
-	}
-
-	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid) {
-		return fluidTank.getFluidAmount() < fluidTank.getCapacity() && ModFluids.seedoil == fluid;
-	}
-
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid) {
-		return fluidTank.getFluidAmount() > 0 && ModFluids.seedoil == fluid;
-	}
-
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from) {
-		return new FluidTankInfo[] { fluidTank.getInfo() };
-	}
-
-	public FluidTank getFluidTank() {
-		return fluidTank;
 	}
 
 	@Override

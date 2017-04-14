@@ -8,6 +8,8 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -96,4 +98,17 @@ public class BlockMillstone extends BlockContainer {
 	public int getMetaFromState(IBlockState state) {
 		return ((EnumFacing) state.getValue(FACING)).getHorizontalIndex();
 	}
+	
+	@Override
+	public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
+    {
+        TileEntity tileentity = worldIn.getTileEntity(pos);
+
+        if (tileentity instanceof IInventory)
+        {
+            InventoryHelper.dropInventoryItems(worldIn, pos, (IInventory)tileentity);
+        }
+
+        super.breakBlock(worldIn, pos, state);
+    }
 }

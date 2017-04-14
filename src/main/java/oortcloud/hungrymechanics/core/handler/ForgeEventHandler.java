@@ -59,5 +59,5 @@ public class ForgeEventHandler {
 	public void onAttributeRegisterEvent(AttributeRegisterEvent event) {
 		ConfigurationHandler.attributes.sync(event.getEntityClass(), event);
 	}
-
+	
 }

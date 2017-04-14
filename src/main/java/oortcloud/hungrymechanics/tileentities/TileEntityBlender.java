@@ -1,7 +1,6 @@
 package oortcloud.hungrymechanics.tileentities;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,12 +9,19 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import oortcloud.hungrymechanics.energy.PowerNetwork;
 import oortcloud.hungrymechanics.recipes.RecipeBlender;
 
-public class TileEntityBlender extends TileEntityPowerTransporter implements IInventory, ISidedInventory {
+public class TileEntityBlender extends TileEntityPowerTransporter implements ISidedInventory {
+
+	@CapabilityInject(IItemHandler.class)
+	static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = null;
 
 	private ItemStack[] inventory = new ItemStack[getSizeInventory()];
 
@@ -33,12 +39,48 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements IIn
 	private int totalBlendTime = 5 * 20;
 
 	private static double powerCapacity = PowerNetwork.powerUnit * 5;
-
+	
+	private IItemHandler handlerTop = new SidedInvWrapper(this, EnumFacing.UP);
+	private IItemHandler handlerBottom = new SidedInvWrapper(this, EnumFacing.DOWN);
+	private IItemHandler handlerNorth = new SidedInvWrapper(this, EnumFacing.NORTH);
+	private IItemHandler handlerSouth = new SidedInvWrapper(this, EnumFacing.SOUTH);
+	private IItemHandler handlerEast = new SidedInvWrapper(this, EnumFacing.EAST);
+	private IItemHandler handlerWest = new SidedInvWrapper(this, EnumFacing.WEST);
+	
 	public TileEntityBlender() {
 		super();
-		super.powerCapacity=TileEntityBlender.powerCapacity;
+		super.powerCapacity = TileEntityBlender.powerCapacity;
 	}
-	
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+		if (capability == ITEM_HANDLER_CAPABILITY)
+			return true;
+		return super.hasCapability(capability, facing);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		if (facing != null && capability == ITEM_HANDLER_CAPABILITY) {
+			switch (facing) {
+			case UP :
+				return (T)handlerTop;
+			case DOWN:
+				return (T)handlerBottom;
+			case EAST:
+				return (T)handlerEast;
+			case NORTH:
+				return (T)handlerNorth;
+			case SOUTH:
+				return (T)handlerSouth;
+			case WEST:
+				return (T)handlerWest;
+			}
+		}
+		return super.getCapability(capability, facing);
+	}
+
 	@Override
 	public void update() {
 		super.update();
@@ -51,9 +93,9 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements IIn
 			if (needSync) {
 				getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 3);
 				markDirty();
-				needSync=false;
+				needSync = false;
 			}
-			
+
 			if (isInventoryChanged) {
 				isInventoryChanged = false;
 
@@ -180,7 +222,7 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements IIn
 	public ItemStack decrStackSize(int index, int count) {
 		if (this.inventory[index] != null) {
 			needSync = true;
-			
+
 			ItemStack itemstack;
 
 			if (this.inventory[index].stackSize <= count) {
@@ -204,12 +246,12 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements IIn
 			return null;
 		}
 	}
-	
+
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
 		isInventoryChanged = true;
 		needSync = true;
-		
+
 		this.inventory[index] = stack;
 
 		if (stack != null && stack.stackSize > this.getInventoryStackLimit()) {
@@ -223,14 +265,14 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements IIn
 	public ItemStack removeStackFromSlot(int index) {
 		isInventoryChanged = true;
 		needSync = true;
-		
+
 		ItemStack ret = this.inventory[index];
 		this.inventory[index] = null;
 
 		this.markDirty();
 		return ret;
 	}
-	
+
 	@Override
 	public int getInventoryStackLimit() {
 		return 64;
@@ -238,8 +280,8 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements IIn
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {
-		return this.worldObj.getTileEntity(this.pos) != this ? false : player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D,
-				(double) this.pos.getZ() + 0.5D) <= 64.0D;
+		return this.worldObj.getTileEntity(this.pos) != this ? false
+				: player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
 	}
 
 	@Override
@@ -273,7 +315,7 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements IIn
 	public void clear() {
 		isInventoryChanged = true;
 		needSync = true;
-		
+
 		for (int i = 0; i < this.inventory.length; ++i) {
 			this.inventory[i] = null;
 		}
@@ -283,7 +325,7 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements IIn
 	public NBTTagCompound getUpdateTag() {
 		return writeToNBT(new NBTTagCompound());
 	}
-	
+
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
@@ -303,7 +345,7 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements IIn
 		writeSyncableDataToNBT(compound);
 		return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), compound);
 	}
-	
+
 	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
 		NBTTagCompound compound = pkt.getNbtCompound();
@@ -334,11 +376,11 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements IIn
 
 	@Override
 	public int[] getSlotsForFace(EnumFacing side) {
-		if (side==EnumFacing.UP)
-			return new int [] {0,1};
-		if (side==EnumFacing.DOWN)
-			return new int [] {3,2};
-		return new int [] {side.getHorizontalIndex()};
+		if (side == EnumFacing.UP)
+			return new int[] { 0, 1 };
+		if (side == EnumFacing.DOWN)
+			return new int[] { 3, 2 };
+		return new int[] { side.getHorizontalIndex() };
 	}
 
 	@Override
@@ -350,10 +392,10 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements IIn
 	public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
 		return true;
 	}
-	
+
 	@Override
 	public BlockPos[] getConnectedBlocks() {
-		return new BlockPos[] {pos.up()};
+		return new BlockPos[] { pos.up() };
 	}
-	
+
 }
