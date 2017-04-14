@@ -12,6 +12,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -19,7 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import oortcloud.hungryanimals.core.lib.References;
-import oortcloud.hungrymechanics.HungryMechanics;
 import oortcloud.hungrymechanics.core.lib.Strings;
 import oortcloud.hungrymechanics.items.ModItems;
 import oortcloud.hungrymechanics.tileentities.TileEntityCrankAnimal;
@@ -38,6 +39,16 @@ public class BlockCrankAnimal extends BlockContainer {
 		// TODO Not register block item
 	}
 
+	@Override
+	public BlockRenderLayer getBlockLayer() {
+		return BlockRenderLayer.CUTOUT;
+	}
+	
+	@Override
+	public EnumBlockRenderType getRenderType(IBlockState state) {
+		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+	}
+	
 	@Override
 	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
 		return null;
@@ -102,7 +113,7 @@ public class BlockCrankAnimal extends BlockContainer {
 	}
 
 	@Override
-	public boolean isFullBlock(IBlockState state) {
+	public boolean isFullCube(IBlockState state) {
 		return false;
 	}
 
