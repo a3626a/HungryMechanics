@@ -1,5 +1,6 @@
 package oortcloud.hungrymechanics.ai;
 
+import net.minecraft.client.renderer.entity.RenderEntity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.pathfinding.Path;
@@ -55,19 +56,16 @@ public class EntityAICrank extends EntityAIBase {
 			return false;
 		}
 		if (capHungry.getHunger()/capHungry.getMaxHunger() > 0.5 && capTaming.getTaming() >= 1 && crankAnimal != null && crankAnimal.getLeashedAnimal() == entity) {
-			if (this.entity.getNavigator().noPath()) {
-				if (!tryMove()) {
-					return false;
-				} else {
-					return true;
-				}
-			}
+			return true;
 		}
 		return false;
 	}
 
 	@Override
 	public void startExecuting() {
+		if (this.entity.getNavigator().noPath()) {
+			tryMove();
+		}
 	}
 
 	private PathPoint findPathPoint(int x, int y, int z) {
