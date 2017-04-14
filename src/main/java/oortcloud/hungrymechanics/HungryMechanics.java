@@ -73,14 +73,6 @@ public class HungryMechanics {
 		simpleChannel = NetworkRegistry.INSTANCE.newSimpleChannel(References.MODNAME);
 		simpleChannel.registerMessage(HandlerTileEntityClient.class, PacketTileEntityClient.class, 3, Side.CLIENT);
 		simpleChannel.registerMessage(HandlerPlayerServer.class, PacketPlayerServer.class, 4, Side.SERVER);
-		// default_chicken.hunger_food.put(new HashItemType(ModItems.poppyseed), 20.0);
-		// default_chicken.hunger_food.put(new HashItemType(ModItems.mixedFeed),80.0);
-		// default_cow.hunger_food.put(new HashItemType(ModItems.straw), 10.0);
-		// default_cow.hunger_food.put(new HashItemType(ModItems.mixedFeed), 80.0);
-		// default_pig.hunger_food.put(new HashItemType(ModItems.mixedFeed), 80.0);
-		// default_sheep.hunger_food.put(new HashItemType(ModItems.straw), 10.0);
-		// default_sheep.hunger_food.put(new HashItemType(ModItems.mixedFeed), 80.0);
-		// default_rabbit.hunger_food.put(new HashItemType(ModItems.mixedFeed), 80.0);
 	}
 
 	@Mod.EventHandler

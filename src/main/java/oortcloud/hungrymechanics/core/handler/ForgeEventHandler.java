@@ -10,8 +10,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import oortcloud.hungryanimals.entities.ai.AIContainerRegisterEvent;
+import oortcloud.hungryanimals.entities.attributes.AttributeRegisterEvent;
+import oortcloud.hungryanimals.entities.food_preferences.HungryAnimalRegisterEvent.FoodPreferenceItemStackRegisterEvent;
 import oortcloud.hungrymechanics.HungryMechanics;
 import oortcloud.hungrymechanics.ai.EntityAICrank;
+import oortcloud.hungrymechanics.configuration.ConfigurationHandler;
 import oortcloud.hungrymechanics.core.network.PacketPlayerServer;
 import oortcloud.hungrymechanics.core.network.SyncIndex;
 
@@ -20,7 +23,7 @@ public class ForgeEventHandler {
 	@SubscribeEvent
 	public void onPlayerPlacePoppy(RightClickBlock event) {
 		EntityPlayer player = event.getEntityPlayer();
-		
+
 		ItemStack item = event.getItemStack();
 		BlockPos pos = event.getPos().offset(event.getFace());
 
@@ -39,12 +42,22 @@ public class ForgeEventHandler {
 			event.setCanceled(true);
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void onAIContainerRegisterEvent(AIContainerRegisterEvent event) {
 		if (event.getEntityClass() == EntityCow.class) {
-			event.getContainer().putFirt((entity)->new EntityAICrank(entity));
+			event.getContainer().putFirst((entity) -> new EntityAICrank(entity));
 		}
+	}
+
+	@SubscribeEvent
+	public void onFoodPreferenceItemStackRegisterEvent(FoodPreferenceItemStackRegisterEvent event) {
+		ConfigurationHandler.foodPreferencesItem.sync(event.getEntityClass(), event);
+	}
+
+	@SubscribeEvent
+	public void onAttributeRegisterEvent(AttributeRegisterEvent event) {
+		ConfigurationHandler.attributes.sync(event.getEntityClass(), event);
 	}
 
 }

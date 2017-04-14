@@ -13,12 +13,11 @@ import com.google.gson.JsonSyntaxException;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.passive.EntityAnimal;
 import oortcloud.hungryanimals.HungryAnimals;
-import oortcloud.hungryanimals.entities.handler.HungryAnimalManager;
 import oortcloud.hungrymechanics.core.lib.References;
 
-public class ConfigurationHandlerJSON {
+public class ConfigurationHandlerJSON<V> {
 
-	private BiConsumer<File, Class<? extends EntityAnimal>> read;
+	private BiConsumer<File, Class<? extends EntityAnimal>, V> read;
 	private File directory;
 	private String descriptor;
 
@@ -28,13 +27,13 @@ public class ConfigurationHandlerJSON {
 	 * @param descriptor : relative path, never start with /
 	 * @param read
 	 */
-	public ConfigurationHandlerJSON(File basefolder, String descriptor, BiConsumer<File, Class<? extends EntityAnimal>> read) {
+	public ConfigurationHandlerJSON(File basefolder, String descriptor, BiConsumer<File, Class<? extends EntityAnimal>, V> read) {
 		this.descriptor = descriptor;
 		this.directory = new File(basefolder, descriptor);
 		this.read = read;
 	}
 
-	public void sync() {
+	public void sync(Class<? extends EntityAnimal> animal, V event) {
 		if (!directory.exists()) {
 			try {
 				Files.createDirectories(directory.toPath());
@@ -44,19 +43,16 @@ public class ConfigurationHandlerJSON {
 			}
 		}
 
-		for (Class<? extends EntityAnimal> i : HungryAnimalManager.getInstance().getRegisteredAnimal()) {
-			File iFile = new File(directory, EntityList.CLASS_TO_NAME.get(i).toLowerCase() + ".json");
+		File iFile = new File(directory, EntityList.CLASS_TO_NAME.get(animal).toLowerCase() + ".json");
 
-			if (!iFile.exists()) {
-				createDefaultConfigurationFile(iFile);
-			}
+		if (!iFile.exists()) {
+			createDefaultConfigurationFile(iFile);
+		}
 
-			try {
-				this.read.read(iFile, i);
-			} catch (JsonSyntaxException e) {
-				HungryAnimals.logger.error("Couldn\'t load {} {} of {}\n{}", new Object[] { this.descriptor, iFile, i, e });
-			}
-
+		try {
+			this.read.read(iFile, animal, event);
+		} catch (JsonSyntaxException e) {
+			HungryAnimals.logger.error("Couldn\'t load {} {} of {}\n{}", new Object[] { this.descriptor, iFile, animal, e });
 		}
 	}
 
@@ -76,16 +72,15 @@ public class ConfigurationHandlerJSON {
 		} catch (IOException e) {
 			HungryAnimals.logger.error("Couldn\'t load {} {} from {}\n{}", new Object[] { this.descriptor, file, url, e });
 		}
-		
+
 	}
 
 	public String getDescriptor() {
 		return this.descriptor;
 	}
 
-	@FunctionalInterface
-	public static interface BiConsumer<T, U> {
-		public void read(T file, U entity);
+	public interface BiConsumer<T, U, V> {
+		public void read(T file, U entity, V event);
 	}
 
 }
