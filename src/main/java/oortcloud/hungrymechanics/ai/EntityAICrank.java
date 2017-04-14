@@ -1,6 +1,5 @@
 package oortcloud.hungrymechanics.ai;
 
-import net.minecraft.client.renderer.entity.RenderEntity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.pathfinding.Path;
@@ -15,8 +14,6 @@ import oortcloud.hungrymechanics.tileentities.TileEntityCrankAnimal;
 
 public class EntityAICrank extends EntityAIBase {
 
-	// TODO All of this class
-	
 	public TileEntityCrankAnimal crankAnimal;
 	private ICapabilityHungryAnimal capHungry;
 	private ICapabilityTamableAnimal capTaming;
@@ -24,10 +21,7 @@ public class EntityAICrank extends EntityAIBase {
 	private World world;
 
 	private double speed = 1.5D;
-	private double lastAngleDiff;
-	private long timer = 0;
-	private static int period = 100;
-	
+
 	public EntityAICrank(EntityAnimal entity) {
 		this.entity = entity;
 		this.capHungry = entity.getCapability(ProviderHungryAnimal.CAP, null);
@@ -40,13 +34,10 @@ public class EntityAICrank extends EntityAIBase {
 	public boolean shouldExecute() {
 		return continueExecuting();
 		/*
-		if (world.getWorldTime()-timer > period) {
-			timer = world.getWorldTime();
-			return continueExecuting();
-		} else {
-			return false;
-		}
-		*/
+		 * if (world.getWorldTime()-timer > period) { timer =
+		 * world.getWorldTime(); return continueExecuting(); } else { return
+		 * false; }
+		 */
 	}
 
 	@Override
@@ -55,7 +46,8 @@ public class EntityAICrank extends EntityAIBase {
 			crankAnimal = null;
 			return false;
 		}
-		if (capHungry.getHunger()/capHungry.getMaxHunger() > 0.5 && capTaming.getTaming() >= 1 && crankAnimal != null && crankAnimal.getLeashedAnimal() == entity) {
+		if (capHungry.getHunger() / capHungry.getMaxHunger() > 0.5 && capTaming.getTaming() >= 1 && crankAnimal != null
+				&& crankAnimal.getLeashedAnimal() == entity) {
 			return true;
 		}
 		return false;
@@ -63,9 +55,7 @@ public class EntityAICrank extends EntityAIBase {
 
 	@Override
 	public void startExecuting() {
-		if (this.entity.getNavigator().noPath()) {
-			tryMove();
-		}
+		tryMove();
 	}
 
 	private PathPoint findPathPoint(int x, int y, int z) {
@@ -103,7 +93,7 @@ public class EntityAICrank extends EntityAIBase {
 	}
 
 	private Path getNextPath() {
-		int num = 4;
+		int num = 1;
 		PathPoint temp = new PathPoint(entity.getPosition().getX(), entity.getPosition().getY(), entity.getPosition().getZ());
 		PathPoint[] path = new PathPoint[num];
 		for (int i = 0; i < num; i++) {
@@ -147,32 +137,36 @@ public class EntityAICrank extends EntityAIBase {
 		} else {
 			return resetPosition();
 		}
-		
+
 	}
 
 	@Override
 	public void updateTask() {
 		updateSpeed();
+		if (entity.getNavigator().noPath())
+			tryMove();
 	}
 
 	public double getAngleDifference() {
 		double angleEntity = Math.toDegrees(Math.atan2(entity.posZ - crankAnimal.getPos().getZ() - 0.5, entity.posX - crankAnimal.getPos().getX() - 0.5)) - 90;
 		angleEntity = (angleEntity + 360) % 360;
-		double angleTile = crankAnimal.getPowerNetwork().getAngle(0);
+		double angleTile = crankAnimal.getPowerNetwork().getAngle(0.001F);
 		double angleDiff = angleEntity - angleTile;
 		angleDiff = (angleDiff + 360) % 360;
-		if (angleDiff > 270)
-			angleDiff = 0;
-		if (angleDiff > 180)
-			angleDiff = 180;
 		return angleDiff;
 	}
 
 	private void updateSpeed() {
-		double angleDiff = getAngleDifference();
-		speed += -0.005 * (angleDiff - 90) / 90.0 - 0.005 * (angleDiff - lastAngleDiff);
+		double angleDiff = getAngleDifference()-90;
+		if (angleDiff < -180) {
+			angleDiff += 360;
+		}
+		
+		speed += -0.005 * angleDiff  / 90.0;
 		if (speed < 1)
 			speed = 1;
-		lastAngleDiff = angleDiff;
+		if (speed > 4)
+			speed = 4;
+		entity.getNavigator().setSpeed(speed);
 	}
 }
