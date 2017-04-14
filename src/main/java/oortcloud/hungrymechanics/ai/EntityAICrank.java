@@ -2,7 +2,7 @@ package oortcloud.hungrymechanics.ai;
 
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.pathfinding.PathEntity;
+import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -52,26 +52,22 @@ public class EntityAICrank extends EntityAIBase {
 	public boolean continueExecuting() {
 		if (crankAnimal != null && crankAnimal.isInvalid()) {
 			crankAnimal = null;
-			this.entity.getNavigator().setHeightRequirement(1.0F);
 			return false;
 		}
 		if (capHungry.getHunger()/capHungry.getMaxHunger() > 0.5 && capTaming.getTaming() >= 1 && crankAnimal != null && crankAnimal.getLeashedAnimal() == entity) {
 			if (this.entity.getNavigator().noPath()) {
 				if (!tryMove()) {
-					this.entity.getNavigator().setHeightRequirement(1.0F);
 					return false;
 				} else {
 					return true;
 				}
 			}
 		}
-		this.entity.getNavigator().setHeightRequirement(1.0F);
 		return false;
 	}
 
 	@Override
 	public void startExecuting() {
-		this.entity.getNavigator().setHeightRequirement(0.1F);
 	}
 
 	private PathPoint findPathPoint(int x, int y, int z) {
@@ -108,7 +104,7 @@ public class EntityAICrank extends EntityAIBase {
 		return null;
 	}
 
-	private PathEntity getNextPath() {
+	private Path getNextPath() {
 		int num = 4;
 		PathPoint temp = new PathPoint(entity.getPosition().getX(), entity.getPosition().getY(), entity.getPosition().getZ());
 		PathPoint[] path = new PathPoint[num];
@@ -119,7 +115,7 @@ public class EntityAICrank extends EntityAIBase {
 			}
 			temp = path[i];
 		}
-		return new PathEntity(path);
+		return new Path(path);
 	}
 
 	private boolean resetPosition() {
@@ -147,7 +143,7 @@ public class EntityAICrank extends EntityAIBase {
 	}
 
 	private boolean tryMove() {
-		PathEntity path = getNextPath();
+		Path path = getNextPath();
 		if (path != null) {
 			return entity.getNavigator().setPath(path, speed) ? true : resetPosition();
 		} else {
