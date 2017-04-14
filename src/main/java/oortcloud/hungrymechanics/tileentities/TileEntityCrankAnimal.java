@@ -28,8 +28,8 @@ import oortcloud.hungrymechanics.entities.attributes.ModAttributes;
 
 /**
  * UUID and ID is different
- * UUID is consistent for client and server
- * ID does not.
+ * UUID is consistent every run, but client's UUID and server'UUID is different
+ * ID is consistent between server and client but not evern run.
  * @author LeeChangHwan
  *
  */
@@ -61,13 +61,10 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 		int k = pos.getZ();
 		List<EntityAnimal> list = worldIn.getEntitiesWithinAABB(EntityAnimal.class,
 				new AxisAlignedBB((double) i - d0, (double) j - d0, (double) k - d0, (double) i + d0, (double) j + d0, (double) k + d0));
-
 		for (EntityAnimal animal : list) {
 			if (animal.getLeashed() && animal.getLeashedToEntity() == player) {
-
 				if (!HungryAnimalManager.getInstance().isRegistered(animal.getClass()))
 					continue;
-
 				ICapabilityTamableAnimal capTaming = animal.getCapability(ProviderTamableAnimal.CAP, null);
 
 				IAttributeInstance crank_production = animal.getAttributeMap().getAttributeInstance(ModAttributes.crank_production);
@@ -77,6 +74,7 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 						if (entry.action instanceof EntityAICrank)
 							((EntityAICrank) entry.action).crankAnimal = this;
 					}
+					getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 3);
 					return true;
 				}
 			}
@@ -181,13 +179,32 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 	}
 
 	@Override
+	public NBTTagCompound getUpdateTag() {
+		return writeToNBT(new NBTTagCompound());
+	}
+	
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		NBTTagCompound compound = new NBTTagCompound();
+		writeSyncableDataToNBT(compound);
+		return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), compound);
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+		NBTTagCompound compound = pkt.getNbtCompound();
+		readSyncableDataFromNBT(compound);
+	}
+
+	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
 
 		compound.setLong("primaryPos", primaryPos.toLong());
 		if (leashedAnimal != null)
 			compound.setString("leashedAnimalUUID", leashedAnimal.getUniqueID().toString());
-
+		writeSyncableDataToNBT(compound);
+		
 		return compound;
 	}
 
@@ -198,30 +215,21 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 		primaryPos = BlockPos.fromLong(compound.getLong("primaryPos"));
 		if (compound.hasKey("leashedAnimalUUID"))
 			leashedAnimalUUID = UUID.fromString(compound.getString("leashedAnimalUUID"));
+		readSyncableDataFromNBT(compound);
 	}
-
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		return writeToNBT(new NBTTagCompound());
-	}
-
-	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		NBTTagCompound compound = new NBTTagCompound();
+	
+	private void writeSyncableDataToNBT(NBTTagCompound compound) {
 		compound.setLong("primaryPos", primaryPos.toLong());
 		if (leashedAnimal != null)
 			compound.setInteger("leashedAnimalID", leashedAnimal.getEntityId());
-		return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), compound);
 	}
 
-	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-		NBTTagCompound compound = pkt.getNbtCompound();
+	private void readSyncableDataFromNBT(NBTTagCompound compound) {
 		primaryPos = BlockPos.fromLong(compound.getLong("primaryPos"));
 		if (compound.hasKey("leashedAnimalID"))
 			leashedAnimalID = compound.getInteger("leashedAnimalID");
 	}
-
+	
 	@Override
 	public BlockPos[] getConnectedBlocks() {
 		return new BlockPos[] { pos.up(), pos.down() };

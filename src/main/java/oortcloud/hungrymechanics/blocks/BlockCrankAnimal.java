@@ -19,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import oortcloud.hungryanimals.core.lib.References;
+import oortcloud.hungrymechanics.HungryMechanics;
 import oortcloud.hungrymechanics.core.lib.Strings;
 import oortcloud.hungrymechanics.items.ModItems;
 import oortcloud.hungrymechanics.tileentities.TileEntityCrankAnimal;
@@ -29,12 +30,12 @@ public class BlockCrankAnimal extends BlockContainer {
 		super(Material.WOOD);
 		setHarvestLevel("axe", 0);
 		setHardness(2.0F);
-		
+
 		setRegistryName(Strings.blockCrankAnimalName);
-		setUnlocalizedName(References.MODID+"."+Strings.blockCrankAnimalName);
+		setUnlocalizedName(References.MODID + "." + Strings.blockCrankAnimalName);
 		setCreativeTab(null);
 		GameRegistry.register(this);
-		//TODO Not register block item
+		// TODO Not register block item
 	}
 
 	@Override
@@ -43,22 +44,26 @@ public class BlockCrankAnimal extends BlockContainer {
 	}
 
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-		TileEntityCrankAnimal crankAnimal = (TileEntityCrankAnimal) worldIn.getTileEntity(pos);
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side,
+			float hitX, float hitY, float hitZ) {
+		if (!worldIn.isRemote) {
+			TileEntityCrankAnimal crankAnimal = (TileEntityCrankAnimal) worldIn.getTileEntity(pos);
 
-		if (crankAnimal != null) {
-			TileEntityCrankAnimal crankAnimalPrimary = (TileEntityCrankAnimal) worldIn.getTileEntity(crankAnimal.getPrimaryPos());
-			if (crankAnimalPrimary != null) {
-				if (crankAnimalPrimary.setLeashed(playerIn, worldIn)) {
-					// release leash from the player
-					double d0 = 7.0D;
-					List<EntityLiving> list = worldIn.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(pos.getX() - d0, pos.getY() - d0, pos.getZ() - d0, pos.getX() + d0, pos.getY() + d0, pos.getZ() + d0));
-					for (EntityLiving entityliving : list) {
-						if (entityliving.getLeashed() && entityliving.getLeashedToEntity() == playerIn) {
-							entityliving.clearLeashed(true, false);
+			if (crankAnimal != null) {
+				TileEntityCrankAnimal crankAnimalPrimary = (TileEntityCrankAnimal) worldIn.getTileEntity(crankAnimal.getPrimaryPos());
+				if (crankAnimalPrimary != null) {
+					if (crankAnimalPrimary.setLeashed(playerIn, worldIn)) {
+						// release leash from the player
+						double d0 = 7.0D;
+						List<EntityLiving> list = worldIn.getEntitiesWithinAABB(EntityLiving.class,
+								new AxisAlignedBB(pos.getX() - d0, pos.getY() - d0, pos.getZ() - d0, pos.getX() + d0, pos.getY() + d0, pos.getZ() + d0));
+						for (EntityLiving entityliving : list) {
+							if (entityliving.getLeashed() && entityliving.getLeashedToEntity() == playerIn) {
+								entityliving.clearLeashed(true, false);
+							}
 						}
+						return true;
 					}
-					return true;
 				}
 			}
 		}
@@ -100,7 +105,7 @@ public class BlockCrankAnimal extends BlockContainer {
 	public boolean isFullBlock(IBlockState state) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
