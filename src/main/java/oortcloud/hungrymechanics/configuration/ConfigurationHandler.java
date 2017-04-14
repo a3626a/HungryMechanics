@@ -13,7 +13,6 @@ import com.google.gson.JsonSyntaxException;
 
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import oortcloud.hungryanimals.configuration.ConfigurationHandlerJSON;
 import oortcloud.hungryanimals.entities.attributes.AttributeEntry;
 import oortcloud.hungryanimals.entities.attributes.AttributeManager;
 import oortcloud.hungryanimals.entities.attributes.IAttributeEntry;
@@ -44,7 +43,9 @@ public class ConfigurationHandler {
 				}
 				IAttribute attribute = ModAttributes.NAME_MAP.get(i.getKey());
 				JsonObject obj = i.getValue().getAsJsonObject();
-				list.add(new AttributeEntry(attribute,  obj.getAsJsonPrimitive("register").getAsBoolean(), obj.getAsJsonPrimitive("value").getAsDouble()));
+				list.
+				add(new AttributeEntry(attribute,  obj.
+						getAsJsonPrimitive("register").getAsBoolean(), obj.getAsJsonPrimitive("value").getAsDouble()));
 			}
 			
 		});

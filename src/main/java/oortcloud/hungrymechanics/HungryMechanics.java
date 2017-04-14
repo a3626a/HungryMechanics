@@ -62,14 +62,14 @@ public class HungryMechanics {
 		proxy.registerTileEntityRendering();
 		proxy.registerTileEntities();
 		proxy.registerItemRendering();
-		ConfigurationHandler.sync();
+		proxy.registerEventHandler();
 	}
 
 	@Mod.EventHandler
 	public static void Init(FMLInitializationEvent event) {
 		CraftingHandler.init();
-		proxy.registerEventHandler();
-
+		ConfigurationHandler.sync();
+		
 		simpleChannel = NetworkRegistry.INSTANCE.newSimpleChannel(References.MODNAME);
 		simpleChannel.registerMessage(HandlerTileEntityClient.class, PacketTileEntityClient.class, 3, Side.CLIENT);
 		simpleChannel.registerMessage(HandlerPlayerServer.class, PacketPlayerServer.class, 4, Side.SERVER);
@@ -78,17 +78,9 @@ public class HungryMechanics {
 		// default_cow.hunger_food.put(new HashItemType(ModItems.straw), 10.0);
 		// default_cow.hunger_food.put(new HashItemType(ModItems.mixedFeed), 80.0);
 		// default_pig.hunger_food.put(new HashItemType(ModItems.mixedFeed), 80.0);
-		// default_chicken.crank_production = TileEntityCrankAnimal.powerProduction*(default_chicken.crank_food_consumption/default_cow.crank_food_consumption);
 		// default_sheep.hunger_food.put(new HashItemType(ModItems.straw), 10.0);
 		// default_sheep.hunger_food.put(new HashItemType(ModItems.mixedFeed), 80.0);
 		// default_rabbit.hunger_food.put(new HashItemType(ModItems.mixedFeed), 80.0);
-		// default_pig.crank_production = TileEntityCrankAnimal.powerProduction*(default_pig.crank_food_consumption/default_cow.crank_food_consumption);
-		// default_rabbit.crank_production = TileEntityCrankAnimal.powerProduction*(default_rabbit.crank_food_consumption/default_cow.crank_food_consumption);
-		// default_sheep.crank_production = TileEntityCrankAnimal.powerProduction*(default_sheep.crank_food_consumption/default_cow.crank_food_consumption);
-		// property_chicken.crank_food_consumption = property_chicken.hunger_bmr*2.0;
-		// property_pig.crank_food_consumption = property_pig.hunger_bmr * 2.0;
-		// property_rabbit.crank_food_consumption = property_rabbit.hunger_bmr * 2.0;
-		// property_sheep.crank_food_consumption = property_sheep.hunger_bmr * 2.0;
 	}
 
 	@Mod.EventHandler
