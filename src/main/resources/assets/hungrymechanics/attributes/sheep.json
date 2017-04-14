@@ -1,0 +1,4 @@
+{
+	"hungryanimals.crank_hunger" : { "value" : 0.008, "register" : true},
+	"hungryanimals.crank_production" : { "value" : 4, "register" : true}
+}
