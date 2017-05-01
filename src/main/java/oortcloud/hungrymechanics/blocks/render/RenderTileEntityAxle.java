@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import oortcloud.hungrymechanics.blocks.BlockAxle;
+import oortcloud.hungrymechanics.blocks.ModBlocks;
 import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.tileentities.TileEntityAxle;
 
@@ -28,6 +29,8 @@ public class RenderTileEntityAxle extends TileEntitySpecialRenderer<TileEntityAx
 	@Override
 	public void renderTileEntityAt(TileEntityAxle axle, double x, double y, double z, float partialTick, int p_180535_9_) {
 		IBlockState state = axle.getWorld().getBlockState(axle.getPos());
+		if (state.getBlock() != ModBlocks.axle)
+			return;
 		
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x + 0.5, y + 1.5, z + 0.5);

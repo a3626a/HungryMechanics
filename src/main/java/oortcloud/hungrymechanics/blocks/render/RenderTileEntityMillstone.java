@@ -2,6 +2,7 @@ package oortcloud.hungrymechanics.blocks.render;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -10,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import oortcloud.hungrymechanics.blocks.BlockMillstone;
+import oortcloud.hungrymechanics.blocks.ModBlocks;
 import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.tileentities.TileEntityMillstone;
 
@@ -24,7 +26,11 @@ public class RenderTileEntityMillstone extends TileEntitySpecialRenderer<TileEnt
 
 	@Override
 	public void renderTileEntityAt(TileEntityMillstone millstone, double x, double y, double z, float partialTick, int parInt) {
-		int rotation = ((EnumFacing) millstone.getWorld().getBlockState(millstone.getPos()).getValue(BlockMillstone.FACING)).getHorizontalIndex();
+		IBlockState state = millstone.getWorld().getBlockState(millstone.getPos());
+		if (state.getBlock() != ModBlocks.millStone)
+			return;
+		
+		int rotation = ((EnumFacing) state.getValue(BlockMillstone.FACING)).getHorizontalIndex();
 
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
