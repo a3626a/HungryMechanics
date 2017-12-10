@@ -3,10 +3,7 @@ package oortcloud.hungrymechanics.recipes;
 import java.util.HashMap;
 
 import net.minecraft.item.ItemStack;
-import oortcloud.hungrymechanics.HungryMechanics;
-import oortcloud.hungrymechanics.configuration.util.ConfigurationHelper;
-import oortcloud.hungrymechanics.configuration.util.HashItemType;
-import oortcloud.hungrymechanics.configuration.util.StringParser;
+import oortcloud.hungryanimals.entities.food_preferences.FoodPreferenceItemStack.HashItemType;
 
 public class RecipeMillstone {
 
@@ -28,19 +25,6 @@ public class RecipeMillstone {
 			return recipe.get(new HashItemType(item.getItem(), item.getItemDamage()));
 		} else {
 			return 0;
-		}
-	}
-
-	public static void readConfiguration(String i) {
-		String[] split = StringParser.splitByLevel(i.replaceAll(" ", ""), '=');
-		if (split.length == 2) {
-			HashItemType input = ConfigurationHelper.instance.getHashItem(split[0]);
-			if (input != null) {
-				RecipeMillstone.addRecipe(input, Integer.parseInt(split[1].substring(1, split[1].length() - 1)));
-			}
-		} else {
-			HungryMechanics.logger.warn("\"" + i + "\" is not added. Format error");
-			return;
 		}
 	}
 

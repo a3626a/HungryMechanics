@@ -16,6 +16,6 @@
     "requiredMods": [ "Forge", "hungryanimals"],
     "dependencies": ["hungryanimals"],
     "dependants": [],
-    "useDependencyInformation": true
+    "useDependencyInformation": false
   }]
 }

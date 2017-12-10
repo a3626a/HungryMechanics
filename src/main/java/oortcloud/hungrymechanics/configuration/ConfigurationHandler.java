@@ -3,6 +3,7 @@ package oortcloud.hungrymechanics.configuration;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import com.google.gson.Gson;
@@ -14,65 +15,136 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
 import net.minecraft.entity.ai.attributes.IAttribute;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.JsonUtils;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import oortcloud.hungryanimals.HungryAnimals;
 import oortcloud.hungryanimals.entities.attributes.AttributeEntry;
 import oortcloud.hungryanimals.entities.attributes.AttributeRegisterEvent;
 import oortcloud.hungryanimals.entities.food_preferences.FoodPreferenceItemStack.HashItemType;
 import oortcloud.hungryanimals.entities.food_preferences.HungryAnimalRegisterEvent.FoodPreferenceItemStackRegisterEvent;
 import oortcloud.hungrymechanics.HungryMechanics;
+import oortcloud.hungrymechanics.configuration.util.ValueProbabilityItemStack;
 import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.entities.attributes.ModAttributes;
+import oortcloud.hungrymechanics.recipes.RecipeBlender;
+import oortcloud.hungrymechanics.recipes.RecipeMillstone;
+import oortcloud.hungrymechanics.recipes.RecipeThresher;
 
 public class ConfigurationHandler {
 
-	public static ConfigurationHandlerJSON<AttributeRegisterEvent> attributes;
-	public static ConfigurationHandlerJSON<FoodPreferenceItemStackRegisterEvent> foodPreferencesItem;
-	public static Gson GSON_INSTANCE_FOOD_PREFERENCE_ITEM = new GsonBuilder().registerTypeAdapter(HashItemType.class, new HashItemType.Serializer()).create();
+	public static ConfigurationHandlerJSONEvent<AttributeRegisterEvent> attributes;
+	public static ConfigurationHandlerJSONEvent<FoodPreferenceItemStackRegisterEvent> foodPreferencesItem;
+	private static ConfigurationHandlerJSONRecipe blender;
+	private static ConfigurationHandlerJSONRecipe millstone;
+	private static ConfigurationHandlerJSONRecipe thresher;
 
+	public static Gson GSON_INSTANCE_VALUE_PROBABILITY_ITEM_STACK = new GsonBuilder().registerTypeAdapter(ValueProbabilityItemStack.class, new ValueProbabilityItemStack.Serializer()).create();
+	
 	public static void init(FMLPreInitializationEvent preInit) {
-		File basefodler = new File(preInit.getModConfigurationDirectory(), References.MODID);
-		ConfigurationHandlerRecipe.init(new File(preInit.getModConfigurationDirectory() + "/" + References.MODNAME + "/Recipe.cfg"));
-		attributes = new ConfigurationHandlerJSON<AttributeRegisterEvent>(basefodler, "attributes", (file, animal, event) -> {
-			JsonObject arr;
+		File basefolder = new File(preInit.getModConfigurationDirectory(), References.MODID);
+
+		attributes = new ConfigurationHandlerJSONEvent<AttributeRegisterEvent>(basefolder, "attributes", (file, animal, event) -> {
+			JsonObject jsonObj;
 			try {
-				arr = (new JsonParser()).parse(new String(Files.readAllBytes(file.toPath()))).getAsJsonObject();
+				jsonObj = (new JsonParser()).parse(new String(Files.readAllBytes(file.toPath()))).getAsJsonObject();
 			} catch (JsonSyntaxException | IOException e) {
 				HungryMechanics.logger.error("Couldn\'t load {} {} of {}\n{}", new Object[] { attributes.getDescriptor(), file, animal, e });
 				return;
 			}
 
-			for (Entry<String, JsonElement> i : arr.entrySet()) {
+			for (Entry<String, JsonElement> i : jsonObj.entrySet()) {
 				if (!ModAttributes.NAME_MAP.containsKey(i.getKey())) {
 					HungryMechanics.logger.warn("Couldn\'t load {} {} of {}", new Object[] { attributes.getDescriptor(), i, animal });
 					continue;
 				}
 				IAttribute attribute = ModAttributes.NAME_MAP.get(i.getKey());
-				JsonObject obj = i.getValue().getAsJsonObject();
-				event.getAttributes()
-						.add(new AttributeEntry(attribute, obj.getAsJsonPrimitive("register").getAsBoolean(), obj.getAsJsonPrimitive("value").getAsDouble()));
+				JsonObject jsonObj2 = i.getValue().getAsJsonObject();
+				event.getAttributes().add(new AttributeEntry(attribute, jsonObj2.getAsJsonPrimitive("register").getAsBoolean(),
+						jsonObj2.getAsJsonPrimitive("value").getAsDouble()));
 			}
 
 		});
-		foodPreferencesItem = new ConfigurationHandlerJSON<FoodPreferenceItemStackRegisterEvent>(basefodler, "food_preferences/item", (file, animal, event) -> {
-			JsonArray arr;
+		foodPreferencesItem = new ConfigurationHandlerJSONEvent<FoodPreferenceItemStackRegisterEvent>(basefolder, "food_preferences/item",
+				(file, animal, event) -> {
+					JsonArray jsonArr;
+					try {
+						jsonArr = (new JsonParser()).parse(new String(Files.readAllBytes(file.toPath()))).getAsJsonArray();
+					} catch (JsonSyntaxException | IOException e) {
+						HungryMechanics.logger.error("Couldn\'t load {} {} of {}\n{}", new Object[] { foodPreferencesItem.getDescriptor(), file, animal, e });
+						return;
+					}
+					for (JsonElement jsonEle : jsonArr) {
+						JsonObject jsonObj = jsonEle.getAsJsonObject();
+						HashItemType state = oortcloud.hungryanimals.configuration.ConfigurationHandler.GSON_INSTANCE_HASH_ITEM_TYPE
+								.fromJson(jsonObj.getAsJsonObject("item"), HashItemType.class);
+						double hunger = jsonObj.getAsJsonPrimitive("hunger").getAsDouble();
+						event.getMap().put(state, hunger);
+					}
+				});
+
+		blender = new ConfigurationHandlerJSONRecipe(new File(basefolder, "recipes"), "blender", (file) -> {
+			JsonArray jsonArr;
 			try {
-				arr = (new JsonParser()).parse(new String(Files.readAllBytes(file.toPath()))).getAsJsonArray();
+				jsonArr = (new JsonParser()).parse(new String(Files.readAllBytes(file.toPath()))).getAsJsonArray();
 			} catch (JsonSyntaxException | IOException e) {
-				HungryAnimals.logger.error("Couldn\'t load {} {} of {}\n{}", new Object[] { foodPreferencesItem.getDescriptor(), file, animal, e });
+				HungryMechanics.logger.error("Couldn\'t load {} {}\n{}", new Object[] { blender.getDescriptor(), file, e });
 				return;
 			}
-			for (JsonElement i : arr) {
-				JsonObject obj = i.getAsJsonObject();
-				HashItemType state = GSON_INSTANCE_FOOD_PREFERENCE_ITEM.fromJson(obj.getAsJsonObject("item"), HashItemType.class);
-				double hunger = obj.getAsJsonPrimitive("hunger").getAsDouble();
-				event.getMap().put(state, hunger);
+			for (JsonElement jsonEle : jsonArr) {
+				JsonObject jsonObj = jsonEle.getAsJsonObject();
+				HashItemType input1 = oortcloud.hungryanimals.configuration.ConfigurationHandler.GSON_INSTANCE_HASH_ITEM_TYPE
+						.fromJson(jsonObj.getAsJsonObject("input1"), HashItemType.class);
+				HashItemType input2 = oortcloud.hungryanimals.configuration.ConfigurationHandler.GSON_INSTANCE_HASH_ITEM_TYPE
+						.fromJson(jsonObj.getAsJsonObject("input2"), HashItemType.class);
+				ItemStack output = oortcloud.hungryanimals.configuration.ConfigurationHandler.GSON_INSTANCE_ITEM_STACK.fromJson(jsonObj.getAsJsonObject("output"), ItemStack.class);
+				
+				RecipeBlender.addRecipe(input1, input2, output);
+			}
+		});
+		millstone = new ConfigurationHandlerJSONRecipe(new File(basefolder, "recipes"), "millstone", (file) -> {
+			JsonArray jsonArr;
+			try {
+				jsonArr = (new JsonParser()).parse(new String(Files.readAllBytes(file.toPath()))).getAsJsonArray();
+			} catch (JsonSyntaxException | IOException e) {
+				HungryMechanics.logger.error("Couldn\'t load {} {}\n{}", new Object[] { millstone.getDescriptor(), file, e });
+				return;
+			}
+			for (JsonElement jsonEle : jsonArr) {
+				JsonObject jsonObj = jsonEle.getAsJsonObject();
+				HashItemType item = oortcloud.hungryanimals.configuration.ConfigurationHandler.GSON_INSTANCE_HASH_ITEM_TYPE
+						.fromJson(jsonObj.getAsJsonObject("item"), HashItemType.class);
+				int amount = JsonUtils.getInt(jsonObj, "amount");
+
+				RecipeMillstone.addRecipe(item, amount);
+			}
+		});
+		thresher = new ConfigurationHandlerJSONRecipe(new File(basefolder, "recipes"), "thresher", (file) -> {
+			JsonArray jsonArr;
+			try {
+				jsonArr = (new JsonParser()).parse(new String(Files.readAllBytes(file.toPath()))).getAsJsonArray();
+			} catch (JsonSyntaxException | IOException e) {
+				HungryMechanics.logger.error("Couldn\'t load {} {}\n{}", new Object[] {thresher.getDescriptor(), file, e});
+				return;
+			}
+			for (JsonElement jsonEle : jsonArr) {
+				JsonObject jsonObj = jsonEle.getAsJsonObject();
+				HashItemType input = oortcloud.hungryanimals.configuration.ConfigurationHandler.GSON_INSTANCE_HASH_ITEM_TYPE
+						.fromJson(jsonObj.getAsJsonObject("input"), HashItemType.class);
+				ArrayList<ValueProbabilityItemStack> output = new ArrayList<ValueProbabilityItemStack>();
+				JsonArray jsonArrOutput = JsonUtils.getJsonArray(jsonObj, "output");
+				for (JsonElement jsonEle2 : jsonArrOutput) {
+					ValueProbabilityItemStack valueProbabilityItemStack  = GSON_INSTANCE_VALUE_PROBABILITY_ITEM_STACK.fromJson(jsonEle2, ValueProbabilityItemStack.class);
+					output.add(valueProbabilityItemStack);
+				}
+				
+				RecipeThresher.addRecipe(input, output);
 			}
 		});
 	}
 
 	public static void sync() {
-		ConfigurationHandlerRecipe.sync();
+		blender.sync();
+		millstone.sync();
+		thresher.sync();
 	}
-
 }

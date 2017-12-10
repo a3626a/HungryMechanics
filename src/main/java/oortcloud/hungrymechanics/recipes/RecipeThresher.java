@@ -5,10 +5,7 @@ import java.util.HashMap;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import oortcloud.hungrymechanics.HungryMechanics;
-import oortcloud.hungrymechanics.configuration.util.ConfigurationHelper;
-import oortcloud.hungrymechanics.configuration.util.HashItemType;
-import oortcloud.hungrymechanics.configuration.util.StringParser;
+import oortcloud.hungryanimals.entities.food_preferences.FoodPreferenceItemStack.HashItemType;
 import oortcloud.hungrymechanics.configuration.util.ValueProbabilityItemStack;
 
 public class RecipeThresher {
@@ -39,22 +36,6 @@ public class RecipeThresher {
 			return recipe.get(new HashItemType(item.getItem(), item.getItemDamage()));
 		} else {
 			return null;
-		}
-	}
-	
-	public static void readConfiguration(String i) {
-		
-		String[] split = StringParser.splitByLevel(i.replaceAll(" ", ""), '=');
-		
-		if (split.length == 2) {
-			HashItemType input = ConfigurationHelper.instance.getHashItem(split[0]);
-			ArrayList<ValueProbabilityItemStack> output = ConfigurationHelper.instance.getListProbItemStack(split[1]);
-			if (input != null && output != null) {
-				RecipeThresher.addRecipe(input, output);
-			}
-		} else {
-			HungryMechanics.logger.warn("\""+i+ "\" is not added. Format error");
-			return;
 		}
 	}
 

@@ -5,35 +5,46 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.function.Consumer;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.gson.JsonSyntaxException;
 
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.passive.EntityAnimal;
 import oortcloud.hungryanimals.HungryAnimals;
 import oortcloud.hungrymechanics.core.lib.References;
 
-public class ConfigurationHandlerJSON<V> {
 
-	private BiConsumer<File, Class<? extends EntityAnimal>, V> read;
-	private File directory;
-	private String descriptor;
-
-	/**
-	 * 
-	 * @param event
-	 * @param descriptor : relative path, never start with /
-	 * @param read
-	 */
-	public ConfigurationHandlerJSON(File basefolder, String descriptor, BiConsumer<File, Class<? extends EntityAnimal>, V> read) {
+public class ConfigurationHandlerJSONRecipe {
+	
+	protected File directory;
+	protected String descriptor;
+	
+	private Consumer<File> read;
+	
+	public ConfigurationHandlerJSONRecipe(File basefolder, String descriptor, Consumer<File> read) {
 		this.descriptor = descriptor;
-		this.directory = new File(basefolder, descriptor);
+		this.directory = basefolder;
 		this.read = read;
 	}
-
-	public void sync(Class<? extends EntityAnimal> animal, V event) {
+	
+	public void sync() {
+		checkDirectory();
+		
+		File file = new File(directory, descriptor + ".json");
+		
+		if (!file.exists()) {
+			createDefaultConfigurationFile(file);
+		}
+		
+		try {
+			this.read.accept(file);
+		} catch (JsonSyntaxException e) {
+			HungryAnimals.logger.error("Couldn\'t load {} {}\n{}", new Object[] { this.descriptor, file, e });
+		}
+	}
+	
+	protected void checkDirectory() {
 		if (!directory.exists()) {
 			try {
 				Files.createDirectories(directory.toPath());
@@ -42,22 +53,16 @@ public class ConfigurationHandlerJSON<V> {
 				return;
 			}
 		}
-
-		File iFile = new File(directory, EntityList.CLASS_TO_NAME.get(animal).toLowerCase() + ".json");
-
-		if (!iFile.exists()) {
-			createDefaultConfigurationFile(iFile);
-		}
-
-		try {
-			this.read.read(iFile, animal, event);
-		} catch (JsonSyntaxException e) {
-			HungryAnimals.logger.error("Couldn\'t load {} {} of {}\n{}", new Object[] { this.descriptor, iFile, animal, e });
-		}
 	}
-
-	private void createDefaultConfigurationFile(File file) {
-		String resourceName = "/assets/" + References.MODID + "/" + this.descriptor + "/" + file.getName();
+	
+	protected void createDefaultConfigurationFile(File file) {
+		String path_file = file.getPath();
+		int index_config = path_file.indexOf("config");
+		String path_config = path_file.substring(index_config);
+		int index_hungrymechanics = path_config.indexOf(References.MODID);
+		String path_hungrymechanics = path_config.substring(index_hungrymechanics);
+		String resourceName = "/assets/" + path_hungrymechanics.replace("\\", "/");
+		
 		URL url = getClass().getResource(resourceName);
 		if (url == null) {
 			HungryAnimals.logger.error("Couldn\'t load {} {} from assets", new Object[] { this.descriptor, resourceName });
@@ -72,15 +77,9 @@ public class ConfigurationHandlerJSON<V> {
 		} catch (IOException e) {
 			HungryAnimals.logger.error("Couldn\'t load {} {} from {}\n{}", new Object[] { this.descriptor, file, url, e });
 		}
-
 	}
 
 	public String getDescriptor() {
 		return this.descriptor;
 	}
-
-	public interface BiConsumer<T, U, V> {
-		public void read(T file, U entity, V event);
-	}
-
 }

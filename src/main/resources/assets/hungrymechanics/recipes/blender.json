@@ -1,0 +1,27 @@
+[
+    {
+        "input1" : {
+            "name" : "minecraft:carrot"
+        },
+        "input2" : {
+            "name" : "minecraft:potato"
+        },
+        "output" : {
+            "name" : "hungrymechanics:mixedfeed"
+        }
+    },
+    {
+        "input1" : {
+            "name" : "hungryanimals:saltpeter"
+        },
+        "input2" : {
+            "name" : "hungryanimals:manure"
+        },
+        "output" : {
+            "name" : "minecraft:dye",
+            "damage" : 15,
+            "count" : 6
+        }
+    }
+]
+

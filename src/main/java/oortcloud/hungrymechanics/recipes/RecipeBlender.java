@@ -1,15 +1,11 @@
 package oortcloud.hungrymechanics.recipes;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.item.ItemStack;
-import oortcloud.hungrymechanics.HungryMechanics;
-import oortcloud.hungrymechanics.configuration.util.ConfigurationHelper;
-import oortcloud.hungrymechanics.configuration.util.HashItemType;
+import oortcloud.hungryanimals.entities.food_preferences.FoodPreferenceItemStack.HashItemType;
 import oortcloud.hungrymechanics.configuration.util.HashPairedItemType;
-import oortcloud.hungrymechanics.configuration.util.StringParser;
 
 public class RecipeBlender {
 
@@ -43,22 +39,8 @@ public class RecipeBlender {
 		}
 	}
 
-	public static void readConfiguration(String i) {
-		String[] split = StringParser.splitByLevel(i.replaceAll(" ", ""), '=');
-		if (split.length == 2) {
-			ArrayList<HashItemType> input = ConfigurationHelper.instance.getListHashItem(split[0]);
-			ItemStack output = ConfigurationHelper.instance.getItemStack(split[1]);
-			RecipeBlender.addRecipe(input.get(0), input.get(1), output);
-		} else {
-			HungryMechanics.logger.warn("\"" + i + "\" is not added. Format error");
-			return;
-		}
-	}
-
 	public static Map<HashPairedItemType, ItemStack> getRecipeList() {
 		return recipe;
 	}
-	
-	
 
 }
