@@ -112,7 +112,7 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 			if (leashedAnimal == null && leashedAnimalUUID != null) {
 				// CASE 2 LOADED
 				// STEP TO LOAD ENTITY BY UUID
-				for (Entity i : worldObj.loadedEntityList) {
+				for (Entity i : getWorld().loadedEntityList) {
 					if (i.getUniqueID().equals(leashedAnimalUUID)) {
 						if (!(i instanceof EntityAnimal)) {
 							leashedAnimalUUID = null;
@@ -142,7 +142,7 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 			//
 			if (leashedAnimal == null && leashedAnimalID != -1) {
 				// CASE 3 LOADED
-				EntityAnimal entity = (EntityAnimal) worldObj.getEntityByID(leashedAnimalID);
+				EntityAnimal entity = (EntityAnimal) getWorld().getEntityByID(leashedAnimalID);
 				if (entity != null) {
 					if (entity instanceof EntityAnimal) {
 						EntityAnimal animal = (EntityAnimal) entity;

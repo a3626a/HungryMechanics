@@ -26,7 +26,7 @@ public class EntityAICrank extends EntityAIBase {
 		this.entity = entity;
 		this.capHungry = entity.getCapability(ProviderHungryAnimal.CAP, null);
 		this.capTaming = entity.getCapability(ProviderTamableAnimal.CAP, null);
-		this.world = this.entity.worldObj;
+		this.world = this.entity.getEntityWorld();
 		this.setMutexBits(1);
 	}
 

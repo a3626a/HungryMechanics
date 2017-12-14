@@ -13,7 +13,7 @@
     "logoFile": "",
     "screenshots": [],
     "parent": "",
-    "requiredMods": [ "Forge", "hungryanimals"],
+    "requiredMods": [ "forge", "hungryanimals"],
     "dependencies": ["hungryanimals"],
     "dependants": [],
     "useDependencyInformation": false

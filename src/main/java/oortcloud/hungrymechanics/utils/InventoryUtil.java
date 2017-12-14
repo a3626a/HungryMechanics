@@ -7,27 +7,28 @@ import net.minecraft.util.EnumHand;
 
 public class InventoryUtil {
 	
-	public static boolean interactInventory(EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, IInventory tileEntity, int index) {
-		ItemStack itemStackInventory=tileEntity.getStackInSlot(index);
-		if (itemStackInventory != null && heldItem == null) {
+	public static boolean interactInventory(EntityPlayer playerIn, EnumHand hand, IInventory tileEntity, int index) {
+		ItemStack heldItem = playerIn.getHeldItem(hand);
+		ItemStack itemStackInventory = tileEntity.getStackInSlot(index);
+		if (!itemStackInventory.isEmpty() && heldItem.isEmpty()) {
 			playerIn.setHeldItem(hand, itemStackInventory);
-			tileEntity.setInventorySlotContents(index, null);
+			tileEntity.setInventorySlotContents(index, ItemStack.EMPTY);
 			return true;
 		}
-		if (itemStackInventory == null && heldItem != null && tileEntity.isItemValidForSlot(index, heldItem)) {
-			playerIn.setHeldItem(hand, null);
+		if (itemStackInventory.isEmpty() && !heldItem.isEmpty() && tileEntity.isItemValidForSlot(index, heldItem)) {
+			playerIn.setHeldItem(hand, ItemStack.EMPTY);
 			tileEntity.setInventorySlotContents(index, heldItem);
 			return true;
 		}
-		if (itemStackInventory != null && heldItem != null && tileEntity.isItemValidForSlot(index, heldItem)) {
+		if (!itemStackInventory.isEmpty() && !heldItem.isEmpty() && tileEntity.isItemValidForSlot(index, heldItem)) {
 			if (itemStackInventory.isItemEqual(heldItem)) {
-				int space = itemStackInventory.getMaxStackSize()-itemStackInventory.stackSize;
-				if (space >= heldItem.stackSize) {
-					itemStackInventory.stackSize+=heldItem.stackSize;
-					playerIn.setHeldItem(hand, null);
+				int space = itemStackInventory.getMaxStackSize()-itemStackInventory.getCount();
+				if (space >= heldItem.getCount()) {
+					itemStackInventory.grow(heldItem.getCount());
+					playerIn.setHeldItem(hand, ItemStack.EMPTY);
 				} else {
-					itemStackInventory.stackSize=itemStackInventory.getMaxStackSize();
-					heldItem.stackSize-=space;
+					itemStackInventory.setCount(itemStackInventory.getMaxStackSize());
+					heldItem.shrink(space);
 				}
 				return true;
 			}

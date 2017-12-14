@@ -17,7 +17,7 @@ import oortcloud.hungrymechanics.tileentities.TileEntityMillstone;
 
 public class RenderTileEntityMillstone extends TileEntitySpecialRenderer<TileEntityMillstone> {
 
-	public static final ResourceLocation texture = new ResourceLocation(References.MODID, "textures/blocks/ModelMillstone.png");
+	public static final ResourceLocation texture = new ResourceLocation(References.MODID, "textures/blocks/modelmillstone.png");
 	private ModelMillstone modelMillstone;
 
 	public RenderTileEntityMillstone() {
@@ -50,7 +50,7 @@ public class RenderTileEntityMillstone extends TileEntitySpecialRenderer<TileEnt
 		GL11.glTranslatef((float) x + 0.5F, (float) y, (float) z + 0.5F);
 		GL11.glRotatef(angle, 0.0F, 1.0F, 0.0F);
 		GL11.glPushMatrix();
-		if (millstone.getStackInSlot(0) != null) {
+		if (!millstone.getStackInSlot(0).isEmpty()) {
 			ItemStack stack = millstone.getStackInSlot(0).copy();
 			EntityItem item = new EntityItem(millstone.getWorld(), 0, 0, 0, stack);
 			item.hoverStart = angle / 20.F;

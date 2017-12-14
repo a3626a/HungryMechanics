@@ -7,7 +7,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
@@ -63,7 +62,7 @@ public class BlockBlender extends BlockContainer {
 	}
 
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (side == EnumFacing.UP) {
 			TileEntity tileEntity = worldIn.getTileEntity(pos);
 			if (tileEntity != null) {
@@ -97,7 +96,7 @@ public class BlockBlender extends BlockContainer {
 					}
 				}
 				index = (index - rotationalOffset + 4) % 4;
-				return InventoryUtil.interactInventory(playerIn, hand, heldItem, blender, index);
+				return InventoryUtil.interactInventory(playerIn, hand, blender, index);
 			}
 		}
 		return true;

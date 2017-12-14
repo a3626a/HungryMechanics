@@ -13,7 +13,7 @@ import oortcloud.hungrymechanics.tileentities.TileEntityBlender;
 
 public class RenderTileEntityBlender extends TileEntitySpecialRenderer<TileEntityBlender> {
 
-	public static final ResourceLocation texture = new ResourceLocation(References.MODID, "textures/blocks/ModelBlender.png");
+	public static final ResourceLocation texture = new ResourceLocation(References.MODID, "textures/blocks/modelblender.png");
 	private ModelBlender modelBlender;
 
 	public RenderTileEntityBlender() {
@@ -41,7 +41,7 @@ public class RenderTileEntityBlender extends TileEntitySpecialRenderer<TileEntit
 
 		for (int i = 0; i < blender.getSizeInventory(); i++) {
 			ItemStack stack = blender.getStackInSlot(i);
-			if (stack != null) {
+			if (!stack.isEmpty()) {
 				EntityItem item = new EntityItem(blender.getWorld(), 0, 0, 0, stack);
 				item.hoverStart = blender.getPowerNetwork().getAngle(partialTick) / 20.0F;
 				RenderManager render = Minecraft.getMinecraft().getRenderManager();

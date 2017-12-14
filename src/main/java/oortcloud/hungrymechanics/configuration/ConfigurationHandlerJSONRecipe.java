@@ -11,7 +11,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.gson.JsonSyntaxException;
 
-import oortcloud.hungryanimals.HungryAnimals;
+import oortcloud.hungrymechanics.HungryMechanics;
 import oortcloud.hungrymechanics.core.lib.References;
 
 
@@ -40,7 +40,7 @@ public class ConfigurationHandlerJSONRecipe {
 		try {
 			this.read.accept(file);
 		} catch (JsonSyntaxException e) {
-			HungryAnimals.logger.error("Couldn\'t load {} {}\n{}", new Object[] { this.descriptor, file, e });
+			HungryMechanics.logger.error("Couldn\'t load {} {}\n{}", new Object[] { this.descriptor, file, e });
 		}
 	}
 	
@@ -49,7 +49,7 @@ public class ConfigurationHandlerJSONRecipe {
 			try {
 				Files.createDirectories(directory.toPath());
 			} catch (IOException e) {
-				HungryAnimals.logger.error("Couldn\'t create {} folder {}\n{}", new Object[] { descriptor, directory, e });
+				HungryMechanics.logger.error("Couldn\'t create {} folder {}\n{}", new Object[] { descriptor, directory, e });
 				return;
 			}
 		}
@@ -65,7 +65,7 @@ public class ConfigurationHandlerJSONRecipe {
 		
 		URL url = getClass().getResource(resourceName);
 		if (url == null) {
-			HungryAnimals.logger.error("Couldn\'t load {} {} from assets", new Object[] { this.descriptor, resourceName });
+			HungryMechanics.logger.error("Couldn\'t load {} {} from assets", new Object[] { this.descriptor, resourceName });
 			return;
 		}
 
@@ -75,7 +75,7 @@ public class ConfigurationHandlerJSONRecipe {
 			o.write(Resources.toString(url, Charsets.UTF_8));
 			o.close();
 		} catch (IOException e) {
-			HungryAnimals.logger.error("Couldn\'t load {} {} from {}\n{}", new Object[] { this.descriptor, file, url, e });
+			HungryMechanics.logger.error("Couldn\'t load {} {} from {}\n{}", new Object[] { this.descriptor, file, url, e });
 		}
 	}
 

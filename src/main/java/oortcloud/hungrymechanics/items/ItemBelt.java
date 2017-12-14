@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -33,10 +34,8 @@ public class ItemBelt extends Item {
 		GameRegistry.register(this);
 	}
 
-	
-	
 	@Override
-	public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+	public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
 		ItemStack itemStack = new ItemStack(this,1,16);
 		subItems.add(itemStack);
 	}
@@ -50,8 +49,10 @@ public class ItemBelt extends Item {
 	}
 
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX,
+	public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX,
 			float hitY, float hitZ) {
+		ItemStack stack = playerIn.getHeldItem(hand);
+		
 		// TODO Study EnumActionResult in detail
 		if (!TileEntityAxle.isValidAxle(worldIn, pos)) {
 			return EnumActionResult.PASS;

@@ -20,7 +20,6 @@ public class RecipeBlender {
 	}
 
 	public static ItemStack getRecipe(ItemStack input1, ItemStack input2) {
-
 		HashPairedItemType key1 = new HashPairedItemType(new HashItemType(input1.getItem()), new HashItemType(input2.getItem()));
 		HashPairedItemType key2 = new HashPairedItemType(new HashItemType(input1.getItem(), input1.getItemDamage()), new HashItemType(input2.getItem(), input2.getItemDamage()));
 		HashPairedItemType key3 = new HashPairedItemType(new HashItemType(input1.getItem(), input1.getItemDamage()), new HashItemType(input2.getItem()));
@@ -35,7 +34,7 @@ public class RecipeBlender {
 		}  else if (recipe.containsKey(key4)) {
 			return recipe.get(key4);
 		} else {
-			return null;
+			return ItemStack.EMPTY;
 		}
 	}
 

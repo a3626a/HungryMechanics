@@ -12,7 +12,8 @@ import com.google.gson.JsonSyntaxException;
 
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.passive.EntityAnimal;
-import oortcloud.hungryanimals.HungryAnimals;
+import oortcloud.hungryanimals.configuration.ConfigurationHandler;
+import oortcloud.hungrymechanics.HungryMechanics;
 import oortcloud.hungrymechanics.core.lib.References;
 
 public class ConfigurationHandlerJSONEvent<V> {
@@ -34,16 +35,9 @@ public class ConfigurationHandlerJSONEvent<V> {
 	}
 
 	public void sync(Class<? extends EntityAnimal> animal, V event) {
-		if (!directory.exists()) {
-			try {
-				Files.createDirectories(directory.toPath());
-			} catch (IOException e) {
-				HungryAnimals.logger.error("Couldn\'t create {} folder {}\n{}", new Object[] { descriptor, directory, e });
-				return;
-			}
-		}
-
-		File iFile = new File(directory, EntityList.CLASS_TO_NAME.get(animal).toLowerCase() + ".json");
+		checkDirectory();
+		
+		File iFile = new File(directory, ConfigurationHandler.resourceLocationToString(EntityList.getKey(animal)) + ".json");
 
 		if (!iFile.exists()) {
 			createDefaultConfigurationFile(iFile);
@@ -52,15 +46,32 @@ public class ConfigurationHandlerJSONEvent<V> {
 		try {
 			this.read.read(iFile, animal, event);
 		} catch (JsonSyntaxException e) {
-			HungryAnimals.logger.error("Couldn\'t load {} {} of {}\n{}", new Object[] { this.descriptor, iFile, animal, e });
+			HungryMechanics.logger.error("Couldn\'t load {} {} of {}\n{}", new Object[] { this.descriptor, iFile, animal, e });
 		}
 	}
 
-	private void createDefaultConfigurationFile(File file) {
-		String resourceName = "/assets/" + References.MODID + "/" + this.descriptor + "/" + file.getName();
+	protected void checkDirectory() {
+		if (!directory.exists()) {
+			try {
+				Files.createDirectories(directory.toPath());
+			} catch (IOException e) {
+				HungryMechanics.logger.error("Couldn\'t create {} folder {}\n{}", new Object[] { descriptor, directory, e });
+				return;
+			}
+		}
+	}
+	
+	protected void createDefaultConfigurationFile(File file) {
+		String path_file = file.getPath();
+		int index_config = path_file.indexOf("config");
+		String path_config = path_file.substring(index_config);
+		int index_hungryanimals = path_config.indexOf(References.MODID);
+		String path_hungryanimals = path_config.substring(index_hungryanimals);
+		String resourceName = "/assets/" + path_hungryanimals.replace("\\", "/");
+		
 		URL url = getClass().getResource(resourceName);
 		if (url == null) {
-			HungryAnimals.logger.error("Couldn\'t load {} {} from assets", new Object[] { this.descriptor, resourceName });
+			HungryMechanics.logger.error("Couldn\'t load {} {} from assets", new Object[] { this.descriptor, resourceName });
 			return;
 		}
 
@@ -70,9 +81,8 @@ public class ConfigurationHandlerJSONEvent<V> {
 			o.write(Resources.toString(url, Charsets.UTF_8));
 			o.close();
 		} catch (IOException e) {
-			HungryAnimals.logger.error("Couldn\'t load {} {} from {}\n{}", new Object[] { this.descriptor, file, url, e });
+			HungryMechanics.logger.error("Couldn\'t load {} {} from {}\n{}", new Object[] { this.descriptor, file, url, e });
 		}
-
 	}
 
 	public String getDescriptor() {

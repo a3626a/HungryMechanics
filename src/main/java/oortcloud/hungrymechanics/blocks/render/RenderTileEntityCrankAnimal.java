@@ -14,7 +14,7 @@ import oortcloud.hungrymechanics.tileentities.TileEntityCrankAnimal;
 
 public class RenderTileEntityCrankAnimal extends TileEntitySpecialRenderer<TileEntityCrankAnimal> {
 
-	public static final ResourceLocation texture = new ResourceLocation(References.MODID, "textures/blocks/ModelCrankAnimal.png");
+	public static final ResourceLocation texture = new ResourceLocation(References.MODID, "textures/blocks/modelcrankanimal.png");
 	private ModelCrankAnimal modelCrank;
 
 	public RenderTileEntityCrankAnimal() {

@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import oortcloud.hungrymechanics.items.ModItems;
 
@@ -18,7 +19,7 @@ public class RecipeConnectBelt implements IRecipe {
 		for (int i = 0; i < p_77569_1_.getSizeInventory(); ++i) {
 			ItemStack itemstack = p_77569_1_.getStackInSlot(i);
 
-			if (itemstack != null && itemstack.getItem() == ModItems.belt) {
+			if (!itemstack.isEmpty() && itemstack.getItem() == ModItems.belt) {
 				arraylist.add(itemstack);
 			}
 		}
@@ -34,7 +35,7 @@ public class RecipeConnectBelt implements IRecipe {
 		int length = 0;
 		for (int i = 0; i < p_77572_1_.getSizeInventory(); ++i) {
 			itemstack = p_77572_1_.getStackInSlot(i);
-			if (itemstack != null && itemstack.getItem() == ModItems.belt) {
+			if (!itemstack.isEmpty() && itemstack.getItem() == ModItems.belt) {
 				length += itemstack.getItemDamage();
 				arraylist.add(itemstack);
 			}
@@ -44,7 +45,7 @@ public class RecipeConnectBelt implements IRecipe {
 			return new ItemStack(ModItems.belt, 1, length);
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	/**
@@ -55,15 +56,15 @@ public class RecipeConnectBelt implements IRecipe {
 	}
 
 	public ItemStack getRecipeOutput() {
-		return null;
+		return ItemStack.EMPTY;
 	}
 
-	public ItemStack[] getRemainingItems(InventoryCrafting p_179532_1_) {
-		ItemStack[] aitemstack = new ItemStack[p_179532_1_.getSizeInventory()];
-
-		for (int i = 0; i < aitemstack.length; ++i) {
-			ItemStack itemstack = p_179532_1_.getStackInSlot(i);
-			aitemstack[i] = net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack);
+	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inventoryCrafting) {
+		NonNullList<ItemStack> aitemstack = NonNullList.withSize(inventoryCrafting.getSizeInventory(), ItemStack.EMPTY);
+		;
+		for (int i = 0; i < aitemstack.size(); ++i) {
+			ItemStack itemstack = inventoryCrafting.getStackInSlot(i);
+			aitemstack.set(i, net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack));
 		}
 
 		return aitemstack;

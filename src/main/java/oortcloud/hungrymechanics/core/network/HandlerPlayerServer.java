@@ -28,16 +28,13 @@ public class HandlerPlayerServer implements IMessageHandler<PacketPlayerServer, 
 			ItemStack stack = player.getHeldItem(hand);
 			World world = DimensionManager.getWorld(dim);
 			
-			boolean flag1 = stack != null && stack.getItem() == ItemBlock.getItemFromBlock(Blocks.RED_FLOWER);
+			boolean flag1 = !stack.isEmpty() && stack.getItem() == ItemBlock.getItemFromBlock(Blocks.RED_FLOWER);
 			boolean flag2 = world.getBlockState(pos.down()).getBlock() == Blocks.FARMLAND;
 			boolean flag3 = world.isAirBlock(pos);
 			
 			if (flag1 && flag2 && flag3) {
 				world.setBlockState(pos, ModBlocks.poppy.getDefaultState().withProperty(BlockPoppy.AGE, 4), 2);
-				stack.stackSize--;
-				if (stack.stackSize == 0) {
-					player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
-				}
+				stack.shrink(1);
 			}
 			break;
 		}

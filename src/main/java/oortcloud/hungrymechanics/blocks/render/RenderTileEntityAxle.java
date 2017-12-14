@@ -16,8 +16,8 @@ import oortcloud.hungrymechanics.tileentities.TileEntityAxle;
 
 public class RenderTileEntityAxle extends TileEntitySpecialRenderer<TileEntityAxle> {
 
-	public static final ResourceLocation texture_Axle = new ResourceLocation(References.MODID, "textures/blocks/ModelAxle.png");
-	public static final ResourceLocation texture_Wheel = new ResourceLocation(References.MODID, "textures/blocks/ModelWheel.png");
+	public static final ResourceLocation texture_Axle = new ResourceLocation(References.MODID, "textures/blocks/modelaxle.png");
+	public static final ResourceLocation texture_Wheel = new ResourceLocation(References.MODID, "textures/blocks/modelwheel.png");
 	private ModelAxle modelAxle;
 	private ModelWheel modelWheel;
 

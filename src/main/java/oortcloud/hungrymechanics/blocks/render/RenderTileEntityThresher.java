@@ -13,7 +13,7 @@ import oortcloud.hungrymechanics.tileentities.TileEntityThresher;
 
 public class RenderTileEntityThresher extends TileEntitySpecialRenderer<TileEntityThresher> {
 
-	public static final ResourceLocation texture = new ResourceLocation(References.MODID, "textures/blocks/ModelThresher.png");
+	public static final ResourceLocation texture = new ResourceLocation(References.MODID, "textures/blocks/modelthresher.png");
 	private ModelThresher modelThresher;
 
 	public RenderTileEntityThresher() {
@@ -34,7 +34,7 @@ public class RenderTileEntityThresher extends TileEntitySpecialRenderer<TileEnti
 		GL11.glPopMatrix();
 		GL11.glPopMatrix();
 
-		if (thresher.getStackInSlot(0) != null) {
+		if (!thresher.getStackInSlot(0).isEmpty()) {
 			ItemStack stack = thresher.getStackInSlot(0).copy();
 			EntityItem item = new EntityItem(thresher.getWorld(), 0, 0, 0, stack);
 			item.hoverStart = angle / 20.F;

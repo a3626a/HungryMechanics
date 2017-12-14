@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
@@ -27,8 +28,8 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 	@CapabilityInject(IItemHandler.class)
 	static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = null;
 	
-	private ItemStack[] inventory = new ItemStack[getSizeInventory()];
-
+	private NonNullList<ItemStack> inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+	
 	private double powerUsage = 0.5;
 
 	private int leftAttempt;
@@ -73,7 +74,7 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 				needSync = false;
 			}
 
-			if (getStackInSlot(0) != null) {
+			if (!getStackInSlot(0).isEmpty()) {
 				ArrayList<ValueProbabilityItemStack> output = RecipeThresher.getRecipe(getStackInSlot(0));
 				if (output != null && this.getPowerNetwork().getPowerStored() > powerUsage) {
 					this.getPowerNetwork().consumeEnergy(powerUsage);
@@ -87,7 +88,7 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 
 						this.threshTime = 0;
 						for (ValueProbabilityItemStack i : output) {
-							if (this.worldObj.rand.nextDouble() < i.prob) {
+							if (this.getWorld().rand.nextDouble() < i.prob) {
 								// Spawn Item Along side the edge of block
 								double dx = 0;
 								double dz = 0;
@@ -111,10 +112,10 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 									break;
 								}
 								
-								EntityItem entityitem = new EntityItem(this.worldObj, (double) ((float) this.pos.getX() + 0.5 + dx),
+								EntityItem entityitem = new EntityItem(this.getWorld(), (double) ((float) this.pos.getX() + 0.5 + dx),
 										(double) ((float) this.pos.getY() + 0.5), (double) ((float) this.pos.getZ() + 0.5 + dz), i.item.copy());
 
-								this.worldObj.spawnEntityInWorld(entityitem);
+								this.getWorld().spawnEntity(entityitem);
 							}
 						}
 						this.leftAttempt--;
@@ -152,32 +153,32 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 
 	@Override
 	public ItemStack getStackInSlot(int index) {
-		return inventory[index];
+		return inventory.get(index);
 	}
 
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		if (this.inventory[index] != null) {
+		if (!inventory.get(index).isEmpty()) {
 			needSync = true;
 
 			ItemStack itemstack;
 
-			if (this.inventory[index].stackSize <= count) {
-				itemstack = this.inventory[index];
-				this.inventory[index] = null;
+			if (inventory.get(index).getCount() <= count) {
+				itemstack = inventory.get(index);
+				inventory.set(index, ItemStack.EMPTY);
 				this.markDirty();
 				return itemstack;
 			} else {
-				itemstack = this.inventory[index].splitStack(count);
+				itemstack = inventory.get(index).splitStack(count);
 
-				if (this.inventory[index].stackSize == 0) {
-					this.inventory[index] = null;
+				if (inventory.get(index).getCount() == 0) {
+					inventory.set(index, ItemStack.EMPTY);
 				}
 
 				return itemstack;
 			}
 		} else {
-			return null;
+			return ItemStack.EMPTY;
 		}
 	}
 
@@ -185,10 +186,10 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 	public void setInventorySlotContents(int index, ItemStack stack) {
 		needSync = true;
 
-		this.inventory[index] = stack;
+		inventory.set(index, stack);
 
-		if (stack != null && stack.stackSize > this.getInventoryStackLimit()) {
-			stack.stackSize = this.getInventoryStackLimit();
+		if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit()) {
+			stack.setCount(this.getInventoryStackLimit());
 		}
 
 		this.markDirty();
@@ -198,8 +199,8 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 	public ItemStack removeStackFromSlot(int index) {
 		needSync = true;
 
-		ItemStack ret = inventory[index];
-		inventory[index] = null;
+		ItemStack ret = inventory.get(index);
+		inventory.set(index, ItemStack.EMPTY);
 
 		return ret;
 	}
@@ -210,8 +211,8 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
-		return this.worldObj.getTileEntity(this.pos) != this ? false
+	public boolean isUsableByPlayer(EntityPlayer player) {
+		return this.getWorld().getTileEntity(this.pos) != this ? false
 				: player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
 	}
 
@@ -246,8 +247,8 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 	public void clear() {
 		needSync = true;
 
-		for (int i = 0; i < this.inventory.length; ++i) {
-			this.inventory[i] = null;
+		for (int i = 0; i < inventory.size(); ++i) {
+			inventory.set(i, ItemStack.EMPTY);
 		}
 	}
 
@@ -288,7 +289,7 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 		for (int i = 0; i < getSizeInventory(); i++) {
 			NBTTagCompound tag = new NBTTagCompound();
 			ItemStack item = getStackInSlot(i);
-			if (item != null) {
+			if (!item.isEmpty()) {
 				item.writeToNBT(tag);
 				compound.setTag("items" + i, tag);
 			}
@@ -299,9 +300,9 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 		for (int i = 0; i < getSizeInventory(); i++) {
 			if (compound.hasKey("items" + i)) {
 				NBTTagCompound tag = (NBTTagCompound) compound.getTag("items" + i);
-				setInventorySlotContents(i, ItemStack.loadItemStackFromNBT(tag));
+				setInventorySlotContents(i, new ItemStack(tag));
 			} else {
-				setInventorySlotContents(i, null);
+				setInventorySlotContents(i, ItemStack.EMPTY);
 			}
 		}
 	}
@@ -328,5 +329,14 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 	@Override
 	public BlockPos[] getConnectedBlocks() {
 		return new BlockPos[] { pos.up(), pos.down() };
+	}
+	
+	@Override
+	public boolean isEmpty() {
+		for (int i = 0; i < getSizeInventory(); i++) {
+			if (!getStackInSlot(i).isEmpty())
+				return true;
+		}
+		return false;
 	}
 }

@@ -83,10 +83,10 @@ public class BlockMillstone extends BlockContainer {
 	}
 
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		TileEntityMillstone tileEntity = (TileEntityMillstone) worldIn.getTileEntity(pos);
 
-		return InventoryUtil.interactInventory(playerIn, hand, heldItem, tileEntity, 0);
+		return InventoryUtil.interactInventory(playerIn, hand, tileEntity, 0);
 	}
 
 	@Override

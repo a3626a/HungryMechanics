@@ -3,7 +3,7 @@ package oortcloud.hungrymechanics;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -29,7 +29,7 @@ import oortcloud.hungrymechanics.recipes.RecipeBlender;
 import oortcloud.hungrymechanics.recipes.RecipeMillstone;
 import oortcloud.hungrymechanics.recipes.RecipeThresher;
 
-@Mod(modid = References.MODID, name = References.MODNAME, version = References.VERSION, dependencies = "required-after:Forge;required-after:hungryanimals@[1.10.2-3.1.0,)")
+@Mod(modid = References.MODID, name = References.MODNAME, version = References.VERSION, dependencies = "required-after:hungryanimals@[1.11.2-4.0.0,)")
 public class HungryMechanics {
 	@Mod.Instance
 	public static HungryMechanics instance;
@@ -42,8 +42,8 @@ public class HungryMechanics {
 	public static CreativeTabs tabHungryMechanics = new CreativeTabs("tabHungryMechanics") {
 		@Override
 		@SideOnly(Side.CLIENT)
-		public Item getTabIconItem() {
-			return ModItems.wheel;
+		public ItemStack getTabIconItem() {
+			return ModItems.wheel.getDefaultInstance();
 		}
 	};
 

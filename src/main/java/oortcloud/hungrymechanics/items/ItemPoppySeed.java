@@ -32,17 +32,15 @@ public class ItemPoppySeed extends Item implements IPlantable {
 	}
 
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX,
+	public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX,
 			float hitY, float hitZ) {
+		ItemStack stack = playerIn.getHeldItem(hand);
 		if (facing != EnumFacing.UP) {
 			return EnumActionResult.PASS;
 		} else if (playerIn.canPlayerEdit(pos.up(), facing, stack)) {
 			if (worldIn.getBlockState(pos).getBlock().canSustainPlant(worldIn.getBlockState(pos), worldIn, pos, EnumFacing.UP, this) && worldIn.isAirBlock(pos.up())) {
 				worldIn.setBlockState(pos.up(), ModBlocks.poppy.getDefaultState());
-				--stack.stackSize;
-				if (stack.stackSize == 0) {
-					playerIn.inventory.deleteStack(stack);
-				}
+				stack.shrink(1);
 				return EnumActionResult.SUCCESS;
 			} else {
 				return EnumActionResult.FAIL;

@@ -9,7 +9,7 @@ import oortcloud.hungrymechanics.tileentities.TileEntityCrankPlayer;
 
 public class RenderTileEntityCrankPlayer extends TileEntitySpecialRenderer<TileEntityCrankPlayer> {
 
-	public static final ResourceLocation texture = new ResourceLocation(References.MODID, "textures/blocks/ModelCrankPlayer.png");
+	public static final ResourceLocation texture = new ResourceLocation(References.MODID, "textures/blocks/modelcrankplayer.png");
 	private ModelCrankPlayer modelCrank;
 
 	public RenderTileEntityCrankPlayer() {

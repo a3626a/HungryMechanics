@@ -80,7 +80,7 @@ public abstract class TileEntityPowerTransporter extends TileEntity implements I
 			network.consumeEnergy(Math.max(energyPortion * 0.01, 0.01));
 		}
 
-		powerNetwork.update(worldObj, getPos());
+		powerNetwork.update(getWorld(), getPos());
 	}
 
 	@Override

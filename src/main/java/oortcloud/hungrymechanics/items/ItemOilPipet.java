@@ -17,6 +17,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import oortcloud.hungrymechanics.HungryMechanics;
@@ -25,9 +26,11 @@ import oortcloud.hungrymechanics.core.lib.Strings;
 
 public class ItemOilPipet extends Item {
 
-	@CapabilityInject(IFluidHandler.class)
-	static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY = null;
-	
+    @CapabilityInject(IFluidHandler.class)
+    public static Capability<IFluidHandler> FLUID_HANDLER_CAPABILITY = null;
+    @CapabilityInject(IFluidHandlerItem.class)
+    public static Capability<IFluidHandlerItem> FLUID_HANDLER_ITEM_CAPABILITY = null;
+    
 	private int capacity;
 	
 	public ItemOilPipet(int capacity) {
@@ -54,7 +57,10 @@ public class ItemOilPipet extends Item {
 	
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-		FluidStack fluidStack = ((FluidHandlerItemStack)stack.getCapability(FLUID_HANDLER_CAPABILITY, null)).getTankProperties()[0].getContents();
+		
+		FluidHandlerItemStack cap = (FluidHandlerItemStack)stack.getCapability(FLUID_HANDLER_ITEM_CAPABILITY, null);
+		
+		FluidStack fluidStack = cap.getTankProperties()[0].getContents();
 		int amount = 0;
 		if (fluidStack != null) {
 			amount=fluidStack.amount;
@@ -63,15 +69,16 @@ public class ItemOilPipet extends Item {
 	}
 	
 	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX,
+	public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX,
 			float hitY, float hitZ) {
+		ItemStack stack = playerIn.getHeldItem(hand);
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
 		if (tileEntity != null) {
 			if (tileEntity.hasCapability(FLUID_HANDLER_CAPABILITY, facing)) {
 				IFluidHandler fluidTileEntity = tileEntity.getCapability(FLUID_HANDLER_CAPABILITY, facing);
 				if (playerIn.isSneaking()) {
 					//Drain
-					FluidHandlerItemStack fluidItemStack = (FluidHandlerItemStack)stack.getCapability(FLUID_HANDLER_CAPABILITY, null);
+					FluidHandlerItemStack fluidItemStack = (FluidHandlerItemStack)stack.getCapability(FLUID_HANDLER_ITEM_CAPABILITY, null);
 					
 					FluidStack contents = fluidItemStack.getTankProperties()[0].getContents();
 					if (contents == null || contents.amount == 0) {
@@ -86,7 +93,7 @@ public class ItemOilPipet extends Item {
 					return EnumActionResult.SUCCESS;
 				} else {
 					//Fill
-					FluidHandlerItemStack fluidItemStack = (FluidHandlerItemStack)stack.getCapability(FLUID_HANDLER_CAPABILITY, null);
+					FluidHandlerItemStack fluidItemStack = (FluidHandlerItemStack)stack.getCapability(FLUID_HANDLER_ITEM_CAPABILITY, null);
 					
 					FluidStack contents = fluidItemStack.drain(capacity, false);
 					int filled = fluidTileEntity.fill(contents, false);

@@ -7,7 +7,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
@@ -65,10 +64,10 @@ public class BlockThresher extends BlockContainer {
 	}
 
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side,
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side,
 			float hitX, float hitY, float hitZ) {
 		TileEntityThresher tileEntity = (TileEntityThresher) worldIn.getTileEntity(pos);
-		return InventoryUtil.interactInventory(playerIn, hand, heldItem, tileEntity, 0);
+		return InventoryUtil.interactInventory(playerIn, hand, tileEntity, 0);
 	}
 
 	@Override

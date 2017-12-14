@@ -108,15 +108,13 @@ public class BlockAxle extends BlockContainer {
 	}
 	
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-		if (heldItem != null) {
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+		ItemStack heldItem = playerIn.getHeldItem(hand);
+		if (!heldItem.isEmpty()) {
 			if ((Boolean)state.getValue(VARIANT) == false && heldItem.getItem() == ModItems.wheel) {
 				worldIn.setBlockState(pos, state.withProperty(VARIANT, true), 2);
 				if (!playerIn.capabilities.isCreativeMode) {
-					--heldItem.stackSize;
-					if (heldItem.stackSize == 0) {
-						playerIn.inventory.deleteStack(heldItem);
-					}
+					heldItem.shrink(1);
 				}
 				return true;
 			}

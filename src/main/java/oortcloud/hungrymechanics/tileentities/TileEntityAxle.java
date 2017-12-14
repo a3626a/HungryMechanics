@@ -82,10 +82,10 @@ public class TileEntityAxle extends TileEntityPowerTransporter {
 		if (this.getConnectedAxle() == null) {
 			return false;
 		} else {
-			if (!isValidAxle(worldObj, this.getConnectedAxle())) {
+			if (!isValidAxle(getWorld(), this.getConnectedAxle())) {
 				return false;
 			} else {
-				TileEntityAxle axleConnected = (TileEntityAxle) worldObj.getTileEntity(this.getConnectedAxle());
+				TileEntityAxle axleConnected = (TileEntityAxle) getWorld().getTileEntity(this.getConnectedAxle());
 				if (axleConnected == null) {
 					return false;
 				} else {

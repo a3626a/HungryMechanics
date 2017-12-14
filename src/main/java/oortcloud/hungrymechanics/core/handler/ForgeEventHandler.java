@@ -27,7 +27,7 @@ public class ForgeEventHandler {
 		ItemStack item = event.getItemStack();
 		BlockPos pos = event.getPos().offset(event.getFace());
 
-		boolean flag1 = item != null && item.getItem() == ItemBlock.getItemFromBlock(Blocks.RED_FLOWER);
+		boolean flag1 = !item.isEmpty() && item.getItem() == ItemBlock.getItemFromBlock(Blocks.RED_FLOWER);
 		boolean flag2 = event.getWorld().getBlockState(pos.down()).getBlock() == Blocks.FARMLAND;
 		boolean flag3 = event.getWorld().isAirBlock(pos);
 

@@ -19,13 +19,13 @@ group= "com.oortcloud.hungrymechanics"
 archivesBaseName = "hungrymechanics"
 
 minecraft {
-    version = "${mc_version}-12.18.3.2272"
+    version = "${mc_version}-13.20.1.2563"
     runDir = "run"
     
 	replace "@VERSION@", project.version
     replaceIn "References.java"
 	
-    mappings = "snapshot_20161111"
+    mappings = "snapshot_20161220"
 }
 
 dependencies {}

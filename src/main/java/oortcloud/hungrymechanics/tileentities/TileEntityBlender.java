@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
@@ -23,7 +24,7 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 	@CapabilityInject(IItemHandler.class)
 	static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = null;
 
-	private ItemStack[] inventory = new ItemStack[getSizeInventory()];
+	private NonNullList<ItemStack> inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
 
 	private double energyUsage = 0.5;
 
@@ -107,7 +108,7 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 
 				for (int i = 0; i < getSizeInventory(); i++) {
 					items[itemsNext] = getStackInSlot(i);
-					if (items[itemsNext] != null) {
+					if (!items[itemsNext].isEmpty()) {
 						itemsSlot[itemsNext++] = i;
 					} else {
 						if (emptySlot == -1)
@@ -123,13 +124,13 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 						break;
 					for (int j = i + 1; j < itemsNext; j++) {
 						ItemStack output = RecipeBlender.getRecipe(items[i], items[j]);
-						if (output != null) {
+						if (!output.isEmpty()) {
 							if (itemsNext >= 3) {
 								for (int k = 0; k < itemsNext; k++) {
 									if (k != i && k != j) {
 										ItemStack targetOutput = items[k];
 										if (output.getItem() == targetOutput.getItem() && output.getItemDamage() == targetOutput.getItemDamage()) {
-											if (targetOutput.stackSize + output.stackSize <= targetOutput.getMaxStackSize()) {
+											if (targetOutput.getCount() + output.getCount() <= targetOutput.getMaxStackSize()) {
 												canWork = true;
 												currentInputSlot1 = itemsSlot[i];
 												currentInputSlot2 = itemsSlot[j];
@@ -160,7 +161,7 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 		} else {
 			if (canWork) {
 				ItemStack output = getStackInSlot(currentOutputSlot);
-				if (output.stackSize + currentOutput.stackSize < output.getMaxStackSize()) {
+				if (output.getCount() + currentOutput.getCount() < output.getMaxStackSize()) {
 					canWork = true;
 				} else {
 					canWork = false;
@@ -180,8 +181,8 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 					decrStackSize(currentInputSlot1, 1);
 					decrStackSize(currentInputSlot2, 1);
 					ItemStack output = getStackInSlot(currentOutputSlot);
-					if (output != null) {
-						output.stackSize += currentOutput.stackSize;
+					if (!output.isEmpty()) {
+						output.grow(currentOutput.getCount());
 					} else {
 						setInventorySlotContents(currentOutputSlot, currentOutput.copy());
 					}
@@ -215,27 +216,27 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 
 	@Override
 	public ItemStack getStackInSlot(int index) {
-		return inventory[index];
+		return inventory.get(index);
 	}
 
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		if (this.inventory[index] != null) {
+		if (!inventory.get(index).isEmpty()) {
 			needSync = true;
 
 			ItemStack itemstack;
 
-			if (this.inventory[index].stackSize <= count) {
-				itemstack = this.inventory[index];
-				this.inventory[index] = null;
+			if (inventory.get(index).getCount() <= count) {
+				itemstack = inventory.get(index);
+				inventory.set(index, ItemStack.EMPTY);
 				isInventoryChanged = true;
 				this.markDirty();
 				return itemstack;
 			} else {
-				itemstack = this.inventory[index].splitStack(count);
+				itemstack = inventory.get(index).splitStack(count);
 
-				if (this.inventory[index].stackSize == 0) {
-					this.inventory[index] = null;
+				if (inventory.get(index).getCount() == 0) {
+					inventory.set(index, ItemStack.EMPTY);
 					isInventoryChanged = true;
 				}
 
@@ -243,7 +244,7 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 				return itemstack;
 			}
 		} else {
-			return null;
+			return ItemStack.EMPTY;
 		}
 	}
 
@@ -252,10 +253,10 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 		isInventoryChanged = true;
 		needSync = true;
 
-		this.inventory[index] = stack;
+		inventory.set(index, stack);
 
-		if (stack != null && stack.stackSize > this.getInventoryStackLimit()) {
-			stack.stackSize = this.getInventoryStackLimit();
+		if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit()) {
+			stack.setCount(this.getInventoryStackLimit());
 		}
 
 		this.markDirty();
@@ -266,8 +267,8 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 		isInventoryChanged = true;
 		needSync = true;
 
-		ItemStack ret = this.inventory[index];
-		this.inventory[index] = null;
+		ItemStack ret = inventory.get(index);
+		inventory.set(index, ItemStack.EMPTY);
 
 		this.markDirty();
 		return ret;
@@ -279,8 +280,8 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
-		return this.worldObj.getTileEntity(this.pos) != this ? false
+	public boolean isUsableByPlayer(EntityPlayer player) {
+		return this.getWorld().getTileEntity(this.pos) != this ? false
 				: player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
 	}
 
@@ -316,8 +317,8 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 		isInventoryChanged = true;
 		needSync = true;
 
-		for (int i = 0; i < this.inventory.length; ++i) {
-			this.inventory[i] = null;
+		for (int i = 0; i < inventory.size(); ++i) {
+			inventory.set(i, ItemStack.EMPTY);
 		}
 	}
 
@@ -356,7 +357,7 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 		for (int i = 0; i < getSizeInventory(); i++) {
 			NBTTagCompound tag = new NBTTagCompound();
 			ItemStack item = getStackInSlot(i);
-			if (item != null) {
+			if (!item.isEmpty()) {
 				item.writeToNBT(tag);
 				compound.setTag("items" + i, tag);
 			}
@@ -367,9 +368,9 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 		for (int i = 0; i < getSizeInventory(); i++) {
 			if (compound.hasKey("items" + i)) {
 				NBTTagCompound tag = (NBTTagCompound) compound.getTag("items" + i);
-				setInventorySlotContents(i, ItemStack.loadItemStackFromNBT(tag));
+				setInventorySlotContents(i, new ItemStack(tag));
 			} else {
-				setInventorySlotContents(i, null);
+				setInventorySlotContents(i, ItemStack.EMPTY);
 			}
 		}
 	}
@@ -396,6 +397,15 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 	@Override
 	public BlockPos[] getConnectedBlocks() {
 		return new BlockPos[] { pos.up() };
+	}
+
+	@Override
+	public boolean isEmpty() {
+		for (int i = 0; i < getSizeInventory(); i++) {
+			if (!getStackInSlot(i).isEmpty())
+				return true;
+		}
+		return false;
 	}
 
 }
