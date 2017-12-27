@@ -7,7 +7,7 @@
     ],
     "key" : {
         "a" : {
-            "item" : "hungryanimals:axle"
+            "item" : "hungrymechanics:axle"
         },
         "b" : {
             "type": "forge:ore_dict",
