@@ -1,0 +1,23 @@
+{
+    "type" : "forge:ore_shaped",
+    "pattern" : [
+        "  a",
+        "bcb",
+        "bcb"
+    ],
+    "key" : {
+        "a" : {
+            "item" : "hungryanimals:axle"
+        },
+        "b" : {
+            "type": "forge:ore_dict",
+            "ore": "stone"
+        },
+        "c" : {
+            "item" : "hungryanimals:compositewood"
+        }
+    },
+    "result" : {
+        "item" : "hungrymechanics:millstone"
+    }
+}
