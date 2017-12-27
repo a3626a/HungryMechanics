@@ -6,7 +6,7 @@ buildscript {
 		}
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -19,13 +19,13 @@ group= "com.oortcloud.hungrymechanics"
 archivesBaseName = "hungrymechanics"
 
 minecraft {
-    version = "${mc_version}-13.20.1.2563"
+    version = "${mc_version}-14.23.1.2566"
     runDir = "run"
     
 	replace "@VERSION@", project.version
     replaceIn "References.java"
 	
-    mappings = "snapshot_20161220"
+    mappings = "snapshot_20171003"
 }
 
 dependencies {}
