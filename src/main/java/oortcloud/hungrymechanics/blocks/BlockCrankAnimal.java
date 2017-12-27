@@ -19,7 +19,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import oortcloud.hungryanimals.core.lib.References;
 import oortcloud.hungrymechanics.core.lib.Strings;
 import oortcloud.hungrymechanics.items.ModItems;
@@ -35,8 +34,6 @@ public class BlockCrankAnimal extends BlockContainer {
 		setRegistryName(Strings.blockCrankAnimalName);
 		setUnlocalizedName(References.MODID + "." + Strings.blockCrankAnimalName);
 		setCreativeTab(null);
-		GameRegistry.register(this);
-		// TODO Not register block item
 	}
 
 	@Override
@@ -69,7 +66,7 @@ public class BlockCrankAnimal extends BlockContainer {
 						List<EntityLiving> list = worldIn.getEntitiesWithinAABB(EntityLiving.class,
 								new AxisAlignedBB(pos.getX() - d0, pos.getY() - d0, pos.getZ() - d0, pos.getX() + d0, pos.getY() + d0, pos.getZ() + d0));
 						for (EntityLiving entityliving : list) {
-							if (entityliving.getLeashed() && entityliving.getLeashedToEntity() == playerIn) {
+							if (entityliving.getLeashed() && entityliving.getLeashHolder() == playerIn) {
 								entityliving.clearLeashed(true, false);
 							}
 						}

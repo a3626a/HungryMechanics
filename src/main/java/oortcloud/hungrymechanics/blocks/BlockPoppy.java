@@ -10,7 +10,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.core.lib.Strings;
 import oortcloud.hungrymechanics.items.ModItems;
@@ -21,8 +20,6 @@ public class BlockPoppy extends BlockCrops {
 		super();
 		setRegistryName(Strings.blockPoppyName);
 		setUnlocalizedName(References.MODID+"."+Strings.blockPoppyName);
-		GameRegistry.register(this);
-		//TODO NOT REGISTER BLOCK ITEM
 	}
 
 	@Override

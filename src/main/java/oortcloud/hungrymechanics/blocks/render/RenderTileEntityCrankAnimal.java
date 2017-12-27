@@ -2,9 +2,9 @@ package oortcloud.hungrymechanics.blocks.render;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLiving;
@@ -26,7 +26,7 @@ public class RenderTileEntityCrankAnimal extends TileEntitySpecialRenderer<TileE
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntityCrankAnimal crank, double x, double y, double z, float partialTick, int p_180535_9_) {
+	public void render(TileEntityCrankAnimal crank, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
 		// TODO Copy Leash Rendering From Vanilla Leash
 		if (!crank.isPrimary())
 			return;
@@ -52,7 +52,7 @@ public class RenderTileEntityCrankAnimal extends TileEntitySpecialRenderer<TileE
 			double posZ = crank.getPos().getZ() + 0.5 + 1.3 * Math.sin(angle);
 
 			Tessellator tessellator = Tessellator.getInstance();
-			VertexBuffer vertexbuffer = tessellator.getBuffer();
+			BufferBuilder vertexbuffer = tessellator.getBuffer();
 			double d12 = this.interpolateValue((double) leashedAnimal.prevRenderYawOffset, (double) leashedAnimal.renderYawOffset, (double) partialTick) * 0.01745329238474369D + (Math.PI / 2D);
 			double d5 = Math.cos(d12) * (double) leashedAnimal.width * 0.4D;
 			x += +0.5 + 1.3 * Math.cos(angle);

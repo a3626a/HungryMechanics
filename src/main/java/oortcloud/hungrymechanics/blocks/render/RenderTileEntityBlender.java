@@ -21,7 +21,7 @@ public class RenderTileEntityBlender extends TileEntitySpecialRenderer<TileEntit
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntityBlender blender, double x, double y, double z, float partialTick, int parInt) {
+	public void render(TileEntityBlender blender, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
 		GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
@@ -47,16 +47,16 @@ public class RenderTileEntityBlender extends TileEntitySpecialRenderer<TileEntit
 				RenderManager render = Minecraft.getMinecraft().getRenderManager();
 				switch (i) {
 				case 0:
-					render.doRenderEntity(item, +0.25, 0.1, +0.25, 0, 0, false);
+					render.renderEntity(item, +0.25, 0.1, +0.25, 0, 0, false);
 					break;
 				case 1:
-					render.doRenderEntity(item, -0.25, 0.1, +0.25, 0, 0, false);
+					render.renderEntity(item, -0.25, 0.1, +0.25, 0, 0, false);
 					break;
 				case 2:
-					render.doRenderEntity(item, -0.25, 0.1, -0.25, 0, 0, false);
+					render.renderEntity(item, -0.25, 0.1, -0.25, 0, 0, false);
 					break;
 				case 3:
-					render.doRenderEntity(item, +0.25, 0.1, -0.25, 0, 0, false);
+					render.renderEntity(item, +0.25, 0.1, -0.25, 0, 0, false);
 					break;
 				}
 			}

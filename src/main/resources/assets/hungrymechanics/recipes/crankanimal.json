@@ -1,0 +1,16 @@
+{
+    "type" : "minecraft:crafting_shaped",
+    "pattern" : [
+        " a ",
+        "aaa",
+        " a "
+    ],
+    "key" : {
+        "a" : {
+            "item" : "hungrymechanics:axle"
+        }
+    },
+    "result" : {
+        "item" : "hungrymechanics:crankanimal"
+    }
+}

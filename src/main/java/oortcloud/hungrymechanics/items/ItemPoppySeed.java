@@ -14,7 +14,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import oortcloud.hungrymechanics.HungryMechanics;
 import oortcloud.hungrymechanics.blocks.ModBlocks;
 import oortcloud.hungrymechanics.core.lib.References;
@@ -28,7 +27,6 @@ public class ItemPoppySeed extends Item implements IPlantable {
 		setRegistryName(Strings.itemPoppySeedName);
 		setUnlocalizedName(References.MODID+"."+Strings.itemPoppySeedName);
 		setCreativeTab(HungryMechanics.tabHungryMechanics);
-		GameRegistry.register(this);
 	}
 
 	@Override

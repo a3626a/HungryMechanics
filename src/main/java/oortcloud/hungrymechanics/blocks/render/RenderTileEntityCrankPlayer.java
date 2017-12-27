@@ -17,7 +17,7 @@ public class RenderTileEntityCrankPlayer extends TileEntitySpecialRenderer<TileE
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntityCrankPlayer crank, double x, double y, double z, float partialTick, int p_180535_9_) {
+	public void render(TileEntityCrankPlayer crank, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
 
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);

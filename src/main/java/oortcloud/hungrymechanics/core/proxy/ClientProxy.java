@@ -4,8 +4,12 @@ import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import oortcloud.hungrymechanics.blocks.ModBlocks;
 import oortcloud.hungrymechanics.blocks.render.RenderTileEntityAxle;
 import oortcloud.hungrymechanics.blocks.render.RenderTileEntityBlender;
@@ -23,9 +27,11 @@ import oortcloud.hungrymechanics.tileentities.TileEntityCrankPlayer;
 import oortcloud.hungrymechanics.tileentities.TileEntityMillstone;
 import oortcloud.hungrymechanics.tileentities.TileEntityThresher;
 
+@Mod.EventBusSubscriber(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
-
-	public void registerItemRendering() {
+	
+    @SubscribeEvent
+    public static void registerModels(ModelRegistryEvent event) {
 		ModelLoader.setCustomModelResourceLocation(ItemBlock.getItemFromBlock(ModBlocks.axle), 0,
 				new ModelResourceLocation(ModBlocks.axle.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ItemBlock.getItemFromBlock(ModBlocks.crankPlayer), 0,
@@ -52,7 +58,7 @@ public class ClientProxy extends CommonProxy {
 				return new ModelResourceLocation(References.RESOURCESPREFIX + Strings.itemBeltName, "inventory");
 			}
 		});
-	}
+    }
 
 	public void registerTileEntityRendering() {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAxle.class, new RenderTileEntityAxle());

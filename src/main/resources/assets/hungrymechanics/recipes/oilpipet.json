@@ -1,0 +1,21 @@
+{
+    "type" : "forge:ore_shaped",
+    "pattern" : [
+        " aa",
+        " ba",
+        "b  "
+    ],
+    "key" : {
+        "a" : {
+            "type": "forge:ore_dict",
+            "ore": "dyeRed"
+        },
+        "b" : {
+            "type": "forge:ore_dict",
+            "ore": "blockGlass"
+        }
+    },
+    "result" : {
+        "item" : "hungrymechanics:blade"
+    }
+}

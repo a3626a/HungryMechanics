@@ -32,7 +32,7 @@ public class EntityAICrank extends EntityAIBase {
 
 	@Override
 	public boolean shouldExecute() {
-		return continueExecuting();
+		return shouldContinueExecuting();
 		/*
 		 * if (world.getWorldTime()-timer > period) { timer =
 		 * world.getWorldTime(); return continueExecuting(); } else { return
@@ -41,7 +41,7 @@ public class EntityAICrank extends EntityAIBase {
 	}
 
 	@Override
-	public boolean continueExecuting() {
+	public boolean shouldContinueExecuting() {
 		if (crankAnimal != null && crankAnimal.isInvalid()) {
 			crankAnimal = null;
 			return false;
@@ -77,17 +77,17 @@ public class EntityAICrank extends EntityAIBase {
 		int z1 = crankAnimal.getPos().getZ() - 2;
 		int z2 = crankAnimal.getPos().getZ() + 2;
 
-		if (pnt.xCoord >= x2 && pnt.zCoord < z2) {
-			return findPathPoint(x2, pnt.yCoord, pnt.zCoord + 1);
+		if (pnt.x >= x2 && pnt.z < z2) {
+			return findPathPoint(x2, pnt.y, pnt.z + 1);
 		}
-		if (pnt.zCoord >= z2 && pnt.xCoord > x1) {
-			return findPathPoint(pnt.xCoord - 1, pnt.yCoord, z2);
+		if (pnt.z >= z2 && pnt.x > x1) {
+			return findPathPoint(pnt.x - 1, pnt.y, z2);
 		}
-		if (pnt.xCoord <= x1 && pnt.zCoord > z1) {
-			return findPathPoint(x1, pnt.yCoord, pnt.zCoord - 1);
+		if (pnt.x <= x1 && pnt.z > z1) {
+			return findPathPoint(x1, pnt.y, pnt.z - 1);
 		}
-		if (pnt.zCoord <= z1 && pnt.xCoord < x2) {
-			return findPathPoint(pnt.xCoord + 1, pnt.yCoord, z1);
+		if (pnt.z <= z1 && pnt.x < x2) {
+			return findPathPoint(pnt.x + 1, pnt.y, z1);
 		}
 		return null;
 	}

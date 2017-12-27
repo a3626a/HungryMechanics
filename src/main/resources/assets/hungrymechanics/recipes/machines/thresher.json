@@ -1,0 +1,40 @@
+[
+    {
+        "input" : {
+            "name" : "minecraft:wheat"
+        },
+        "output" : [
+            {
+                "item" : {
+                    "name" : "minecraft:wheat_seeds"
+                },
+                "probability" : 0.5
+            },
+            {
+                "item" : {
+                    "name" : "hungrymechanics:straw"
+                },
+                "probability" : 1.0
+            }
+        ]
+    },
+    {
+        "input" : {
+            "name" : "hungrymechanics:poppycrop"
+        },
+        "output" : [
+            {
+                "item" : {
+                    "name" : "hungrymechanics:poppyseed"
+                },
+                "probability" : 0.5
+            },
+            {
+                "item" : {
+                    "name" : "hungrymechanics:straw"
+                },
+                "probability" : 1.0
+            }
+        ]
+    }
+]

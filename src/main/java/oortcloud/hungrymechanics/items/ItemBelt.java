@@ -2,6 +2,7 @@ package oortcloud.hungrymechanics.items;
 
 import java.util.List;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -13,7 +14,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import oortcloud.hungrymechanics.HungryMechanics;
 import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.core.lib.Strings;
@@ -31,17 +31,16 @@ public class ItemBelt extends Item {
 		setCreativeTab(HungryMechanics.tabHungryMechanics);
 
 		setMaxStackSize(1);
-		GameRegistry.register(this);
 	}
-
+	
 	@Override
-	public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
 		ItemStack itemStack = new ItemStack(this,1,16);
 		subItems.add(itemStack);
 	}
 	
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+	public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
 		tooltip.add("Length: " + stack.getItemDamage() + " m");
 		if (stack.hasTagCompound() && stack.getTagCompound().hasKey("SelectedBlockPos")) {
 			tooltip.add("Connected to: " + BlockPos.fromLong(stack.getTagCompound().getLong("SelectedBlockPos")));

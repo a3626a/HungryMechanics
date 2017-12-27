@@ -24,12 +24,11 @@ import oortcloud.hungrymechanics.core.network.PacketTileEntityClient;
 import oortcloud.hungrymechanics.core.proxy.CommonProxy;
 import oortcloud.hungrymechanics.fluids.ModFluids;
 import oortcloud.hungrymechanics.items.ModItems;
-import oortcloud.hungrymechanics.recipes.CraftingHandler;
 import oortcloud.hungrymechanics.recipes.RecipeBlender;
 import oortcloud.hungrymechanics.recipes.RecipeMillstone;
 import oortcloud.hungrymechanics.recipes.RecipeThresher;
 
-@Mod(modid = References.MODID, name = References.MODNAME, version = References.VERSION, dependencies = "required-after:hungryanimals@[1.11.2-4.0.0,)")
+@Mod(modid = References.MODID, name = References.MODNAME, version = References.VERSION, dependencies = "required-after:hungryanimals@[1.12.2-5.0.0,1.12.2-5.1)")
 public class HungryMechanics {
 	@Mod.Instance
 	public static HungryMechanics instance;
@@ -61,13 +60,11 @@ public class HungryMechanics {
 		ModFluids.init();
 		proxy.registerTileEntityRendering();
 		proxy.registerTileEntities();
-		proxy.registerItemRendering();
 		proxy.registerEventHandler();
 	}
 
 	@Mod.EventHandler
 	public static void Init(FMLInitializationEvent event) {
-		CraftingHandler.init();
 		ConfigurationHandler.sync();
 		
 		simpleChannel = NetworkRegistry.INSTANCE.newSimpleChannel(References.MODNAME);

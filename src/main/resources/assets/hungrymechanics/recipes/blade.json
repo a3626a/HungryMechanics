@@ -1,0 +1,19 @@
+{
+    "type" : "forge:ore_shaped",
+    "pattern" : [
+        "aab",
+        "aab"
+    ],
+    "key" : {
+        "a" : {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "b" : {
+            "item" : "hungryanimals:compositewood"
+        }
+    },
+    "result" : {
+        "item" : "hungrymechanics:blade"
+    }
+}

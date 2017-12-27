@@ -25,7 +25,7 @@ public class RenderTileEntityMillstone extends TileEntitySpecialRenderer<TileEnt
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntityMillstone millstone, double x, double y, double z, float partialTick, int parInt) {
+	public void render(TileEntityMillstone millstone, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
 		IBlockState state = millstone.getWorld().getBlockState(millstone.getPos());
 		if (state.getBlock() != ModBlocks.millStone)
 			return;
@@ -57,10 +57,10 @@ public class RenderTileEntityMillstone extends TileEntitySpecialRenderer<TileEnt
 
 			RenderManager render = Minecraft.getMinecraft().getRenderManager();
 
-			render.doRenderEntity(item, 0.5, 0, 0, 0, 0, false);
-			render.doRenderEntity(item, -0.5, 0, 0, 0, 0, false);
-			render.doRenderEntity(item, 0, 0, 0.5, 0, 0, false);
-			render.doRenderEntity(item, 0, 0, -0.5, 0, 0, false);
+			render.renderEntity(item, 0.5, 0, 0, 0, 0, false);
+			render.renderEntity(item, -0.5, 0, 0, 0, 0, false);
+			render.renderEntity(item, 0, 0, 0.5, 0, 0, false);
+			render.renderEntity(item, 0, 0, -0.5, 0, 0, false);
 		}
 		GL11.glPopMatrix();
 		GL11.glPopMatrix();

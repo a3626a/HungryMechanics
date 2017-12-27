@@ -2,18 +2,15 @@
     "type" : "minecraft:crafting_shaped",
     "pattern" : [
         "aaa",
-        "bba",
+        "a a",
         "aaa"
     ],
     "key" : {
         "a" : {
             "item" : "hungryanimals:compositewood"
-        },
-        "b" : {
-            "item" : "hungrymechanics:blade"
         }
     },
     "result" : {
-        "item" : "hungrymechanics:thresher"
+        "item" : "hungrymechanics:compositewoodcasing"
     }
 }

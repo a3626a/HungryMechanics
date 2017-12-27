@@ -7,7 +7,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import oortcloud.hungrymechanics.HungryMechanics;
 import oortcloud.hungrymechanics.blocks.ModBlocks;
 import oortcloud.hungrymechanics.core.lib.References;
@@ -24,7 +23,6 @@ public class ItemCrankAnimal extends Item {
 		setRegistryName(Strings.itemCrankAnimalName);
 		setUnlocalizedName(References.MODID + "." + Strings.itemCrankAnimalName);
 		setCreativeTab(HungryMechanics.tabHungryMechanics);
-		GameRegistry.register(this);
 	}
 
 	@Override

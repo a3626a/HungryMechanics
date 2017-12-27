@@ -8,16 +8,24 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.IForgeRegistryEntry;
+import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.items.ModItems;
 
-public class RecipeConnectBelt implements IRecipe {
+public class RecipeConnectBelt extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 
-	public boolean matches(InventoryCrafting p_77569_1_, World worldIn) {
+	public RecipeConnectBelt() {
+		setRegistryName(new ResourceLocation(References.MODID, "recipeconnectbelt"));
+	}
+	
+	@Override
+	public boolean matches(InventoryCrafting inventory, World worldIn) {
 		ArrayList<ItemStack> arraylist = Lists.newArrayList();
 
-		for (int i = 0; i < p_77569_1_.getSizeInventory(); ++i) {
-			ItemStack itemstack = p_77569_1_.getStackInSlot(i);
+		for (int i = 0; i < inventory.getSizeInventory(); ++i) {
+			ItemStack itemstack = inventory.getStackInSlot(i);
 
 			if (!itemstack.isEmpty() && itemstack.getItem() == ModItems.belt) {
 				arraylist.add(itemstack);
@@ -28,13 +36,13 @@ public class RecipeConnectBelt implements IRecipe {
 	}
 
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting p_77572_1_) {
+	public ItemStack getCraftingResult(InventoryCrafting inventory) {
 		ArrayList<ItemStack> arraylist = Lists.newArrayList();
 		ItemStack itemstack;
 
 		int length = 0;
-		for (int i = 0; i < p_77572_1_.getSizeInventory(); ++i) {
-			itemstack = p_77572_1_.getStackInSlot(i);
+		for (int i = 0; i < inventory.getSizeInventory(); ++i) {
+			itemstack = inventory.getStackInSlot(i);
 			if (!itemstack.isEmpty() && itemstack.getItem() == ModItems.belt) {
 				length += itemstack.getItemDamage();
 				arraylist.add(itemstack);
@@ -48,25 +56,25 @@ public class RecipeConnectBelt implements IRecipe {
 		return ItemStack.EMPTY;
 	}
 
-	/**
-	 * Returns the size of the recipe area
-	 */
-	public int getRecipeSize() {
-		return 4;
-	}
-
+	@Override
 	public ItemStack getRecipeOutput() {
 		return ItemStack.EMPTY;
 	}
 
+	@Override
 	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inventoryCrafting) {
 		NonNullList<ItemStack> aitemstack = NonNullList.withSize(inventoryCrafting.getSizeInventory(), ItemStack.EMPTY);
-		;
+
 		for (int i = 0; i < aitemstack.size(); ++i) {
 			ItemStack itemstack = inventoryCrafting.getStackInSlot(i);
 			aitemstack.set(i, net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack));
 		}
 
 		return aitemstack;
+	}
+
+	@Override
+	public boolean canFit(int width, int height) {
+		return width*height >= 2;
 	}
 }

@@ -1,11 +1,16 @@
 package oortcloud.hungrymechanics.items;
 
 import net.minecraft.item.Item;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraft.item.ItemBlock;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import oortcloud.hungrymechanics.HungryMechanics;
+import oortcloud.hungrymechanics.blocks.ModBlocks;
 import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.core.lib.Strings;
 
+@Mod.EventBusSubscriber
 public class ModItems {
 	public static Item wheel;
 	public static Item straw;
@@ -24,16 +29,21 @@ public class ModItems {
 		oilpipet = new ItemOilPipet(1000);
 		belt = new ItemBelt();
 		wheel = new Item().setRegistryName(Strings.itemWheelName).setUnlocalizedName(References.MODID+"."+Strings.itemWheelName).setCreativeTab(HungryMechanics.tabHungryMechanics);
-		GameRegistry.register(wheel);
 		straw = new Item().setRegistryName(Strings.itemStrawName).setUnlocalizedName(References.MODID+"."+Strings.itemStrawName).setCreativeTab(HungryMechanics.tabHungryMechanics);
-		GameRegistry.register(straw);
 		poppycrop = new Item().setRegistryName(Strings.itemPoppyCropName).setUnlocalizedName(References.MODID+"."+Strings.itemPoppyCropName).setCreativeTab(HungryMechanics.tabHungryMechanics);
-		GameRegistry.register(poppycrop);
 		mixedFeed = new Item().setRegistryName(Strings.itemMixedFeedName).setUnlocalizedName(References.MODID+"."+Strings.itemMixedFeedName).setCreativeTab(HungryMechanics.tabHungryMechanics);
-		GameRegistry.register(mixedFeed);
 		compositeWoodCasing = new Item().setRegistryName(Strings.itemCompositeWoodCasingName).setUnlocalizedName(References.MODID+"."+Strings.itemCompositeWoodCasingName).setCreativeTab(HungryMechanics.tabHungryMechanics);
-		GameRegistry.register(compositeWoodCasing);
 		blade = new Item().setRegistryName(Strings.itemBladeName).setUnlocalizedName(References.MODID+"."+Strings.itemBladeName).setCreativeTab(HungryMechanics.tabHungryMechanics);
-		GameRegistry.register(blade);
+	}
+	
+	@SubscribeEvent
+	public static void registerItems(RegistryEvent.Register<Item> event) {
+	    event.getRegistry().registerAll(poppyseed, crankAnimal, oilpipet, belt, wheel, straw, poppycrop, mixedFeed, compositeWoodCasing, blade);
+	    
+	    event.getRegistry().register(new ItemBlock(ModBlocks.axle).setRegistryName(ModBlocks.axle.getRegistryName()));
+	    event.getRegistry().register(new ItemBlock(ModBlocks.blender).setRegistryName(ModBlocks.blender.getRegistryName()));
+	    event.getRegistry().register(new ItemBlock(ModBlocks.crankPlayer).setRegistryName(ModBlocks.crankPlayer.getRegistryName()));
+	    event.getRegistry().register(new ItemBlock(ModBlocks.millStone).setRegistryName(ModBlocks.millStone.getRegistryName()));
+	    event.getRegistry().register(new ItemBlock(ModBlocks.thresher).setRegistryName(ModBlocks.thresher.getRegistryName()));
 	}
 }

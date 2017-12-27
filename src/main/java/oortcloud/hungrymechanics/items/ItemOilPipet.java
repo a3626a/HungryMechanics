@@ -2,6 +2,7 @@ package oortcloud.hungrymechanics.items;
 
 import java.util.List;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -19,7 +20,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import oortcloud.hungrymechanics.HungryMechanics;
 import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.core.lib.Strings;
@@ -41,7 +41,6 @@ public class ItemOilPipet extends Item {
 		setRegistryName(Strings.itemOilPipetName);
 		setUnlocalizedName(References.MODID+"."+Strings.itemOilPipetName);
 		setCreativeTab(HungryMechanics.tabHungryMechanics);
-		GameRegistry.register(this);
 	}
 
     @Override
@@ -56,8 +55,7 @@ public class ItemOilPipet extends Item {
     }
 	
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-		
+	public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
 		FluidHandlerItemStack cap = (FluidHandlerItemStack)stack.getCapability(FLUID_HANDLER_ITEM_CAPABILITY, null);
 		
 		FluidStack fluidStack = cap.getTankProperties()[0].getContents();
@@ -67,7 +65,7 @@ public class ItemOilPipet extends Item {
 		}
 		tooltip.add("Liquid Amount: " + amount + " mB");
 	}
-	
+
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX,
 			float hitY, float hitZ) {

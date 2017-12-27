@@ -1,19 +1,20 @@
 {
     "type" : "minecraft:crafting_shaped",
     "pattern" : [
-        " a ",
         "aba",
-        " a "
+        "b b",
+        "aba"
     ],
     "key" : {
         "a" : {
-            "item" : "hungrymechanics:blade"
+            "item" : "minecraft:leather"
         },
         "b" : {
-            "item" : "hungrymechanics:compositewoodcasing"
+            "item" : "hungryanimals:animalglue"
         }
     },
     "result" : {
-        "item" : "hungrymechanics:blender"
+        "item" : "hungrymechanics:belt",
+        "data": 4
     }
 }

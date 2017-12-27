@@ -3,9 +3,9 @@
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
@@ -27,7 +27,7 @@ public class RenderTileEntityAxle extends TileEntitySpecialRenderer<TileEntityAx
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntityAxle axle, double x, double y, double z, float partialTick, int p_180535_9_) {
+	public void render(TileEntityAxle axle, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
 		IBlockState state = axle.getWorld().getBlockState(axle.getPos());
 		if (state.getBlock() != ModBlocks.axle)
 			return;
@@ -63,7 +63,7 @@ public class RenderTileEntityAxle extends TileEntitySpecialRenderer<TileEntityAx
 				externalAngle = (externalAngle - 45*((int)externalAngle/45) + 360) % 360;
 
 				Tessellator tessellator = Tessellator.getInstance();
-				VertexBuffer renderer = tessellator.getBuffer();
+				BufferBuilder renderer = tessellator.getBuffer();
 				GlStateManager.disableTexture2D();
 				GlStateManager.disableLighting();
 				GlStateManager.shadeModel(GL11.GL_SMOOTH);
@@ -80,7 +80,7 @@ public class RenderTileEntityAxle extends TileEntitySpecialRenderer<TileEntityAx
 		GlStateManager.popMatrix();
 	}
 
-	public void drawBelt1(Tessellator tessellator, VertexBuffer renderer, double x1, double z1, double x2, double z2) {
+	public void drawBelt1(Tessellator tessellator, BufferBuilder renderer, double x1, double z1, double x2, double z2) {
 		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 		renderer.pos(x1, 2 / 16.0, z1).color(198, 92, 53, 255).endVertex();
 		renderer.pos(x2, 2 / 16.0, z2).color(198, 92, 53, 255).endVertex();
@@ -112,7 +112,7 @@ public class RenderTileEntityAxle extends TileEntitySpecialRenderer<TileEntityAx
 		tessellator.draw();
 	}
 
-	public void drawBelt2(Tessellator tessellator, VertexBuffer renderer, double x, double z, double distance, double angle) {
+	public void drawBelt2(Tessellator tessellator, BufferBuilder renderer, double x, double z, double distance, double angle) {
 		double dx = distance / 2.0 * Math.cos(Math.toRadians(angle));
 		double dz = distance / 2.0 * Math.sin(Math.toRadians(angle));
 		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
@@ -148,7 +148,7 @@ public class RenderTileEntityAxle extends TileEntitySpecialRenderer<TileEntityAx
 		tessellator.draw();
 	}
 
-	public void drawBelt3(Tessellator tessellator, VertexBuffer renderer, double x, double z, double distance, double angle) {
+	public void drawBelt3(Tessellator tessellator, BufferBuilder renderer, double x, double z, double distance, double angle) {
 		double dx = distance / 2.0 * Math.cos(Math.toRadians(angle));
 		double dz = distance / 2.0 * Math.sin(Math.toRadians(angle));
 		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);

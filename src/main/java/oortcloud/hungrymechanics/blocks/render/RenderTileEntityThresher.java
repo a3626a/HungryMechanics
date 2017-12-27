@@ -21,7 +21,7 @@ public class RenderTileEntityThresher extends TileEntitySpecialRenderer<TileEnti
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntityThresher thresher, double x, double y, double z, float partialTick, int parInt) {
+	public void render(TileEntityThresher thresher, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
 		float angle = thresher.getPowerNetwork().getAngle(partialTick);
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
@@ -41,7 +41,7 @@ public class RenderTileEntityThresher extends TileEntitySpecialRenderer<TileEnti
 
 			RenderManager render = Minecraft.getMinecraft().getRenderManager();
 
-			render.doRenderEntity(item, x + 0.5, y, z + 0.5, 0, 0, false);
+			render.renderEntity(item, x + 0.5, y, z + 0.5, 0, 0, false);
 		}
 	}
 

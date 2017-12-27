@@ -62,7 +62,7 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 		List<EntityAnimal> list = worldIn.getEntitiesWithinAABB(EntityAnimal.class,
 				new AxisAlignedBB((double) i - d0, (double) j - d0, (double) k - d0, (double) i + d0, (double) j + d0, (double) k + d0));
 		for (EntityAnimal animal : list) {
-			if (animal.getLeashed() && animal.getLeashedToEntity() == player) {
+			if (animal.getLeashed() && animal.getLeashHolder() == player) {
 				if (!HungryAnimalManager.getInstance().isRegistered(animal.getClass()))
 					continue;
 				ICapabilityTamableAnimal capTaming = animal.getCapability(ProviderTamableAnimal.CAP, null);

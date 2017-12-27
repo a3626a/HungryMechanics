@@ -1,8 +1,13 @@
 package oortcloud.hungrymechanics.blocks;
 
 import net.minecraft.block.Block;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+@Mod.EventBusSubscriber
 public class ModBlocks {
+	
 	public static Block millStone;
 	public static Block axle;
 	public static Block crankPlayer;
@@ -20,6 +25,11 @@ public class ModBlocks {
 		millStone = new BlockMillstone();
 		blender = new BlockBlender();
 		crankAnimal = new BlockCrankAnimal();
+	}
+	
+	@SubscribeEvent
+	public static void registerBlocks(RegistryEvent.Register<Block> event) {
+		event.getRegistry().registerAll(axle, crankPlayer, thresher, poppy, millStone, blender, crankAnimal);
 	}
 	
 }

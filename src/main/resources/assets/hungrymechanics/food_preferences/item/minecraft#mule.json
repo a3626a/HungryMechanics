@@ -1,0 +1,14 @@
+[
+	{
+		"item": {
+			"name": "hungrymechanics:mixedfeed"
+		},
+		"hunger": 80
+	},
+	{
+		"item": {
+			"name": "hungrymechanics:straw"
+		},
+		"hunger": 10
+	}
+]

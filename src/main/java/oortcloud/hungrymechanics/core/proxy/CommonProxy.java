@@ -27,9 +27,6 @@ public class CommonProxy {
 	public void registerTileEntityRendering() {
 	}
 
-	public void registerItemRendering() {
-	}
-
 	public void registerEventHandler() {
 		MinecraftForge.EVENT_BUS.register(new ConfigurationEventHandler());
 		MinecraftForge.EVENT_BUS.register(new ForgeEventHandler());
