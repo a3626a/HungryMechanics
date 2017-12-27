@@ -82,7 +82,7 @@ public class ConfigurationHandler {
 					}
 				});
 
-		blender = new ConfigurationHandlerJSONRecipe(new File(basefolder, "recipes"), "blender", (file) -> {
+		blender = new ConfigurationHandlerJSONRecipe(new File(basefolder, "recipes/machines"), "blender", (file) -> {
 			JsonArray jsonArr;
 			try {
 				jsonArr = (new JsonParser()).parse(new String(Files.readAllBytes(file.toPath()))).getAsJsonArray();
@@ -101,7 +101,7 @@ public class ConfigurationHandler {
 				RecipeBlender.addRecipe(input1, input2, output);
 			}
 		});
-		millstone = new ConfigurationHandlerJSONRecipe(new File(basefolder, "recipes"), "millstone", (file) -> {
+		millstone = new ConfigurationHandlerJSONRecipe(new File(basefolder, "recipes/machines"), "millstone", (file) -> {
 			JsonArray jsonArr;
 			try {
 				jsonArr = (new JsonParser()).parse(new String(Files.readAllBytes(file.toPath()))).getAsJsonArray();
@@ -118,7 +118,7 @@ public class ConfigurationHandler {
 				RecipeMillstone.addRecipe(item, amount);
 			}
 		});
-		thresher = new ConfigurationHandlerJSONRecipe(new File(basefolder, "recipes"), "thresher", (file) -> {
+		thresher = new ConfigurationHandlerJSONRecipe(new File(basefolder, "recipes/machines"), "thresher", (file) -> {
 			JsonArray jsonArr;
 			try {
 				jsonArr = (new JsonParser()).parse(new String(Files.readAllBytes(file.toPath()))).getAsJsonArray();

@@ -17,7 +17,7 @@ public class Strings {
 	public static final String itemMixedFeedName = "mixedfeed";
 	public static final String itemCompositeWoodCasingName = "compositewoodcasing";
 	public static final String itemBladeName = "blade";
-	public static final String itemCrankAnimalName = "itemcrankanimal"; // Duplicated name "crankanimal" for block and item registeration. Therefore, I added "item" prefix.
+	public static final String itemCrankAnimalName = "crankanimal"; // Duplicated name "crankanimal" for block and item registeration. Therefore, I added "item" prefix.
 	public static final String itemOilPipetName = "oilpipet";
 	public static final String itemBeltName = "belt";
 	
