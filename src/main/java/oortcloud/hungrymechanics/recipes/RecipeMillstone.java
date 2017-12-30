@@ -1,6 +1,7 @@
 package oortcloud.hungrymechanics.recipes;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 import oortcloud.hungryanimals.entities.food_preferences.FoodPreferenceItemStack.HashItemType;
@@ -26,6 +27,10 @@ public class RecipeMillstone {
 		} else {
 			return 0;
 		}
+	}
+
+	public static Map<HashItemType, Integer> getRecipeList() {
+		return recipe;
 	}
 
 }

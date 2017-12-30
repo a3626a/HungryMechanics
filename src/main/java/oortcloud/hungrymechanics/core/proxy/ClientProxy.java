@@ -1,11 +1,17 @@
 package oortcloud.hungrymechanics.core.proxy;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -19,6 +25,7 @@ import oortcloud.hungrymechanics.blocks.render.RenderTileEntityMillstone;
 import oortcloud.hungrymechanics.blocks.render.RenderTileEntityThresher;
 import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.core.lib.Strings;
+import oortcloud.hungrymechanics.fluids.ModFluids;
 import oortcloud.hungrymechanics.items.ModItems;
 import oortcloud.hungrymechanics.tileentities.TileEntityAxle;
 import oortcloud.hungrymechanics.tileentities.TileEntityBlender;
@@ -58,8 +65,45 @@ public class ClientProxy extends CommonProxy {
 				return new ModelResourceLocation(References.RESOURCESPREFIX + Strings.itemBeltName, "inventory");
 			}
 		});
+		
+		registerFluidModels();
     }
 
+    ////////////////////////////////
+    ////CHOONSTER-MINECRAFT-MODS////
+    ////////////////////////////////
+    
+	private static void registerFluidModels() {
+		ModFluids.MOD_FLUID_BLOCKS.forEach(ClientProxy::registerFluidModel);
+	}
+
+	private static void registerFluidModel(IFluidBlock fluidBlock) {
+		final Item item = Item.getItemFromBlock((Block) fluidBlock);
+		assert item != null;
+
+		ModelBakery.registerItemVariants(item);
+
+		final ModelResourceLocation modelResourceLocation = new ModelResourceLocation(References.MODID+":fluid", fluidBlock.getFluid().getName());
+
+		ModelLoader.setCustomMeshDefinition(item, new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack) {
+				return modelResourceLocation;
+			}
+		});
+
+		ModelLoader.setCustomStateMapper((Block) fluidBlock, new StateMapperBase() {
+			@Override
+			protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+				return modelResourceLocation;
+			}
+		});
+	}
+	
+    ////////////////////////////////
+    ////CHOONSTER-MINECRAFT-MODS////
+    ////////////////////////////////
+	
 	public void registerTileEntityRendering() {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAxle.class, new RenderTileEntityAxle());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrankPlayer.class, new RenderTileEntityCrankPlayer());

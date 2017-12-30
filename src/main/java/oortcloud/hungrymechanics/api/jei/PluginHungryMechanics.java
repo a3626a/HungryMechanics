@@ -15,12 +15,16 @@ import oortcloud.hungryanimals.entities.food_preferences.FoodPreferenceItemStack
 import oortcloud.hungrymechanics.api.jei.blender.RecipeCategoryBlender;
 import oortcloud.hungrymechanics.api.jei.blender.RecipeInstanceBlender;
 import oortcloud.hungrymechanics.api.jei.blender.RecipeWrapperBlender;
+import oortcloud.hungrymechanics.api.jei.millstone.RecipeCategoryMillstone;
+import oortcloud.hungrymechanics.api.jei.millstone.RecipeInstanceMillstone;
+import oortcloud.hungrymechanics.api.jei.millstone.RecipeWrapperMillstone;
 import oortcloud.hungrymechanics.api.jei.thresher.RecipeCategoryThresher;
 import oortcloud.hungrymechanics.api.jei.thresher.RecipeInstanceThresher;
 import oortcloud.hungrymechanics.api.jei.thresher.RecipeWrapperThresher;
 import oortcloud.hungrymechanics.configuration.util.HashPairedItemType;
 import oortcloud.hungrymechanics.configuration.util.PairChanceAndItemStack;
 import oortcloud.hungrymechanics.recipes.RecipeBlender;
+import oortcloud.hungrymechanics.recipes.RecipeMillstone;
 import oortcloud.hungrymechanics.recipes.RecipeThresher;
 
 @JEIPlugin
@@ -39,6 +43,7 @@ public class PluginHungryMechanics implements IModPlugin {
 	public void registerCategories(IRecipeCategoryRegistration registry) {
 		registry.addRecipeCategories(new RecipeCategoryBlender(registry.getJeiHelpers().getGuiHelper()));
 		registry.addRecipeCategories(new RecipeCategoryThresher(registry.getJeiHelpers().getGuiHelper()));
+		registry.addRecipeCategories(new RecipeCategoryMillstone(registry.getJeiHelpers().getGuiHelper()));
 	}
 	
 	@Override
@@ -60,6 +65,15 @@ public class PluginHungryMechanics implements IModPlugin {
 		
 		registry.addRecipes(recipeThresher, RecipeCategoryThresher.UID);
 		registry.handleRecipes(RecipeInstanceThresher.class, RecipeWrapperThresher::new, RecipeCategoryThresher.UID);
+		
+		// MILLSTONE
+		ArrayList<RecipeInstanceMillstone> recipeMillstone = new ArrayList<RecipeInstanceMillstone>();
+		for (Entry<HashItemType, Integer> i : RecipeMillstone.getRecipeList().entrySet()) {
+			recipeMillstone.add(new RecipeInstanceMillstone(i));
+		}
+		
+		registry.addRecipes(recipeMillstone, RecipeCategoryMillstone.UID);
+		registry.handleRecipes(RecipeInstanceMillstone.class, RecipeWrapperMillstone::new, RecipeCategoryMillstone.UID);
 	}
 
 	@Override

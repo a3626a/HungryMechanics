@@ -8,6 +8,7 @@ tile.hungrymechanics.thresher.name=Thresher
 tile.hungrymechanics.poppy.name=Poppy
 tile.hungrymechanics.blender.name=Blender
 tile.hungrymechanics.crankanimal.name=Large Crank
+tile.hungrymechanics.fluid.seedoil.name=Seed Oil
 item.hungrymechanics.wheel.name=Wheel
 item.hungrymechanics.straw.name=Straw
 item.hungrymechanics.poppyseed.name=Poppy Seeds
@@ -21,3 +22,6 @@ item.hungrymechanics.belt.name=Belt
 
 hungrymechanics.jei.blender=Blender
 hungrymechanics.jei.thresher=Thresher
+hungrymechanics.jei.millstone=Millstone
+
+fluid.seedoil=Seed Oil
