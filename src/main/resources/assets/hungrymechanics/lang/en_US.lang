@@ -19,4 +19,4 @@ item.hungrymechanics.crankanimal.name=Large Crank
 item.hungrymechanics.oilpipet.name=Oil Pipet
 item.hungrymechanics.belt.name=Belt
 
-api.nei.hanlder.blender=Blender
+hungrymechanics.jei.blender=Blender
