@@ -11,11 +11,17 @@ import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import net.minecraft.item.ItemStack;
+import oortcloud.hungryanimals.entities.food_preferences.FoodPreferenceItemStack.HashItemType;
 import oortcloud.hungrymechanics.api.jei.blender.RecipeCategoryBlender;
 import oortcloud.hungrymechanics.api.jei.blender.RecipeInstanceBlender;
 import oortcloud.hungrymechanics.api.jei.blender.RecipeWrapperBlender;
+import oortcloud.hungrymechanics.api.jei.thresher.RecipeCategoryThresher;
+import oortcloud.hungrymechanics.api.jei.thresher.RecipeInstanceThresher;
+import oortcloud.hungrymechanics.api.jei.thresher.RecipeWrapperThresher;
 import oortcloud.hungrymechanics.configuration.util.HashPairedItemType;
+import oortcloud.hungrymechanics.configuration.util.PairChanceAndItemStack;
 import oortcloud.hungrymechanics.recipes.RecipeBlender;
+import oortcloud.hungrymechanics.recipes.RecipeThresher;
 
 @JEIPlugin
 public class PluginHungryMechanics implements IModPlugin {
@@ -27,16 +33,17 @@ public class PluginHungryMechanics implements IModPlugin {
 
 	@Override
 	public void registerIngredients(IModIngredientRegistration registry) {
-		
 	}
 
 	@Override
 	public void registerCategories(IRecipeCategoryRegistration registry) {
 		registry.addRecipeCategories(new RecipeCategoryBlender(registry.getJeiHelpers().getGuiHelper()));
+		registry.addRecipeCategories(new RecipeCategoryThresher(registry.getJeiHelpers().getGuiHelper()));
 	}
 	
 	@Override
 	public void register(IModRegistry registry) {
+		// BLENDER
 		ArrayList<RecipeInstanceBlender> recipeBlender = new ArrayList<RecipeInstanceBlender>();
 		for (Entry<HashPairedItemType, ItemStack> i : RecipeBlender.getRecipeList().entrySet()) {
 			recipeBlender.add(new RecipeInstanceBlender(i));
@@ -44,6 +51,15 @@ public class PluginHungryMechanics implements IModPlugin {
 		
 		registry.addRecipes(recipeBlender, RecipeCategoryBlender.UID);
 		registry.handleRecipes(RecipeInstanceBlender.class, RecipeWrapperBlender::new, RecipeCategoryBlender.UID);
+		
+		// THRESHER
+		ArrayList<RecipeInstanceThresher> recipeThresher = new ArrayList<RecipeInstanceThresher>();
+		for (Entry<HashItemType, ArrayList<PairChanceAndItemStack>> i : RecipeThresher.getRecipeList().entrySet()) {
+			recipeThresher.add(new RecipeInstanceThresher(i));
+		}
+		
+		registry.addRecipes(recipeThresher, RecipeCategoryThresher.UID);
+		registry.handleRecipes(RecipeInstanceThresher.class, RecipeWrapperThresher::new, RecipeCategoryThresher.UID);
 	}
 
 	@Override

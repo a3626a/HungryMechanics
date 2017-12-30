@@ -56,15 +56,12 @@ public class RecipeCategoryBlender implements IRecipeCategory<RecipeWrapperBlend
 	
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, RecipeWrapperBlender recipeWrapper, IIngredients ingredients) {
-		if(!(recipeWrapper instanceof RecipeWrapperBlender))
-			return;
-		
 		recipeLayout.getItemStacks().init(0, true, 0, 10);
 		recipeLayout.getItemStacks().set(0, ingredients.getInputs(ItemStack.class).get(0));
 		recipeLayout.getItemStacks().init(1, true, 0, 28);
 		recipeLayout.getItemStacks().set(1, ingredients.getInputs(ItemStack.class).get(1));
 		
-		recipeLayout.getItemStacks().init(2, true, 60, 19);
+		recipeLayout.getItemStacks().init(2, false, 60, 19);
 		recipeLayout.getItemStacks().set(2, ingredients.getOutputs(ItemStack.class).get(0));
 	}
 

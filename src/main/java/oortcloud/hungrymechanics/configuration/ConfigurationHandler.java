@@ -24,7 +24,7 @@ import oortcloud.hungryanimals.entities.event.EntityEventHandler.Pair;
 import oortcloud.hungryanimals.entities.food_preferences.FoodPreferenceItemStack.HashItemType;
 import oortcloud.hungryanimals.entities.food_preferences.HungryAnimalRegisterEvent.FoodPreferenceItemStackRegisterEvent;
 import oortcloud.hungrymechanics.HungryMechanics;
-import oortcloud.hungrymechanics.configuration.util.ValueProbabilityItemStack;
+import oortcloud.hungrymechanics.configuration.util.PairChanceAndItemStack;
 import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.entities.attributes.ModAttributes;
 import oortcloud.hungrymechanics.recipes.RecipeBlender;
@@ -39,7 +39,7 @@ public class ConfigurationHandler {
 	private static ConfigurationHandlerJSONRecipe millstone;
 	private static ConfigurationHandlerJSONRecipe thresher;
 
-	public static Gson GSON_INSTANCE_VALUE_PROBABILITY_ITEM_STACK = new GsonBuilder().registerTypeAdapter(ValueProbabilityItemStack.class, new ValueProbabilityItemStack.Serializer()).create();
+	public static Gson GSON_INSTANCE_VALUE_PROBABILITY_ITEM_STACK = new GsonBuilder().registerTypeAdapter(PairChanceAndItemStack.class, new PairChanceAndItemStack.Serializer()).create();
 	
 	public static void init(FMLPreInitializationEvent preInit) {
 		File basefolder = new File(preInit.getModConfigurationDirectory(), References.MODID);
@@ -75,8 +75,8 @@ public class ConfigurationHandler {
 					}
 					for (JsonElement jsonEle : jsonArr) {
 						JsonObject jsonObj = jsonEle.getAsJsonObject();
-						HashItemType state = oortcloud.hungryanimals.configuration.ConfigurationHandler.GSON_INSTANCE_HASH_ITEM_TYPE
-								.fromJson(jsonObj.getAsJsonObject("item"), HashItemType.class);
+						oortcloud.hungryanimals.entities.food_preferences.FoodPreferenceItemStack.HashItemType state = oortcloud.hungryanimals.configuration.ConfigurationHandler.GSON_INSTANCE_HASH_ITEM_TYPE
+								.fromJson(jsonObj.getAsJsonObject("item"), oortcloud.hungryanimals.entities.food_preferences.FoodPreferenceItemStack.HashItemType.class);
 						double nutrient = jsonObj.getAsJsonPrimitive("nutrient").getAsDouble();
 						double stomach = jsonObj.getAsJsonPrimitive("stomach").getAsDouble();
 						event.getMap().put(state, new Pair<Double, Double>(nutrient, stomach));
@@ -131,10 +131,10 @@ public class ConfigurationHandler {
 				JsonObject jsonObj = jsonEle.getAsJsonObject();
 				HashItemType input = oortcloud.hungryanimals.configuration.ConfigurationHandler.GSON_INSTANCE_HASH_ITEM_TYPE
 						.fromJson(jsonObj.getAsJsonObject("input"), HashItemType.class);
-				ArrayList<ValueProbabilityItemStack> output = new ArrayList<ValueProbabilityItemStack>();
+				ArrayList<PairChanceAndItemStack> output = new ArrayList<PairChanceAndItemStack>();
 				JsonArray jsonArrOutput = JsonUtils.getJsonArray(jsonObj, "output");
 				for (JsonElement jsonEle2 : jsonArrOutput) {
-					ValueProbabilityItemStack valueProbabilityItemStack  = GSON_INSTANCE_VALUE_PROBABILITY_ITEM_STACK.fromJson(jsonEle2, ValueProbabilityItemStack.class);
+					PairChanceAndItemStack valueProbabilityItemStack  = GSON_INSTANCE_VALUE_PROBABILITY_ITEM_STACK.fromJson(jsonEle2, PairChanceAndItemStack.class);
 					output.add(valueProbabilityItemStack);
 				}
 				

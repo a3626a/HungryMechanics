@@ -12,17 +12,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.JsonUtils;
 import oortcloud.hungryanimals.configuration.ConfigurationHandler;
 
-public class ValueProbabilityItemStack {
-	public double prob;
+public class PairChanceAndItemStack {
+	public double chance;
 	public ItemStack item;
 
-	public ValueProbabilityItemStack(double prob, ItemStack item) {
-		this.prob = prob;
+	public PairChanceAndItemStack(double chance, ItemStack item) {
+		this.chance = chance;
 		this.item = item;
 	}
 
-	public static class Serializer implements JsonDeserializer<ValueProbabilityItemStack> {
-		public ValueProbabilityItemStack deserialize(JsonElement ele, Type type, JsonDeserializationContext context) throws JsonParseException {
+	public static class Serializer implements JsonDeserializer<PairChanceAndItemStack> {
+		public PairChanceAndItemStack deserialize(JsonElement ele, Type type, JsonDeserializationContext context) throws JsonParseException {
 			JsonObject jsonObj = ele.getAsJsonObject();
 
 			if (!JsonUtils.hasField(jsonObj, "item") || !JsonUtils.hasField(jsonObj, "probability")) {
@@ -32,7 +32,7 @@ public class ValueProbabilityItemStack {
 			ItemStack item = ConfigurationHandler.GSON_INSTANCE_ITEM_STACK.fromJson(JsonUtils.getJsonObject(jsonObj, "item"), ItemStack.class);
 			double prob = JsonUtils.getFloat(jsonObj, "probability");
 			
-			return new ValueProbabilityItemStack(prob, item);
+			return new PairChanceAndItemStack(prob, item);
 		}
 	}
 	

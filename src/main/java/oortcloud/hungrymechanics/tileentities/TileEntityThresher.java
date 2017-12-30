@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
-import oortcloud.hungrymechanics.configuration.util.ValueProbabilityItemStack;
+import oortcloud.hungrymechanics.configuration.util.PairChanceAndItemStack;
 import oortcloud.hungrymechanics.energy.PowerNetwork;
 import oortcloud.hungrymechanics.recipes.RecipeThresher;
 
@@ -75,7 +75,7 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 			}
 
 			if (!getStackInSlot(0).isEmpty()) {
-				ArrayList<ValueProbabilityItemStack> output = RecipeThresher.getRecipe(getStackInSlot(0));
+				ArrayList<PairChanceAndItemStack> output = RecipeThresher.getRecipe(getStackInSlot(0));
 				if (output != null && this.getPowerNetwork().getPowerStored() > powerUsage) {
 					this.getPowerNetwork().consumeEnergy(powerUsage);
 					this.threshTime += 1;
@@ -87,8 +87,8 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 						}
 
 						this.threshTime = 0;
-						for (ValueProbabilityItemStack i : output) {
-							if (this.getWorld().rand.nextDouble() < i.prob) {
+						for (PairChanceAndItemStack i : output) {
+							if (this.getWorld().rand.nextDouble() < i.chance) {
 								// Spawn Item Along side the edge of block
 								double dx = 0;
 								double dz = 0;

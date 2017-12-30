@@ -23,4 +23,8 @@ public class RecipeWrapperBlender implements IRecipeWrapper {
 		ingredients.setOutput(ItemStack.class, recipe.output);
 	}
 
+	public RecipeInstanceBlender getRecipe() {
+		return recipe;
+	}
+	
 }
