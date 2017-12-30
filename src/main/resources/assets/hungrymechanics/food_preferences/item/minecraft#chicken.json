@@ -3,12 +3,14 @@
 		"item": {
 			"name": "hungrymechanics:mixedfeed"
 		},
-		"hunger": 80
+		"nutrient": 0.8,
+		"stomach":1
 	},
 	{
 		"item": {
 			"name": "hungrymechanics:poppyseed"
 		},
-		"hunger": 20
+		"nutrient": 0.2,
+		"stomach": 0.25
 	}
 ]

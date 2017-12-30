@@ -20,6 +20,7 @@ import net.minecraft.util.JsonUtils;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import oortcloud.hungryanimals.entities.attributes.AttributeEntry;
 import oortcloud.hungryanimals.entities.attributes.AttributeRegisterEvent;
+import oortcloud.hungryanimals.entities.event.EntityEventHandler.Pair;
 import oortcloud.hungryanimals.entities.food_preferences.FoodPreferenceItemStack.HashItemType;
 import oortcloud.hungryanimals.entities.food_preferences.HungryAnimalRegisterEvent.FoodPreferenceItemStackRegisterEvent;
 import oortcloud.hungrymechanics.HungryMechanics;
@@ -58,9 +59,8 @@ public class ConfigurationHandler {
 					continue;
 				}
 				IAttribute attribute = ModAttributes.NAME_MAP.get(i.getKey());
-				JsonObject jsonObj2 = i.getValue().getAsJsonObject();
-				event.getAttributes().add(new AttributeEntry(attribute, jsonObj2.getAsJsonPrimitive("register").getAsBoolean(),
-						jsonObj2.getAsJsonPrimitive("value").getAsDouble()));
+				double value = i.getValue().getAsDouble();
+				event.getAttributes().add(new AttributeEntry(attribute,true,value));
 			}
 
 		});
@@ -77,8 +77,9 @@ public class ConfigurationHandler {
 						JsonObject jsonObj = jsonEle.getAsJsonObject();
 						HashItemType state = oortcloud.hungryanimals.configuration.ConfigurationHandler.GSON_INSTANCE_HASH_ITEM_TYPE
 								.fromJson(jsonObj.getAsJsonObject("item"), HashItemType.class);
-						double hunger = jsonObj.getAsJsonPrimitive("hunger").getAsDouble();
-						event.getMap().put(state, hunger);
+						double nutrient = jsonObj.getAsJsonPrimitive("nutrient").getAsDouble();
+						double stomach = jsonObj.getAsJsonPrimitive("stomach").getAsDouble();
+						event.getMap().put(state, new Pair<Double, Double>(nutrient, stomach));
 					}
 				});
 

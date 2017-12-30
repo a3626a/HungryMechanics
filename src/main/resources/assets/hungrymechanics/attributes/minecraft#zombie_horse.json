@@ -1,4 +1,4 @@
 {
-	"hungrymechanics.crank_hunger" : { "value" : 0.0, "register" : true},
-	"hungrymechanics.crank_production" : { "value" : 0, "register" : true}
+	"hungrymechanics.crank_weight" : 0.0,
+	"hungrymechanics.crank_production" : 0
 }

@@ -10,6 +10,7 @@ import oortcloud.hungryanimals.entities.capability.ICapabilityHungryAnimal;
 import oortcloud.hungryanimals.entities.capability.ICapabilityTamableAnimal;
 import oortcloud.hungryanimals.entities.capability.ProviderHungryAnimal;
 import oortcloud.hungryanimals.entities.capability.ProviderTamableAnimal;
+import oortcloud.hungryanimals.entities.capability.TamingLevel;
 import oortcloud.hungrymechanics.tileentities.TileEntityCrankAnimal;
 
 public class EntityAICrank extends EntityAIBase {
@@ -46,7 +47,7 @@ public class EntityAICrank extends EntityAIBase {
 			crankAnimal = null;
 			return false;
 		}
-		if (capHungry.getHunger() / capHungry.getMaxHunger() > 0.5 && capTaming.getTaming() >= 1 && crankAnimal != null
+		if (capHungry.getStomach() > 0 && capTaming.getTamingLevel() == TamingLevel.TAMED && crankAnimal != null
 				&& crankAnimal.getLeashedAnimal() == entity) {
 			return true;
 		}

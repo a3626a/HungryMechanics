@@ -14,7 +14,7 @@
     "screenshots": [],
     "parent": "",
     "requiredMods": [ "forge", "hungryanimals"],
-    "dependencies": ["hungryanimals"],
+    "dependencies": [],
     "dependants": [],
     "useDependencyInformation": false
   }]

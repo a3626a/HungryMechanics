@@ -107,7 +107,7 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 
 				this.getPowerNetwork().producePower(leashedAnimal.getAttributeMap().getAttributeInstance(ModAttributes.crank_production).getAttributeValue()
 						* (1 - Math.abs(90 - angleDifference) / 90.0));
-				capHungry.addHunger(-leashedAnimal.getAttributeMap().getAttributeInstance(ModAttributes.crank_hunger).getAttributeValue());
+				capHungry.addWeight(-leashedAnimal.getEntityAttribute(ModAttributes.crank_weight).getAttributeValue());
 			}
 			if (leashedAnimal == null && leashedAnimalUUID != null) {
 				// CASE 2 LOADED

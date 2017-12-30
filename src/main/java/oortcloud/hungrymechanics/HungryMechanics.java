@@ -28,7 +28,7 @@ import oortcloud.hungrymechanics.recipes.RecipeBlender;
 import oortcloud.hungrymechanics.recipes.RecipeMillstone;
 import oortcloud.hungrymechanics.recipes.RecipeThresher;
 
-@Mod(modid = References.MODID, name = References.MODNAME, version = References.VERSION, dependencies = "required-after:hungryanimals@[1.12.2-5.0.0,1.12.2-5.1)")
+@Mod(modid = References.MODID, name = References.MODNAME, version = References.VERSION, dependencies = "required-after:hungryanimals@[1.12.2-5.1.0,)")
 public class HungryMechanics {
 	@Mod.Instance
 	public static HungryMechanics instance;
