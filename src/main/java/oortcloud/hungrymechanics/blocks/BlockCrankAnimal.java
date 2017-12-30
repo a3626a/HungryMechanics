@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
@@ -24,7 +23,7 @@ import oortcloud.hungrymechanics.core.lib.Strings;
 import oortcloud.hungrymechanics.items.ModItems;
 import oortcloud.hungrymechanics.tileentities.TileEntityCrankAnimal;
 
-public class BlockCrankAnimal extends BlockContainer {
+public class BlockCrankAnimal extends Block {
 
 	protected BlockCrankAnimal() {
 		super(Material.WOOD);
@@ -104,10 +103,15 @@ public class BlockCrankAnimal extends BlockContainer {
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World wolrd, int meta) {
+	public boolean hasTileEntity(IBlockState state) {
+		return true;
+	}
+	
+	@Override
+	public TileEntity createTileEntity(World world, IBlockState state) {
 		return new TileEntityCrankAnimal();
 	}
-
+	
 	@Override
 	public boolean isFullCube(IBlockState state) {
 		return false;

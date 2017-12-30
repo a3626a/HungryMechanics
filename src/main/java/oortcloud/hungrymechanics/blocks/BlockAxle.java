@@ -3,7 +3,7 @@ package oortcloud.hungrymechanics.blocks;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.BlockContainer;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
@@ -28,7 +28,7 @@ import oortcloud.hungrymechanics.core.lib.Strings;
 import oortcloud.hungrymechanics.items.ModItems;
 import oortcloud.hungrymechanics.tileentities.TileEntityAxle;
 
-public class BlockAxle extends BlockContainer {
+public class BlockAxle extends Block {
 
 	public static final PropertyBool VARIANT = PropertyBool.create("has_wheel");
 
@@ -54,10 +54,15 @@ public class BlockAxle extends BlockContainer {
 	}
 	
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
+	public boolean hasTileEntity(IBlockState state) {
+		return true;
+	}
+	
+	@Override
+	public TileEntity createTileEntity(World world, IBlockState state) {
 		return new TileEntityAxle();
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public BlockRenderLayer getBlockLayer() {

@@ -1,6 +1,6 @@
 package oortcloud.hungrymechanics.blocks;
 
-import net.minecraft.block.BlockContainer;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,7 +20,7 @@ import oortcloud.hungrymechanics.core.lib.Strings;
 import oortcloud.hungrymechanics.tileentities.TileEntityThresher;
 import oortcloud.hungrymechanics.utils.InventoryUtil;
 
-public class BlockThresher extends BlockContainer {
+public class BlockThresher extends Block {
 
 	public static final float exhaustion = 0.5F;
 
@@ -45,10 +45,15 @@ public class BlockThresher extends BlockContainer {
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
+	public boolean hasTileEntity(IBlockState state) {
+		return true;
+	}
+	
+	@Override
+	public TileEntity createTileEntity(World world, IBlockState state) {
 		return new TileEntityThresher();
 	}
-
+	
 	@Override
 	public boolean isFullCube(IBlockState state) {
 		return false;

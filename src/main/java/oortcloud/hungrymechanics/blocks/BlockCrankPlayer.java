@@ -1,6 +1,6 @@
 package oortcloud.hungrymechanics.blocks;
 
-import net.minecraft.block.BlockContainer;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,7 +17,7 @@ import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.core.lib.Strings;
 import oortcloud.hungrymechanics.tileentities.TileEntityCrankPlayer;
 
-public class BlockCrankPlayer extends BlockContainer {
+public class BlockCrankPlayer extends Block {
 
 	public static final float exhaustion = 0.5F;
 
@@ -42,7 +42,12 @@ public class BlockCrankPlayer extends BlockContainer {
 	}
 	
 	@Override
-	public TileEntity createNewTileEntity(World wolrd, int meta) {
+	public boolean hasTileEntity(IBlockState state) {
+		return true;
+	}
+	
+	@Override
+	public TileEntity createTileEntity(World world, IBlockState state) {
 		return new TileEntityCrankPlayer();
 	}
 

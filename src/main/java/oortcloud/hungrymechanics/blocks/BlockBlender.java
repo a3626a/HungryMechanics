@@ -1,6 +1,6 @@
 package oortcloud.hungrymechanics.blocks;
 
-import net.minecraft.block.BlockContainer;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,7 +20,7 @@ import oortcloud.hungrymechanics.core.lib.Strings;
 import oortcloud.hungrymechanics.tileentities.TileEntityBlender;
 import oortcloud.hungrymechanics.utils.InventoryUtil;
 
-public class BlockBlender extends BlockContainer {
+public class BlockBlender extends Block {
 
 	protected BlockBlender() {
 		super(Material.WOOD);
@@ -42,11 +42,17 @@ public class BlockBlender extends BlockContainer {
 		return new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.5, 1.0);
 	}
 	
+
 	@Override
-	public TileEntity createNewTileEntity(World wolrd, int meta) {
+	public boolean hasTileEntity(IBlockState state) {
+		return true;
+	}
+	
+	@Override
+	public TileEntity createTileEntity(World world, IBlockState state) {
 		return new TileEntityBlender();
 	}
-
+	
 	@Override
 	public boolean isFullCube(IBlockState state) {
 		return false;
