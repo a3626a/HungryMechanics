@@ -1,5 +1,6 @@
 package oortcloud.hungrymechanics.tileentities;
 
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -15,13 +16,12 @@ public class TileEntityGenerator extends TileEntityPowerTransporter {
 	@CapabilityInject(IEnergyStorage.class)
 	static Capability<IEnergyStorage> ENERGY_STORAGE_CAPABILITY = null;
 
-	private IEnergyStorage storage;
+	private IEnergyStorage storage = new EnergyStorage(8000, 80, 80, 0);
 
 	public static int maxRF = 8;
 	public static double toRFRate = 4.0;
 
 	public TileEntityGenerator() {
-		storage = new EnergyStorage(8000, 80, 80, 0);
 	}
 
 	@Override
@@ -64,13 +64,20 @@ public class TileEntityGenerator extends TileEntityPowerTransporter {
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-		ENERGY_STORAGE_CAPABILITY.getStorage().readNBT(ENERGY_STORAGE_CAPABILITY, storage, null, compound.getTag("hungryanimals.generator.energy_storage"));
+		NBTBase nbt = compound.getTag("energy_storage");
+		ENERGY_STORAGE_CAPABILITY.getStorage().readNBT(ENERGY_STORAGE_CAPABILITY, storage, null, nbt);
+	}
+	
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		return writeToNBT(new NBTTagCompound());
 	}
 	
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		compound = super.writeToNBT(compound);
-		compound.setTag("hungryanimals.generator.energy_storage", ENERGY_STORAGE_CAPABILITY.getStorage().writeNBT(ENERGY_STORAGE_CAPABILITY, storage, null));
+		NBTBase nbt =  ENERGY_STORAGE_CAPABILITY.getStorage().writeNBT(ENERGY_STORAGE_CAPABILITY, storage, null);
+		compound.setTag("energy_storage", nbt);
 		return compound;
 	}
 }
