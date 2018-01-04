@@ -9,6 +9,7 @@ public class Strings {
 	public static final String blockMillstoneName = "millstone";
 	public static final String blockBlenderName = "blender";
 	public static final String blockCrankAnimalName = "crankanimal";
+	public static final String blockGeneratorName = "generator";
 	
 	public static final String itemWheelName = "wheel";
 	public static final String itemStrawName = "straw";
@@ -22,4 +23,5 @@ public class Strings {
 	public static final String itemBeltName = "belt";
 	
 	public static final String fluidSeedOilName = "seedoil";
+
 }

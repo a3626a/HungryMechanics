@@ -15,6 +15,7 @@ public class ModBlocks {
 	public static Block poppy;
 	public static Block blender;
 	public static Block crankAnimal;
+	public static Block generator;
 	
 	public static void init()
 	{
@@ -25,11 +26,12 @@ public class ModBlocks {
 		millStone = new BlockMillstone();
 		blender = new BlockBlender();
 		crankAnimal = new BlockCrankAnimal();
+		generator = new BlockGenerator();
 	}
 	
 	@SubscribeEvent
 	public static void registerBlocks(RegistryEvent.Register<Block> event) {
-		event.getRegistry().registerAll(axle, crankPlayer, thresher, poppy, millStone, blender, crankAnimal);
+		event.getRegistry().registerAll(axle, crankPlayer, thresher, poppy, millStone, blender, crankAnimal, generator);
 	}
 	
 }

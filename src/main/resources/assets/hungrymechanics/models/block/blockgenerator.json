@@ -1,0 +1,13 @@
+{
+    "textures": {
+        "particle": "hungrymechanics:blocks/blockgenerator"
+    },
+    "elements": [
+        {   "from": [ 0, 0, 0 ],
+            "to": [ 0, 0, 0 ],
+            "faces": {
+		"down":  {"uv": [ 0, 0, 0, 0 ], "texture": "null" }
+            }
+        }
+    ]
+}
