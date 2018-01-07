@@ -148,13 +148,6 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 						EntityAnimal animal = (EntityAnimal) entity;
 						if (HungryAnimalManager.getInstance().isRegistered(animal.getClass())) {
 							leashedAnimal = animal;
-							EntityAICrank aiCrank = null;
-							for (EntityAITaskEntry entry : leashedAnimal.tasks.taskEntries) {
-								if (entry.action instanceof EntityAICrank)
-									aiCrank = (EntityAICrank) entry.action;
-							}
-							// TODO Error handling for aiCrank==null
-							aiCrank.crankAnimal = this;
 						}
 					}
 				}
