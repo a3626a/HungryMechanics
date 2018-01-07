@@ -18,7 +18,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import oortcloud.hungryanimals.core.lib.References;
+import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.core.lib.Strings;
 import oortcloud.hungrymechanics.items.ModItems;
 import oortcloud.hungrymechanics.tileentities.TileEntityCrankAnimal;
