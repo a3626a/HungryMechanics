@@ -5,8 +5,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import oortcloud.hungryanimals.core.lib.References;
 import oortcloud.hungrymechanics.HungryMechanics;
+import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.core.lib.Strings;
 import oortcloud.hungrymechanics.tileentities.TileEntityGenerator;
 
