@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraftforge.items.IItemHandler;
 
 public class InventoryUtil {
 	
@@ -35,6 +36,20 @@ public class InventoryUtil {
 			return false;
 		}
 		return false;
+	}
+	
+	public static boolean interactInventory(EntityPlayer playerIn, EnumHand hand, IItemHandler inventory, int index) {
+		ItemStack heldItem = playerIn.getHeldItem(hand);
+		if (heldItem.isEmpty()) {
+			int amount = inventory.getSlotLimit(index);
+			ItemStack extracted = inventory.extractItem(index, amount, false);
+			playerIn.setHeldItem(hand, extracted);
+			return !extracted.isEmpty();
+		} else {
+			ItemStack inserted = inventory.insertItem(index, heldItem, false);
+			playerIn.setHeldItem(hand, inserted);
+			return !ItemStack.areItemStacksEqual(heldItem, inserted);
+		}
 	}
 	
 }

@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.items.IItemHandler;
 import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.tileentities.TileEntityBlender;
 
@@ -39,8 +40,10 @@ public class RenderTileEntityBlender extends TileEntitySpecialRenderer<TileEntit
 
 		GL11.glRotatef(-blender.getPowerNetwork().getAngle(partialTick), 0.0F, 1.0F, 0.0F);
 
-		for (int i = 0; i < blender.getSizeInventory(); i++) {
-			ItemStack stack = blender.getStackInSlot(i);
+		IItemHandler inventory = blender.getInventoryAll();
+		
+		for (int i = 0; i < inventory.getSlots(); i++) {
+			ItemStack stack = inventory.getStackInSlot(i);
 			if (!stack.isEmpty()) {
 				EntityItem item = new EntityItem(blender.getWorld(), 0, 0, 0, stack);
 				item.hoverStart = blender.getPowerNetwork().getAngle(partialTick) / 20.0F;

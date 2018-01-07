@@ -98,7 +98,7 @@ public class BlockBlender extends Block {
 					}
 				}
 				index = (index - rotationalOffset + 4) % 4;
-				return InventoryUtil.interactInventory(playerIn, hand, blender, index);
+				return InventoryUtil.interactInventory(playerIn, hand, blender.getInventoryAll(), index);
 			}
 		}
 		return true;

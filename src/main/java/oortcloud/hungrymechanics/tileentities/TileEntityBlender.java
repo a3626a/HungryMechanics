@@ -1,13 +1,15 @@
 package oortcloud.hungrymechanics.tileentities;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
@@ -15,16 +17,15 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import oortcloud.hungrymechanics.energy.PowerNetwork;
 import oortcloud.hungrymechanics.recipes.RecipeBlender;
 
-public class TileEntityBlender extends TileEntityPowerTransporter implements ISidedInventory {
+public class TileEntityBlender extends TileEntityPowerTransporter {
 
 	@CapabilityInject(IItemHandler.class)
 	static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = null;
-
-	private NonNullList<ItemStack> inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
 
 	private double energyUsage = 0.5;
 
@@ -41,17 +42,20 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 
 	private static double powerCapacity = PowerNetwork.powerUnit * 5;
 	
-	private IItemHandler handlerTop = new SidedInvWrapper(this, EnumFacing.UP);
-	private IItemHandler handlerBottom = new SidedInvWrapper(this, EnumFacing.DOWN);
-	private IItemHandler handlerNorth = new SidedInvWrapper(this, EnumFacing.NORTH);
-	private IItemHandler handlerSouth = new SidedInvWrapper(this, EnumFacing.SOUTH);
-	private IItemHandler handlerEast = new SidedInvWrapper(this, EnumFacing.EAST);
-	private IItemHandler handlerWest = new SidedInvWrapper(this, EnumFacing.WEST);
+	private List<ItemStackHandler> inventory;
+	private IItemHandler inventoryUp;
+	private IItemHandler inventoryDown;
+	private IItemHandler inventoryAll;
 	
 	public TileEntityBlender() {
 		super();
 		super.powerCapacity = TileEntityBlender.powerCapacity;
+		inventory = Lists.newArrayList(new ItemStackHandlerOnChange(1), new ItemStackHandlerOnChange(1), new ItemStackHandlerOnChange(1), new ItemStackHandlerOnChange(1));
+		inventoryUp = new CombinedInvWrapper(inventory.get(0), inventory.get(1));
+		inventoryDown = new CombinedInvWrapper(inventory.get(2), inventory.get(3));
+		inventoryAll = new CombinedInvWrapper(inventory.get(0), inventory.get(1), inventory.get(2), inventory.get(3));
 	}
+		
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
@@ -66,17 +70,17 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 		if (facing != null && capability == ITEM_HANDLER_CAPABILITY) {
 			switch (facing) {
 			case UP :
-				return (T)handlerTop;
+				return (T) inventoryUp;
 			case DOWN:
-				return (T)handlerBottom;
+				return (T) inventoryDown;
 			case EAST:
-				return (T)handlerEast;
+				return (T) inventory.get(3);
 			case NORTH:
-				return (T)handlerNorth;
+				return (T) inventory.get(2);
 			case SOUTH:
-				return (T)handlerSouth;
+				return (T) inventory.get(0);
 			case WEST:
-				return (T)handlerWest;
+				return (T) inventory.get(1);
 			}
 		}
 		return super.getCapability(capability, facing);
@@ -101,13 +105,13 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 				isInventoryChanged = false;
 
 				int itemsNext = 0;
-				ItemStack[] items = new ItemStack[getSizeInventory()];
-				int[] itemsSlot = new int[getSizeInventory()];
+				ItemStack[] items = new ItemStack[inventoryAll.getSlots()];
+				int[] itemsSlot = new int[inventoryAll.getSlots()];
 
 				int emptySlot = -1;
 
-				for (int i = 0; i < getSizeInventory(); i++) {
-					items[itemsNext] = getStackInSlot(i);
+				for (int i = 0; i < inventoryAll.getSlots(); i++) {
+					items[itemsNext] = inventoryAll.getStackInSlot(i);
 					if (!items[itemsNext].isEmpty()) {
 						itemsSlot[itemsNext++] = i;
 					} else {
@@ -145,7 +149,7 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 							}
 							if (breakFlag)
 								break;
-							if (itemsNext < getSizeInventory()) {
+							if (itemsNext < inventoryAll.getSlots()) {
 								canWork = true;
 								currentInputSlot1 = itemsSlot[i];
 								currentInputSlot2 = itemsSlot[j];
@@ -160,7 +164,7 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 			}
 		} else {
 			if (canWork) {
-				ItemStack output = getStackInSlot(currentOutputSlot);
+				ItemStack output = inventoryAll.getStackInSlot(currentOutputSlot);
 				if (output.getCount() + currentOutput.getCount() < output.getMaxStackSize()) {
 					canWork = true;
 				} else {
@@ -170,156 +174,30 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 		}
 
 		if (canWork) {
-
 			if (this.getPowerNetwork().getPowerStored() > energyUsage) {
 				this.getPowerNetwork().consumeEnergy(energyUsage);
 				this.blendTime += 1;
 
 				if (this.blendTime >= this.totalBlendTime) {
 					this.blendTime = 0;
-
-					decrStackSize(currentInputSlot1, 1);
-					decrStackSize(currentInputSlot2, 1);
-					ItemStack output = getStackInSlot(currentOutputSlot);
+					inventoryAll.getStackInSlot(currentInputSlot1).shrink(1);
+					inventoryAll.getStackInSlot(currentInputSlot2).shrink(1);
+					ItemStack output = inventoryAll.getStackInSlot(currentOutputSlot);
 					if (!output.isEmpty()) {
 						output.grow(currentOutput.getCount());
 					} else {
-						setInventorySlotContents(currentOutputSlot, currentOutput.copy());
+						inventoryAll.insertItem(currentOutputSlot, currentOutput.copy(), false);
 					}
 				}
 			}
 		}
 	}
 
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean hasCustomName() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public ITextComponent getDisplayName() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public int getSizeInventory() {
-		return 4;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int index) {
-		return inventory.get(index);
-	}
-
-	@Override
-	public ItemStack decrStackSize(int index, int count) {
-		if (!inventory.get(index).isEmpty()) {
-			needSync = true;
-
-			ItemStack itemstack;
-
-			if (inventory.get(index).getCount() <= count) {
-				itemstack = inventory.get(index);
-				inventory.set(index, ItemStack.EMPTY);
-				isInventoryChanged = true;
-				this.markDirty();
-				return itemstack;
-			} else {
-				itemstack = inventory.get(index).splitStack(count);
-
-				if (inventory.get(index).getCount() == 0) {
-					inventory.set(index, ItemStack.EMPTY);
-					isInventoryChanged = true;
-				}
-
-				this.markDirty();
-				return itemstack;
-			}
-		} else {
-			return ItemStack.EMPTY;
-		}
-	}
-
-	@Override
-	public void setInventorySlotContents(int index, ItemStack stack) {
-		isInventoryChanged = true;
-		needSync = true;
-
-		inventory.set(index, stack);
-
-		if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit()) {
-			stack.setCount(this.getInventoryStackLimit());
-		}
-
-		this.markDirty();
-	}
-
-	@Override
-	public ItemStack removeStackFromSlot(int index) {
-		isInventoryChanged = true;
-		needSync = true;
-
-		ItemStack ret = inventory.get(index);
-		inventory.set(index, ItemStack.EMPTY);
-
-		this.markDirty();
-		return ret;
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-		return 64;
-	}
-
-	@Override
-	public boolean isUsableByPlayer(EntityPlayer player) {
-		return this.getWorld().getTileEntity(this.pos) != this ? false
-				: player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
-	}
-
-	@Override
-	public void openInventory(EntityPlayer player) {
-	}
-
-	@Override
-	public void closeInventory(EntityPlayer player) {
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		return true;
-	}
-
-	@Override
-	public int getField(int id) {
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value) {
-	}
-
-	@Override
-	public int getFieldCount() {
-		return 0;
-	}
-
-	@Override
-	public void clear() {
-		isInventoryChanged = true;
-		needSync = true;
-
-		for (int i = 0; i < inventory.size(); ++i) {
-			inventory.set(i, ItemStack.EMPTY);
-		}
 	}
 
 	@Override
@@ -354,44 +232,13 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 	}
 
 	private void writeSyncableDataToNBT(NBTTagCompound compound) {
-		for (int i = 0; i < getSizeInventory(); i++) {
-			NBTTagCompound tag = new NBTTagCompound();
-			ItemStack item = getStackInSlot(i);
-			if (!item.isEmpty()) {
-				item.writeToNBT(tag);
-				compound.setTag("items" + i, tag);
-			}
-		}
+		NBTBase tag = ITEM_HANDLER_CAPABILITY.writeNBT(inventoryAll, null);
+		compound.setTag("hungrymechanics.blender.inventory", tag);
 	}
 
 	private void readSyncableDataFromNBT(NBTTagCompound compound) {
-		for (int i = 0; i < getSizeInventory(); i++) {
-			if (compound.hasKey("items" + i)) {
-				NBTTagCompound tag = (NBTTagCompound) compound.getTag("items" + i);
-				setInventorySlotContents(i, new ItemStack(tag));
-			} else {
-				setInventorySlotContents(i, ItemStack.EMPTY);
-			}
-		}
-	}
-
-	@Override
-	public int[] getSlotsForFace(EnumFacing side) {
-		if (side == EnumFacing.UP)
-			return new int[] { 0, 1 };
-		if (side == EnumFacing.DOWN)
-			return new int[] { 3, 2 };
-		return new int[] { side.getHorizontalIndex() };
-	}
-
-	@Override
-	public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
-		return true;
-	}
-
-	@Override
-	public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
-		return true;
+		NBTBase tag = compound.getTag("hungrymechanics.blender.inventory");
+		ITEM_HANDLER_CAPABILITY.readNBT(inventoryAll, null, tag);
 	}
 
 	@Override
@@ -399,13 +246,23 @@ public class TileEntityBlender extends TileEntityPowerTransporter implements ISi
 		return new BlockPos[] { pos.up() };
 	}
 
-	@Override
-	public boolean isEmpty() {
-		for (int i = 0; i < getSizeInventory(); i++) {
-			if (!getStackInSlot(i).isEmpty())
-				return true;
-		}
-		return false;
+	public IItemHandler getInventoryAll() {
+		return inventoryAll;
 	}
-
+	
+	private class ItemStackHandlerOnChange extends ItemStackHandler {
+		
+		public ItemStackHandlerOnChange(int size) {
+			super(size);
+		}
+		
+		@Override
+		protected void onContentsChanged(int slot) {
+			super.onContentsChanged(slot);
+			needSync = true;
+			isInventoryChanged = true;
+		}
+		
+	}
+	
 }
