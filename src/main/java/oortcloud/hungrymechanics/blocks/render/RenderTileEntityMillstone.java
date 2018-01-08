@@ -10,6 +10,9 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.items.IItemHandler;
 import oortcloud.hungrymechanics.blocks.BlockMillstone;
 import oortcloud.hungrymechanics.blocks.ModBlocks;
 import oortcloud.hungrymechanics.core.lib.References;
@@ -17,6 +20,9 @@ import oortcloud.hungrymechanics.tileentities.TileEntityMillstone;
 
 public class RenderTileEntityMillstone extends TileEntitySpecialRenderer<TileEntityMillstone> {
 
+	@CapabilityInject(IItemHandler.class)
+	static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = null;
+	
 	public static final ResourceLocation texture = new ResourceLocation(References.MODID, "textures/blocks/modelmillstone.png");
 	private ModelMillstone modelMillstone;
 
@@ -50,17 +56,21 @@ public class RenderTileEntityMillstone extends TileEntitySpecialRenderer<TileEnt
 		GL11.glTranslatef((float) x + 0.5F, (float) y, (float) z + 0.5F);
 		GL11.glRotatef(angle, 0.0F, 1.0F, 0.0F);
 		GL11.glPushMatrix();
-		if (!millstone.getStackInSlot(0).isEmpty()) {
-			ItemStack stack = millstone.getStackInSlot(0).copy();
-			EntityItem item = new EntityItem(millstone.getWorld(), 0, 0, 0, stack);
-			item.hoverStart = angle / 20.F;
+		if (millstone.hasCapability(ITEM_HANDLER_CAPABILITY, null)) {
+			IItemHandler inventory = millstone.getCapability(ITEM_HANDLER_CAPABILITY, null);
+			ItemStack ingredient = inventory.getStackInSlot(0);
+			if (!ingredient.isEmpty()) {
+				ItemStack stack = ingredient.copy();
+				EntityItem item = new EntityItem(millstone.getWorld(), 0, 0, 0, stack);
+				item.hoverStart = angle / 20.F;
 
-			RenderManager render = Minecraft.getMinecraft().getRenderManager();
+				RenderManager render = Minecraft.getMinecraft().getRenderManager();
 
-			render.renderEntity(item, 0.5, 0, 0, 0, 0, false);
-			render.renderEntity(item, -0.5, 0, 0, 0, 0, false);
-			render.renderEntity(item, 0, 0, 0.5, 0, 0, false);
-			render.renderEntity(item, 0, 0, -0.5, 0, 0, false);
+				render.renderEntity(item, 0.5, 0, 0, 0, 0, false);
+				render.renderEntity(item, -0.5, 0, 0, 0, 0, false);
+				render.renderEntity(item, 0, 0, 0.5, 0, 0, false);
+				render.renderEntity(item, 0, 0, -0.5, 0, 0, false);
+			}
 		}
 		GL11.glPopMatrix();
 		GL11.glPopMatrix();

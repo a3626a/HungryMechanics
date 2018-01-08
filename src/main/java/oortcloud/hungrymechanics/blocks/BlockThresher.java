@@ -72,7 +72,11 @@ public class BlockThresher extends Block {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side,
 			float hitX, float hitY, float hitZ) {
 		TileEntityThresher tileEntity = (TileEntityThresher) worldIn.getTileEntity(pos);
-		return InventoryUtil.interactInventory(playerIn, hand, tileEntity.getCapability(ITEM_HANDLER_CAPABILITY, null), 0);
+		if (tileEntity.hasCapability(ITEM_HANDLER_CAPABILITY, null)) {
+			return InventoryUtil.interactInventory(playerIn, hand, tileEntity.getCapability(ITEM_HANDLER_CAPABILITY, null), 0);
+		} else {
+			return false;
+		}
 	}
 
 	@Override

@@ -251,7 +251,6 @@ public class TileEntityBlender extends TileEntityPowerTransporter {
 	}
 	
 	private class ItemStackHandlerOnChange extends ItemStackHandler {
-		
 		public ItemStackHandlerOnChange(int size) {
 			super(size);
 		}
@@ -262,7 +261,6 @@ public class TileEntityBlender extends TileEntityPowerTransporter {
 			needSync = true;
 			isInventoryChanged = true;
 		}
-		
 	}
 	
 }

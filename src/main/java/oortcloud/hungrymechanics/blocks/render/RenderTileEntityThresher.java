@@ -41,8 +41,8 @@ public class RenderTileEntityThresher extends TileEntitySpecialRenderer<TileEnti
 		GL11.glPopMatrix();
 		
 		if (thresher.hasCapability(ITEM_HANDLER_CAPABILITY, null)) {
-			IItemHandler cap = thresher.getCapability(ITEM_HANDLER_CAPABILITY, null);
-			ItemStack ingredient = cap.getStackInSlot(0); 
+			IItemHandler inventory = thresher.getCapability(ITEM_HANDLER_CAPABILITY, null);
+			ItemStack ingredient = inventory.getStackInSlot(0); 
 			if (!ingredient.isEmpty()) {
 				ItemStack stack = ingredient.copy();
 				EntityItem item = new EntityItem(thresher.getWorld(), 0, 0, 0, stack);
