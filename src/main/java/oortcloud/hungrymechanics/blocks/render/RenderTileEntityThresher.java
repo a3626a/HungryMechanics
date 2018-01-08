@@ -8,11 +8,17 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.items.IItemHandler;
 import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.tileentities.TileEntityThresher;
 
 public class RenderTileEntityThresher extends TileEntitySpecialRenderer<TileEntityThresher> {
 
+	@CapabilityInject(IItemHandler.class)
+	static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = null;
+	
 	public static final ResourceLocation texture = new ResourceLocation(References.MODID, "textures/blocks/modelthresher.png");
 	private ModelThresher modelThresher;
 
@@ -33,15 +39,19 @@ public class RenderTileEntityThresher extends TileEntitySpecialRenderer<TileEnti
 
 		GL11.glPopMatrix();
 		GL11.glPopMatrix();
+		
+		if (thresher.hasCapability(ITEM_HANDLER_CAPABILITY, null)) {
+			IItemHandler cap = thresher.getCapability(ITEM_HANDLER_CAPABILITY, null);
+			ItemStack ingredient = cap.getStackInSlot(0); 
+			if (!ingredient.isEmpty()) {
+				ItemStack stack = ingredient.copy();
+				EntityItem item = new EntityItem(thresher.getWorld(), 0, 0, 0, stack);
+				item.hoverStart = angle / 20.F;
 
-		if (!thresher.getStackInSlot(0).isEmpty()) {
-			ItemStack stack = thresher.getStackInSlot(0).copy();
-			EntityItem item = new EntityItem(thresher.getWorld(), 0, 0, 0, stack);
-			item.hoverStart = angle / 20.F;
+				RenderManager render = Minecraft.getMinecraft().getRenderManager();
 
-			RenderManager render = Minecraft.getMinecraft().getRenderManager();
-
-			render.renderEntity(item, x + 0.5, y, z + 0.5, 0, 0, false);
+				render.renderEntity(item, x + 0.5, y, z + 0.5, 0, 0, false);
+			}			
 		}
 	}
 

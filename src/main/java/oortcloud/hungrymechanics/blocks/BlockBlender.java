@@ -4,8 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
@@ -109,9 +107,9 @@ public class BlockBlender extends Block {
     {
         TileEntity tileentity = worldIn.getTileEntity(pos);
 
-        if (tileentity instanceof IInventory)
+        if (tileentity instanceof TileEntityBlender)
         {
-            InventoryHelper.dropInventoryItems(worldIn, pos, (IInventory)tileentity);
+            InventoryUtil.dropInventoryItems(worldIn, pos, ((TileEntityBlender)tileentity).getInventoryAll());
         }
 
         super.breakBlock(worldIn, pos, state);

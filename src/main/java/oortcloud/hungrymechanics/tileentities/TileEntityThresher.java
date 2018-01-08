@@ -3,14 +3,12 @@ package oortcloud.hungrymechanics.tileentities;
 import java.util.ArrayList;
 
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
@@ -18,17 +16,15 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import net.minecraftforge.items.ItemStackHandler;
 import oortcloud.hungrymechanics.configuration.util.PairChanceAndItemStack;
 import oortcloud.hungrymechanics.energy.PowerNetwork;
 import oortcloud.hungrymechanics.recipes.RecipeThresher;
 
-public class TileEntityThresher extends TileEntityPowerTransporter implements ISidedInventory {
+public class TileEntityThresher extends TileEntityPowerTransporter {
 
 	@CapabilityInject(IItemHandler.class)
 	static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = null;
-	
-	private NonNullList<ItemStack> inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
 	
 	private double powerUsage = 0.5;
 
@@ -40,12 +36,13 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 
 	private static double powerCapacity = PowerNetwork.powerUnit * 3;
 
-	private IItemHandler handler = new SidedInvWrapper(this, EnumFacing.UP);
+	private IItemHandler inventory;
 	
 	public TileEntityThresher() {
 		super();
 		super.powerCapacity = TileEntityThresher.powerCapacity;
 		leftAttempt = 0;
+		inventory = new ItemStackHandlerOnChange(1);
 	}
 
 	@Override
@@ -59,7 +56,7 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		if (capability == ITEM_HANDLER_CAPABILITY) {
-			return (T)handler;
+			return (T)inventory;
 		}
 		return super.getCapability(capability, facing);
 	}
@@ -74,15 +71,16 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 				needSync = false;
 			}
 
-			if (!getStackInSlot(0).isEmpty()) {
-				ArrayList<PairChanceAndItemStack> output = RecipeThresher.getRecipe(getStackInSlot(0));
+			ItemStack ingredient = inventory.getStackInSlot(0);
+			if (!ingredient.isEmpty()) {
+				ArrayList<PairChanceAndItemStack> output = RecipeThresher.getRecipe(ingredient);
 				if (output != null && this.getPowerNetwork().getPowerStored() > powerUsage) {
 					this.getPowerNetwork().consumeEnergy(powerUsage);
 					this.threshTime += 1;
 
 					if (this.threshTime >= this.totalthreshTime) {
 						if (leftAttempt == 0) {
-							decrStackSize(0, 1);
+							ingredient.shrink(1);
 							leftAttempt = 4;
 						}
 
@@ -127,130 +125,13 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 			}
 		}
 	}
-
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean hasCustomName() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
+	
 	@Override
 	public ITextComponent getDisplayName() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public int getSizeInventory() {
-		return 1;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int index) {
-		return inventory.get(index);
-	}
-
-	@Override
-	public ItemStack decrStackSize(int index, int count) {
-		if (!inventory.get(index).isEmpty()) {
-			needSync = true;
-
-			ItemStack itemstack;
-
-			if (inventory.get(index).getCount() <= count) {
-				itemstack = inventory.get(index);
-				inventory.set(index, ItemStack.EMPTY);
-				this.markDirty();
-				return itemstack;
-			} else {
-				itemstack = inventory.get(index).splitStack(count);
-
-				if (inventory.get(index).getCount() == 0) {
-					inventory.set(index, ItemStack.EMPTY);
-				}
-
-				return itemstack;
-			}
-		} else {
-			return ItemStack.EMPTY;
-		}
-	}
-
-	@Override
-	public void setInventorySlotContents(int index, ItemStack stack) {
-		needSync = true;
-
-		inventory.set(index, stack);
-
-		if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit()) {
-			stack.setCount(this.getInventoryStackLimit());
-		}
-
-		this.markDirty();
-	}
-
-	@Override
-	public ItemStack removeStackFromSlot(int index) {
-		needSync = true;
-
-		ItemStack ret = inventory.get(index);
-		inventory.set(index, ItemStack.EMPTY);
-
-		return ret;
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-		return 64;
-	}
-
-	@Override
-	public boolean isUsableByPlayer(EntityPlayer player) {
-		return this.getWorld().getTileEntity(this.pos) != this ? false
-				: player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
-	}
-
-	@Override
-	public void openInventory(EntityPlayer player) {
-	}
-
-	@Override
-	public void closeInventory(EntityPlayer player) {
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		return RecipeThresher.getRecipe(stack) != null;
-	}
-
-	@Override
-	public int getField(int id) {
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value) {
-	}
-
-	@Override
-	public int getFieldCount() {
-		return 0;
-	}
-
-	@Override
-	public void clear() {
-		needSync = true;
-
-		for (int i = 0; i < inventory.size(); ++i) {
-			inventory.set(i, ItemStack.EMPTY);
-		}
-	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
@@ -286,25 +167,13 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 	}
 
 	private void writeSyncableDataToNBT(NBTTagCompound compound) {
-		for (int i = 0; i < getSizeInventory(); i++) {
-			NBTTagCompound tag = new NBTTagCompound();
-			ItemStack item = getStackInSlot(i);
-			if (!item.isEmpty()) {
-				item.writeToNBT(tag);
-				compound.setTag("items" + i, tag);
-			}
-		}
+		NBTBase tag = ITEM_HANDLER_CAPABILITY.writeNBT(inventory, null);
+		compound.setTag("hungrymechanics.thresher.inventory", tag);
 	}
 
 	private void readSyncableDataFromNBT(NBTTagCompound compound) {
-		for (int i = 0; i < getSizeInventory(); i++) {
-			if (compound.hasKey("items" + i)) {
-				NBTTagCompound tag = (NBTTagCompound) compound.getTag("items" + i);
-				setInventorySlotContents(i, new ItemStack(tag));
-			} else {
-				setInventorySlotContents(i, ItemStack.EMPTY);
-			}
-		}
+		NBTBase tag = compound.getTag("hungrymechanics.thresher.inventory");
+		ITEM_HANDLER_CAPABILITY.readNBT(inventory, null, tag);
 	}
 
 	public boolean canTakeOut() {
@@ -312,31 +181,22 @@ public class TileEntityThresher extends TileEntityPowerTransporter implements IS
 	}
 
 	@Override
-	public int[] getSlotsForFace(EnumFacing side) {
-		return new int[] { 0 };
-	}
-
-	@Override
-	public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
-		return isItemValidForSlot(index, itemStackIn);
-	}
-
-	@Override
-	public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
-		return true;
-	}
-
-	@Override
 	public BlockPos[] getConnectedBlocks() {
 		return new BlockPos[] { pos.up(), pos.down() };
 	}
-	
-	@Override
-	public boolean isEmpty() {
-		for (int i = 0; i < getSizeInventory(); i++) {
-			if (!getStackInSlot(i).isEmpty())
-				return true;
+
+	private class ItemStackHandlerOnChange extends ItemStackHandler {
+		
+		public ItemStackHandlerOnChange(int size) {
+			super(size);
 		}
-		return false;
+		
+		@Override
+		protected void onContentsChanged(int slot) {
+			super.onContentsChanged(slot);
+			needSync = true;
+		}
+		
 	}
+	
 }
