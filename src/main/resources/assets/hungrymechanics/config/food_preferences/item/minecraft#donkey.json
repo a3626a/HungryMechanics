@@ -1,14 +1,14 @@
 [
 	{
 		"item": {
-			"name": "hungrymechanics:mixedfeed"
+			"item": "hungrymechanics:mixedfeed"
 		},
 		"nutrient": 0.8,
 		"stomach":1
 	},
 	{
 		"item": {
-			"name": "hungrymechanics:straw"
+			"item": "hungrymechanics:straw"
 		},
 		"nutrient": 0.25,
 		"stomach": 0.55

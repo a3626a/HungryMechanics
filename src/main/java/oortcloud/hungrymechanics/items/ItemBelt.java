@@ -52,7 +52,6 @@ public class ItemBelt extends Item {
 			float hitY, float hitZ) {
 		ItemStack stack = playerIn.getHeldItem(hand);
 		
-		// TODO Study EnumActionResult in detail
 		if (!TileEntityAxle.isValidAxle(worldIn, pos)) {
 			return EnumActionResult.PASS;
 		}

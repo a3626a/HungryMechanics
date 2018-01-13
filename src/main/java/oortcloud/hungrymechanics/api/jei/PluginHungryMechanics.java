@@ -1,8 +1,5 @@
 package oortcloud.hungrymechanics.api.jei;
 
-import java.util.ArrayList;
-import java.util.Map.Entry;
-
 import mezz.jei.api.IJeiRuntime;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
@@ -10,22 +7,18 @@ import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
-import net.minecraft.item.ItemStack;
-import oortcloud.hungryanimals.entities.food_preferences.FoodPreferenceItemStack.HashItemType;
 import oortcloud.hungrymechanics.api.jei.blender.RecipeCategoryBlender;
-import oortcloud.hungrymechanics.api.jei.blender.RecipeInstanceBlender;
 import oortcloud.hungrymechanics.api.jei.blender.RecipeWrapperBlender;
 import oortcloud.hungrymechanics.api.jei.millstone.RecipeCategoryMillstone;
-import oortcloud.hungrymechanics.api.jei.millstone.RecipeInstanceMillstone;
 import oortcloud.hungrymechanics.api.jei.millstone.RecipeWrapperMillstone;
 import oortcloud.hungrymechanics.api.jei.thresher.RecipeCategoryThresher;
-import oortcloud.hungrymechanics.api.jei.thresher.RecipeInstanceThresher;
 import oortcloud.hungrymechanics.api.jei.thresher.RecipeWrapperThresher;
-import oortcloud.hungrymechanics.configuration.util.HashPairedItemType;
-import oortcloud.hungrymechanics.configuration.util.PairChanceAndItemStack;
 import oortcloud.hungrymechanics.recipes.RecipeBlender;
+import oortcloud.hungrymechanics.recipes.RecipeBlender.RecipeBlenderEntry;
 import oortcloud.hungrymechanics.recipes.RecipeMillstone;
+import oortcloud.hungrymechanics.recipes.RecipeMillstone.RecipeMillstoneEntry;
 import oortcloud.hungrymechanics.recipes.RecipeThresher;
+import oortcloud.hungrymechanics.recipes.RecipeThresher.RecipeThresherEntry;
 
 @JEIPlugin
 public class PluginHungryMechanics implements IModPlugin {
@@ -49,31 +42,22 @@ public class PluginHungryMechanics implements IModPlugin {
 	@Override
 	public void register(IModRegistry registry) {
 		// BLENDER
-		ArrayList<RecipeInstanceBlender> recipeBlender = new ArrayList<RecipeInstanceBlender>();
-		for (Entry<HashPairedItemType, ItemStack> i : RecipeBlender.getRecipeList().entrySet()) {
-			recipeBlender.add(new RecipeInstanceBlender(i));
-		}
-		
-		registry.addRecipes(recipeBlender, RecipeCategoryBlender.UID);
-		registry.handleRecipes(RecipeInstanceBlender.class, RecipeWrapperBlender::new, RecipeCategoryBlender.UID);
+		registry.addRecipes(RecipeBlender.getRecipeList(), RecipeCategoryBlender.UID);
+		registry.handleRecipes(RecipeBlenderEntry.class, (recipe) -> {
+			return new RecipeWrapperBlender(registry.getJeiHelpers(), recipe);
+		}, RecipeCategoryBlender.UID);
 		
 		// THRESHER
-		ArrayList<RecipeInstanceThresher> recipeThresher = new ArrayList<RecipeInstanceThresher>();
-		for (Entry<HashItemType, ArrayList<PairChanceAndItemStack>> i : RecipeThresher.getRecipeList().entrySet()) {
-			recipeThresher.add(new RecipeInstanceThresher(i));
-		}
-		
-		registry.addRecipes(recipeThresher, RecipeCategoryThresher.UID);
-		registry.handleRecipes(RecipeInstanceThresher.class, RecipeWrapperThresher::new, RecipeCategoryThresher.UID);
+		registry.addRecipes(RecipeThresher.getRecipeList(), RecipeCategoryThresher.UID);
+		registry.handleRecipes(RecipeThresherEntry.class, (recipe) -> {
+			return new RecipeWrapperThresher(registry.getJeiHelpers(), recipe);
+		}, RecipeCategoryThresher.UID);
 		
 		// MILLSTONE
-		ArrayList<RecipeInstanceMillstone> recipeMillstone = new ArrayList<RecipeInstanceMillstone>();
-		for (Entry<HashItemType, Integer> i : RecipeMillstone.getRecipeList().entrySet()) {
-			recipeMillstone.add(new RecipeInstanceMillstone(i));
-		}
-		
-		registry.addRecipes(recipeMillstone, RecipeCategoryMillstone.UID);
-		registry.handleRecipes(RecipeInstanceMillstone.class, RecipeWrapperMillstone::new, RecipeCategoryMillstone.UID);
+		registry.addRecipes(RecipeMillstone.getRecipeList(), RecipeCategoryMillstone.UID);
+		registry.handleRecipes(RecipeMillstoneEntry.class, (recipe) -> {
+			return new RecipeWrapperMillstone(registry.getJeiHelpers(), recipe);
+		}, RecipeCategoryMillstone.UID);
 	}
 
 	@Override

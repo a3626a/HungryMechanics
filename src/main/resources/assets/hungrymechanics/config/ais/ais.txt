@@ -1,0 +1,10 @@
+##################
+#HUNGRY MECHANICS#
+##################
+
+===========
+AI MODIFIER
+===========
+"crank" : makes the animal be able to use large cranks.
+          value can be anything, for example, "crank" : false still works.
+          applicable to AI containers "herbivore", "rabbit", and "wolf"

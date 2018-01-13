@@ -21,9 +21,10 @@ import oortcloud.hungryanimals.entities.capability.ICapabilityHungryAnimal;
 import oortcloud.hungryanimals.entities.capability.ICapabilityTamableAnimal;
 import oortcloud.hungryanimals.entities.capability.ProviderHungryAnimal;
 import oortcloud.hungryanimals.entities.capability.ProviderTamableAnimal;
+import oortcloud.hungryanimals.entities.capability.TamingLevel;
 import oortcloud.hungryanimals.entities.handler.HungryAnimalManager;
-import oortcloud.hungrymechanics.ai.EntityAICrank;
 import oortcloud.hungrymechanics.energy.PowerNetwork;
+import oortcloud.hungrymechanics.entities.ai.EntityAICrank;
 import oortcloud.hungrymechanics.entities.attributes.ModAttributes;
 
 /**
@@ -63,20 +64,29 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 				new AxisAlignedBB((double) i - d0, (double) j - d0, (double) k - d0, (double) i + d0, (double) j + d0, (double) k + d0));
 		for (EntityAnimal animal : list) {
 			if (animal.getLeashed() && animal.getLeashHolder() == player) {
-				if (!HungryAnimalManager.getInstance().isRegistered(animal.getClass()))
+				if (!animal.hasCapability(ProviderTamableAnimal.CAP, null)) {
 					continue;
+				}
 				ICapabilityTamableAnimal capTaming = animal.getCapability(ProviderTamableAnimal.CAP, null);
 
 				IAttributeInstance crank_production = animal.getAttributeMap().getAttributeInstance(ModAttributes.crank_production);
-				if (crank_production != null && crank_production.getAttributeValue() > 0 && capTaming.getTaming() >= 1) {
-					leashedAnimal = animal;
-					for (EntityAITaskEntry entry : leashedAnimal.tasks.taskEntries) {
-						if (entry.action instanceof EntityAICrank)
-							((EntityAICrank) entry.action).crankAnimal = this;
-					}
-					getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 3);
-					return true;
+				if (crank_production == null || crank_production.getAttributeValue() <= 0 || capTaming.getTamingLevel() != TamingLevel.TAMED) {
+					continue;
 				}
+				
+				EntityAICrank aiCrank = null;
+				for (EntityAITaskEntry entry : animal.tasks.taskEntries) {
+					if (entry.action instanceof EntityAICrank)
+						aiCrank = (EntityAICrank) entry.action;
+				}
+				
+				if (aiCrank == null)
+					continue;
+				
+				leashedAnimal = animal;
+				aiCrank.crankAnimal = this;
+				getWorld().notifyBlockUpdate(getPos(), getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), 3);
+				return true;
 			}
 		}
 
@@ -175,7 +185,7 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 	public NBTTagCompound getUpdateTag() {
 		return writeToNBT(new NBTTagCompound());
 	}
-	
+
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
 		NBTTagCompound compound = new NBTTagCompound();
@@ -197,7 +207,7 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 		if (leashedAnimal != null)
 			compound.setString("leashedAnimalUUID", leashedAnimal.getUniqueID().toString());
 		writeSyncableDataToNBT(compound);
-		
+
 		return compound;
 	}
 
@@ -210,7 +220,7 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 			leashedAnimalUUID = UUID.fromString(compound.getString("leashedAnimalUUID"));
 		readSyncableDataFromNBT(compound);
 	}
-	
+
 	private void writeSyncableDataToNBT(NBTTagCompound compound) {
 		compound.setLong("primaryPos", primaryPos.toLong());
 		if (leashedAnimal != null)
@@ -222,7 +232,7 @@ public class TileEntityCrankAnimal extends TileEntityPowerTransporter {
 		if (compound.hasKey("leashedAnimalID"))
 			leashedAnimalID = compound.getInteger("leashedAnimalID");
 	}
-	
+
 	@Override
 	public BlockPos[] getConnectedBlocks() {
 		return new BlockPos[] { pos.up(), pos.down() };

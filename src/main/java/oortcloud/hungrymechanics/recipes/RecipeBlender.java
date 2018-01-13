@@ -1,44 +1,46 @@
 package oortcloud.hungrymechanics.recipes;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import oortcloud.hungryanimals.entities.food_preferences.FoodPreferenceItemStack.HashItemType;
-import oortcloud.hungrymechanics.configuration.util.HashPairedItemType;
+import net.minecraft.item.crafting.Ingredient;
 
 public class RecipeBlender {
 
-	private static HashMap<HashPairedItemType, ItemStack> recipe;
+	private static List<RecipeBlenderEntry> recipe;
 
-	public static void init() {
-		recipe = new HashMap<HashPairedItemType, ItemStack>();
-	}
-
-	public static void addRecipe(HashItemType input1, HashItemType input2, ItemStack output) {
-		recipe.put(new HashPairedItemType(input1, input2), output);
-	}
-
-	public static ItemStack getRecipe(ItemStack input1, ItemStack input2) {
-		HashPairedItemType key1 = new HashPairedItemType(new HashItemType(input1.getItem()), new HashItemType(input2.getItem()));
-		HashPairedItemType key2 = new HashPairedItemType(new HashItemType(input1.getItem(), input1.getItemDamage()), new HashItemType(input2.getItem(), input2.getItemDamage()));
-		HashPairedItemType key3 = new HashPairedItemType(new HashItemType(input1.getItem(), input1.getItemDamage()), new HashItemType(input2.getItem()));
-		HashPairedItemType key4 = new HashPairedItemType(new HashItemType(input1.getItem()), new HashItemType(input2.getItem(), input2.getItemDamage()));
-		
-		if (recipe.containsKey(key1)) {
-			return recipe.get(key1);
-		} else if (recipe.containsKey(key2)) {
-			return recipe.get(key2);
-		}  else if (recipe.containsKey(key3)) {
-			return recipe.get(key3);
-		}  else if (recipe.containsKey(key4)) {
-			return recipe.get(key4);
-		} else {
-			return ItemStack.EMPTY;
+	public static class RecipeBlenderEntry {
+		public Ingredient left;
+		public Ingredient right;
+		public ItemStack output;
+		public RecipeBlenderEntry(Ingredient left, Ingredient right, ItemStack output) {
+			this.left = left;
+			this.right = right;
+			this.output = output;
 		}
 	}
+	
+	public static void init() {
+		recipe = new ArrayList<RecipeBlenderEntry>();
+	}
 
-	public static Map<HashPairedItemType, ItemStack> getRecipeList() {
+	public static void addRecipe(Ingredient left, Ingredient right, ItemStack output) {
+		recipe.add(new RecipeBlenderEntry(left, right, output));
+	}
+
+	public static ItemStack getRecipe(ItemStack left, ItemStack right) {
+		for (RecipeBlenderEntry i : recipe) {
+			if (i.left.apply(left) && i.right.apply(right))
+				return i.output;
+			if (i.left.apply(right) && i.right.apply(left))
+				return i.output;
+		}
+		
+		return ItemStack.EMPTY;
+	}
+
+	public static List<RecipeBlenderEntry> getRecipeList() {
 		return recipe;
 	}
 

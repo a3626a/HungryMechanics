@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import oortcloud.hungrymechanics.configuration.util.PairChanceAndItemStack;
 import oortcloud.hungrymechanics.core.lib.References;
+import oortcloud.hungrymechanics.recipes.RecipeThresher.RecipeThresherEntry;
 
 public class RecipeCategoryThresher implements IRecipeCategory<RecipeWrapperThresher>, ITooltipCallback<ItemStack> {
 
@@ -25,7 +26,7 @@ public class RecipeCategoryThresher implements IRecipeCategory<RecipeWrapperThre
 
 	private IDrawableAnimated progress;
 	private IDrawable background;
-	private RecipeInstanceThresher currentRecipe;
+	private RecipeThresherEntry currentRecipe;
 
 	public RecipeCategoryThresher(IGuiHelper guiHelper) {
 		ResourceLocation location = new ResourceLocation(References.MODID, "textures/gui/thresher.png");

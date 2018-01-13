@@ -1,14 +1,14 @@
 [
 	{
 		"item": {
-			"name": "hungrymechanics:mixedfeed"
+			"item": "hungrymechanics:mixedfeed"
 		},
 		"nutrient": 0.8,
 		"stomach":1
 	},
 	{
 		"item": {
-			"name": "hungrymechanics:poppyseed"
+			"item": "hungrymechanics:poppyseed"
 		},
 		"nutrient": 0.2,
 		"stomach": 0.25

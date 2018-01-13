@@ -1,35 +1,42 @@
 package oortcloud.hungrymechanics.recipes;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import oortcloud.hungryanimals.entities.food_preferences.FoodPreferenceItemStack.HashItemType;
+import net.minecraft.item.crafting.Ingredient;
 
 public class RecipeMillstone {
 
-	private static HashMap<HashItemType, Integer> recipe;
+	private static List<RecipeMillstoneEntry> recipe;
 
+	public static class RecipeMillstoneEntry {
+		public Ingredient ingredient;
+		public int amount;
+		public RecipeMillstoneEntry(Ingredient ingredient, int amount) {
+			this.ingredient = ingredient;
+			this.amount = amount;
+		}
+	}
+	
 	public static void init() {
-		recipe = new HashMap<HashItemType, Integer>();
+		recipe = new ArrayList<RecipeMillstoneEntry>();
 	}
 
-	public static void addRecipe(HashItemType input, int output) {
-		recipe.put(input, output);
+	public static void addRecipe(Ingredient input, int output) {
+		recipe.add(new RecipeMillstoneEntry(input, output));
 	}
 
 	public static int getRecipe(ItemStack item) {
-
-		if (recipe.containsKey(new HashItemType(item.getItem()))) {
-			return recipe.get(new HashItemType(item.getItem()));
-		} else if (recipe.containsKey(new HashItemType(item.getItem(), item.getItemDamage()))) {
-			return recipe.get(new HashItemType(item.getItem(), item.getItemDamage()));
-		} else {
-			return 0;
+		for (RecipeMillstoneEntry i : recipe) {
+			if (i.ingredient.apply(item)) {
+				return i.amount;
+			}
 		}
+		return 0;
 	}
 
-	public static Map<HashItemType, Integer> getRecipeList() {
+	public static List<RecipeMillstoneEntry> getRecipeList() {
 		return recipe;
 	}
 

@@ -1,10 +1,10 @@
 [
     {
         "input1" : {
-            "name" : "minecraft:carrot"
+            "item" : "minecraft:carrot"
         },
         "input2" : {
-            "name" : "minecraft:potato"
+            "item" : "minecraft:potato"
         },
         "output" : {
             "name" : "hungrymechanics:mixedfeed"
@@ -12,10 +12,10 @@
     },
     {
         "input1" : {
-            "name" : "hungryanimals:saltpeter"
+            "item" : "hungryanimals:saltpeter"
         },
         "input2" : {
-            "name" : "hungryanimals:manure"
+            "item" : "hungryanimals:manure"
         },
         "output" : {
             "name" : "minecraft:dye",

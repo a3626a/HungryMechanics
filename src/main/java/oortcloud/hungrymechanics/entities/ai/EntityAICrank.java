@@ -1,11 +1,24 @@
-package oortcloud.hungrymechanics.ai;
+package oortcloud.hungrymechanics.entities.ai;
+
+import com.google.gson.JsonElement;
 
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.EntityAIFollowParent;
+import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import oortcloud.hungryanimals.entities.ai.EntityAIAttackMeleeCustom;
+import oortcloud.hungryanimals.entities.ai.EntityAIAvoidPlayer;
+import oortcloud.hungryanimals.entities.ai.EntityAIMateModified;
+import oortcloud.hungryanimals.entities.ai.EntityAIMoveToEatBlock;
+import oortcloud.hungryanimals.entities.ai.EntityAIMoveToEatItem;
+import oortcloud.hungryanimals.entities.ai.EntityAIMoveToTrough;
+import oortcloud.hungryanimals.entities.ai.EntityAITemptEdibleItem;
+import oortcloud.hungryanimals.entities.ai.EntityAITemptIngredient;
+import oortcloud.hungryanimals.entities.ai.handler.AIContainer;
 import oortcloud.hungryanimals.entities.capability.ICapabilityHungryAnimal;
 import oortcloud.hungryanimals.entities.capability.ICapabilityTamableAnimal;
 import oortcloud.hungryanimals.entities.capability.ProviderHungryAnimal;
@@ -34,11 +47,6 @@ public class EntityAICrank extends EntityAIBase {
 	@Override
 	public boolean shouldExecute() {
 		return shouldContinueExecuting();
-		/*
-		 * if (world.getWorldTime()-timer > period) { timer =
-		 * world.getWorldTime(); return continueExecuting(); } else { return
-		 * false; }
-		 */
 	}
 
 	@Override
@@ -170,4 +178,19 @@ public class EntityAICrank extends EntityAIBase {
 			speed = 4;
 		entity.getNavigator().setSpeed(speed);
 	}
+	
+	public static void parse(JsonElement jsonEle, AIContainer aiContainer) {
+		aiContainer.getTask().after(EntityAISwimming.class)
+				    		 .before(EntityAIAttackMeleeCustom.class)
+					         .before(EntityAIAvoidPlayer.class)
+					         .before(EntityAIMateModified.class)
+					         .before(EntityAIMoveToTrough.class)
+					         .before(EntityAITemptIngredient.class)
+					         .before(EntityAITemptEdibleItem.class)
+					         .before(EntityAIMoveToEatItem.class)
+					         .before(EntityAIMoveToEatBlock.class)
+					         .before(EntityAIFollowParent.class)
+					         .put((animal)->new EntityAICrank(animal));
+	}
+	
 }

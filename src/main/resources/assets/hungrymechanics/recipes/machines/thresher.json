@@ -1,7 +1,7 @@
 [
     {
         "input" : {
-            "name" : "minecraft:wheat"
+            "item" : "minecraft:wheat"
         },
         "output" : [
             {
@@ -20,7 +20,7 @@
     },
     {
         "input" : {
-            "name" : "hungrymechanics:poppycrop"
+            "item" : "hungrymechanics:poppycrop"
         },
         "output" : [
             {

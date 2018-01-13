@@ -1,0 +1,6 @@
+##################
+#HUNGRY MECHANICS#
+##################
+
+"hungrymechanics.crank_weight" : amount of weight consumed when the animals is working at crank, [kg / tick]
+"hungrymechanics.crank_production" : amount of weight produced when the animals is working at crank

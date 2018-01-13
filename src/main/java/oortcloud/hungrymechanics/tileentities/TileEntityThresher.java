@@ -1,6 +1,6 @@
 package oortcloud.hungrymechanics.tileentities;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -73,7 +73,7 @@ public class TileEntityThresher extends TileEntityPowerTransporter {
 
 			ItemStack ingredient = inventory.getStackInSlot(0);
 			if (!ingredient.isEmpty()) {
-				ArrayList<PairChanceAndItemStack> output = RecipeThresher.getRecipe(ingredient);
+				List<PairChanceAndItemStack> output = RecipeThresher.getRecipe(ingredient);
 				if (output != null && this.getPowerNetwork().getPowerStored() > powerUsage) {
 					this.getPowerNetwork().consumeEnergy(powerUsage);
 					this.threshTime += 1;

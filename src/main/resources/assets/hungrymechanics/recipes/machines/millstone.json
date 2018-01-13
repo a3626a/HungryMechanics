@@ -1,25 +1,25 @@
 [
     {
         "item" : {
-            "name" : "minecraft:wheat_seeds"
+            "item" : "minecraft:wheat_seeds"
         },
         "amount" : 10
     },
     {
         "item" : {
-            "name" : "minecraft:pumpkin_seeds"
+            "item" : "minecraft:pumpkin_seeds"
         },
         "amount" : 10
     },
     {
         "item" : {
-            "name" : "minecraft:melon_seeds"
+            "item" : "minecraft:melon_seeds"
         },
         "amount" : 10
     },
     {
         "item" : {
-            "name" : "hungrymechanics:poppyseed"
+            "item" : "hungrymechanics:poppyseed"
         },
         "amount" : 50
     }

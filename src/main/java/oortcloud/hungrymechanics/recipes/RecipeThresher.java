@@ -1,46 +1,45 @@
 package oortcloud.hungrymechanics.recipes;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import oortcloud.hungryanimals.entities.food_preferences.FoodPreferenceItemStack.HashItemType;
+import net.minecraft.item.crafting.Ingredient;
 import oortcloud.hungrymechanics.configuration.util.PairChanceAndItemStack;
 
 public class RecipeThresher {
-	
-	private static HashMap<HashItemType, ArrayList<PairChanceAndItemStack>> recipe;
-	
-	public static void init() {
-		recipe = new HashMap<HashItemType, ArrayList<PairChanceAndItemStack>>();
-	}
-	
-	public static void addRecipe(Item item, ArrayList<PairChanceAndItemStack> output) {
-		addRecipe(item, 0, output);
-	}
-	
-	public static void addRecipe(Item item, int damage, ArrayList<PairChanceAndItemStack> output) {
-		recipe.put(new HashItemType(item, damage), output);
-	}
-	
-	public static void addRecipe(HashItemType input, ArrayList<PairChanceAndItemStack> output) {
-		recipe.put(input, output);
-	}
-	
-	public static ArrayList<PairChanceAndItemStack> getRecipe(ItemStack item) {
-		
-		if (recipe.containsKey(new HashItemType(item.getItem()))) {
-			return recipe.get(new HashItemType(item.getItem()));
-		} else if (recipe.containsKey(new HashItemType(item.getItem(), item.getItemDamage()))) {
-			return recipe.get(new HashItemType(item.getItem(), item.getItemDamage()));
-		} else {
-			return null;
+
+	private static List<RecipeThresherEntry> recipe;
+
+	public static class RecipeThresherEntry {
+		public Ingredient ingredient;
+		public List<PairChanceAndItemStack> outputs;
+
+		public RecipeThresherEntry(Ingredient ingredient, List<PairChanceAndItemStack> outputs) {
+			this.ingredient = ingredient;
+			this.outputs = outputs;
 		}
 	}
-	
-	public static Map<HashItemType, ArrayList<PairChanceAndItemStack>> getRecipeList() {
+
+	public static void init() {
+		recipe = new ArrayList<RecipeThresherEntry>();
+	}
+
+	public static void addRecipe(Ingredient ingredient, ArrayList<PairChanceAndItemStack> outputs) {
+		recipe.add(new RecipeThresherEntry(ingredient, outputs));
+	}
+
+	public static List<PairChanceAndItemStack> getRecipe(ItemStack item) {
+		for (RecipeThresherEntry i : recipe) {
+			if (i.ingredient.apply(item)) {
+				return i.outputs;
+			}
+		}
+		
+		return null;
+	}
+
+	public static List<RecipeThresherEntry> getRecipeList() {
 		return recipe;
 	}
 
