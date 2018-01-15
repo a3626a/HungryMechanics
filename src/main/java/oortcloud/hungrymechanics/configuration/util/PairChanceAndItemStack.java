@@ -10,7 +10,9 @@ import com.google.gson.JsonParseException;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.JsonUtils;
-import oortcloud.hungryanimals.configuration.ConfigurationHandler;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.JsonContext;
+import oortcloud.hungrymechanics.core.lib.References;
 
 public class PairChanceAndItemStack {
 	public double chance;
@@ -29,7 +31,8 @@ public class PairChanceAndItemStack {
 				throw new JsonParseException("item and probability field required.");
 			}
 			
-			ItemStack item = ConfigurationHandler.GSON_INSTANCE_ITEM_STACK.fromJson(JsonUtils.getJsonObject(jsonObj, "item"), ItemStack.class);
+			ItemStack item = CraftingHelper.getItemStack(JsonUtils.getJsonObject(jsonObj, "item"), new JsonContext(References.MODID));
+			
 			double prob = JsonUtils.getFloat(jsonObj, "probability");
 			
 			return new PairChanceAndItemStack(prob, item);

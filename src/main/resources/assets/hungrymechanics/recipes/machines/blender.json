@@ -7,7 +7,7 @@
             "item" : "minecraft:potato"
         },
         "output" : {
-            "name" : "hungrymechanics:mixedfeed"
+            "item" : "hungrymechanics:mixedfeed"
         }
     },
     {
@@ -18,8 +18,8 @@
             "item" : "hungryanimals:manure"
         },
         "output" : {
-            "name" : "minecraft:dye",
-            "damage" : 15,
+            "item" : "minecraft:dye",
+            "data" : 15,
             "count" : 6
         }
     }

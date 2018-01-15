@@ -16,6 +16,8 @@ import com.google.gson.JsonSyntaxException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.JsonUtils;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import oortcloud.hungryanimals.utils.ModJsonUtils;
 import oortcloud.hungrymechanics.HungryMechanics;
@@ -48,7 +50,7 @@ public class ConfigurationHandler {
 				JsonObject jsonObj = jsonEle.getAsJsonObject();
 				Ingredient ingredient1 = ModJsonUtils.getIngredient(jsonObj.getAsJsonObject("input1"));
 				Ingredient ingredient2 = ModJsonUtils.getIngredient(jsonObj.getAsJsonObject("input2"));
-				ItemStack output = oortcloud.hungryanimals.configuration.ConfigurationHandler.GSON_INSTANCE_ITEM_STACK.fromJson(jsonObj.getAsJsonObject("output"), ItemStack.class);
+				ItemStack output = CraftingHelper.getItemStack(jsonObj.getAsJsonObject("output"), new JsonContext(References.MODID));
 				
 				RecipeBlender.addRecipe(ingredient1, ingredient2, output);
 			}

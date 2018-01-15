@@ -6,13 +6,13 @@
         "output" : [
             {
                 "item" : {
-                    "name" : "minecraft:wheat_seeds"
+                    "item" : "minecraft:wheat_seeds"
                 },
                 "probability" : 0.5
             },
             {
                 "item" : {
-                    "name" : "hungrymechanics:straw"
+                    "item" : "hungrymechanics:straw"
                 },
                 "probability" : 1.0
             }
@@ -25,13 +25,13 @@
         "output" : [
             {
                 "item" : {
-                    "name" : "hungrymechanics:poppyseed"
+                    "item" : "hungrymechanics:poppyseed"
                 },
                 "probability" : 0.5
             },
             {
                 "item" : {
-                    "name" : "hungrymechanics:straw"
+                    "item" : "hungrymechanics:straw"
                 },
                 "probability" : 1.0
             }
