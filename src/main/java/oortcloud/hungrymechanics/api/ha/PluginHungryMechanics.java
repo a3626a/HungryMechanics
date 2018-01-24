@@ -6,6 +6,7 @@ import oortcloud.hungryanimals.api.IAttributeRegistry;
 import oortcloud.hungryanimals.api.IGrassGeneratorRegistry;
 import oortcloud.hungryanimals.api.IHAPlugin;
 import oortcloud.hungryanimals.api.ILootTableRegistry;
+import oortcloud.hungryanimals.api.IProductionRegistry;
 import oortcloud.hungrymechanics.entities.ai.EntityAICrank;
 import oortcloud.hungrymechanics.entities.attributes.ModAttributes;
 
@@ -36,6 +37,10 @@ public class PluginHungryMechanics implements IHAPlugin {
 
 	@Override
 	public void registerLootTables(ILootTableRegistry registry) {
+	}
+
+	@Override
+	public void registerProductions(IProductionRegistry arg0) {
 	}
 	
 }

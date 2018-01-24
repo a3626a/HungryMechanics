@@ -1,5 +1,7 @@
 package oortcloud.hungrymechanics.tileentities;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -48,7 +50,7 @@ public class TileEntityMillstone extends TileEntityPowerTransporter {
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
 		if (capability == ITEM_HANDLER_CAPABILITY)
 			return true;
 		if (capability == FLUID_HANDLER_CAPABILITY)
@@ -58,7 +60,7 @@ public class TileEntityMillstone extends TileEntityPowerTransporter {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
 		if (capability == ITEM_HANDLER_CAPABILITY) {
 			return (T)inventory;
 		}

@@ -25,7 +25,7 @@ public class BlockThresher extends Block {
 
 	@CapabilityInject(IItemHandler.class)
 	static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = null;
-	
+
 	public static final float exhaustion = 0.5F;
 
 	protected BlockThresher() {
@@ -42,7 +42,7 @@ public class BlockThresher extends Block {
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
-	
+
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 		return new AxisAlignedBB(0.375, 0, 0.375, 0.625, 1, 0.625);
@@ -52,12 +52,12 @@ public class BlockThresher extends Block {
 	public boolean hasTileEntity(IBlockState state) {
 		return true;
 	}
-	
+
 	@Override
 	public TileEntity createTileEntity(World world, IBlockState state) {
 		return new TileEntityThresher();
 	}
-	
+
 	@Override
 	public boolean isFullCube(IBlockState state) {
 		return false;
@@ -69,9 +69,13 @@ public class BlockThresher extends Block {
 	}
 
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side,
-			float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX,
+			float hitY, float hitZ) {
 		TileEntityThresher tileEntity = (TileEntityThresher) worldIn.getTileEntity(pos);
+
+		if (tileEntity == null)
+			return false;
+
 		if (tileEntity.hasCapability(ITEM_HANDLER_CAPABILITY, null)) {
 			return InventoryUtil.interactInventory(playerIn, hand, tileEntity.getCapability(ITEM_HANDLER_CAPABILITY, null), 0);
 		} else {
@@ -83,8 +87,10 @@ public class BlockThresher extends Block {
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
 		TileEntity tileentity = worldIn.getTileEntity(pos);
 
-		if (tileentity.hasCapability(ITEM_HANDLER_CAPABILITY, null)) {
-			InventoryUtil.dropInventoryItems(worldIn, pos, tileentity.getCapability(ITEM_HANDLER_CAPABILITY, null));
+		if (tileentity != null) {
+			if (tileentity.hasCapability(ITEM_HANDLER_CAPABILITY, null)) {
+				InventoryUtil.dropInventoryItems(worldIn, pos, tileentity.getCapability(ITEM_HANDLER_CAPABILITY, null));
+			}
 		}
 
 		super.breakBlock(worldIn, pos, state);

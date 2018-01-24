@@ -2,6 +2,8 @@ package oortcloud.hungrymechanics.tileentities;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Lists;
 
 import net.minecraft.item.ItemStack;
@@ -58,7 +60,7 @@ public class TileEntityBlender extends TileEntityPowerTransporter {
 		
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
 		if (capability == ITEM_HANDLER_CAPABILITY)
 			return true;
 		return super.hasCapability(capability, facing);
@@ -66,7 +68,7 @@ public class TileEntityBlender extends TileEntityPowerTransporter {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
 		if (facing != null && capability == ITEM_HANDLER_CAPABILITY) {
 			switch (facing) {
 			case UP :

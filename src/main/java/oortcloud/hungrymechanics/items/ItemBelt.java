@@ -2,6 +2,8 @@ package oortcloud.hungrymechanics.items;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,10 +42,11 @@ public class ItemBelt extends Item {
 	}
 	
 	@Override
-	public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+	public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
 		tooltip.add("Length: " + stack.getItemDamage() + " m");
-		if (stack.hasTagCompound() && stack.getTagCompound().hasKey("SelectedBlockPos")) {
-			tooltip.add("Connected to: " + BlockPos.fromLong(stack.getTagCompound().getLong("SelectedBlockPos")));
+		NBTTagCompound tag = stack.getTagCompound();
+		if (tag != null && tag.hasKey("SelectedBlockPos")) {
+			tooltip.add("Connected to: " + BlockPos.fromLong(tag.getLong("SelectedBlockPos")));
 		}
 	}
 
@@ -55,8 +58,10 @@ public class ItemBelt extends Item {
 		if (!TileEntityAxle.isValidAxle(worldIn, pos)) {
 			return EnumActionResult.PASS;
 		}
-		if (stack.hasTagCompound() && stack.getTagCompound().hasKey("SelectedBlockPos")) {
-			BlockPos selectedPos = BlockPos.fromLong(stack.getTagCompound().getLong("SelectedBlockPos"));
+		
+		NBTTagCompound tag = stack.getTagCompound();
+		if (tag != null && tag.hasKey("SelectedBlockPos")) {
+			BlockPos selectedPos = BlockPos.fromLong(tag.getLong("SelectedBlockPos"));
 			if (pos.equals(selectedPos)) {
 				return EnumActionResult.PASS;
 			}
@@ -64,13 +69,13 @@ public class ItemBelt extends Item {
 				return EnumActionResult.PASS;
 			}
 			if (!TileEntityAxle.isValidAxle(worldIn, selectedPos)) {
-				stack.getTagCompound().removeTag("SelectedBlockPos");
+				tag.removeTag("SelectedBlockPos");
 				return EnumActionResult.PASS;
 			}
 			TileEntityAxle axle1 = (TileEntityAxle) worldIn.getTileEntity(selectedPos);
 			TileEntityAxle axle2 = (TileEntityAxle) worldIn.getTileEntity(pos);
 			if (axle1 == null || axle1.isConnected()) {
-				stack.getTagCompound().removeTag("SelectedBlockPos");
+				tag.removeTag("SelectedBlockPos");
 				return EnumActionResult.PASS;
 			}
 			if (axle2 == null || axle2.isConnected()) {
@@ -83,7 +88,7 @@ public class ItemBelt extends Item {
 				axle1.setConnectedAxle(pos);
 				axle2.setConnectedAxle(selectedPos);
 				axle1.mergePowerNetwork(new PowerNetwork(0));
-				stack.getTagCompound().removeTag("SelectedBlockPos");
+				tag.removeTag("SelectedBlockPos");
 				if (stack.getItemDamage() == 0) {
 					playerIn.inventory.deleteStack(stack);
 				}
@@ -92,11 +97,14 @@ public class ItemBelt extends Item {
 			return EnumActionResult.FAIL;
 		} else {
 			TileEntityAxle axle = (TileEntityAxle) worldIn.getTileEntity(pos);
+			
+			tag = new NBTTagCompound();
+			
 			if (axle != null && !axle.isConnected()) {
 				if (!stack.hasTagCompound()) {
-					stack.setTagCompound(new NBTTagCompound());
+					stack.setTagCompound(tag);
 				}
-				stack.getTagCompound().setLong("SelectedBlockPos", pos.toLong());
+				tag.setLong("SelectedBlockPos", pos.toLong());
 				return EnumActionResult.SUCCESS;
 			}
 			return EnumActionResult.PASS;

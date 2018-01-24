@@ -2,6 +2,8 @@ package oortcloud.hungrymechanics.tileentities;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -46,7 +48,7 @@ public class TileEntityThresher extends TileEntityPowerTransporter {
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
 		if (capability == ITEM_HANDLER_CAPABILITY)
 			return true;
 		return super.hasCapability(capability, facing);
@@ -54,7 +56,7 @@ public class TileEntityThresher extends TileEntityPowerTransporter {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
 		if (capability == ITEM_HANDLER_CAPABILITY) {
 			return (T)inventory;
 		}

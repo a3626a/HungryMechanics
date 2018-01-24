@@ -64,6 +64,9 @@ public class BlockCrankPlayer extends Block {
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		TileEntityCrankPlayer te = (TileEntityCrankPlayer) worldIn.getTileEntity(pos);
+		if (te == null)
+			return false;
+		
 		if (te.leftTick == 0) {
 			playerIn.addExhaustion(exhaustion);
 			te.leftTick = 40;

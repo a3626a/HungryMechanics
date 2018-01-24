@@ -39,10 +39,18 @@ public class ItemCrankAnimal extends Item {
 		}
 
 		worldIn.setBlockState(setpos, ModBlocks.crankAnimal.getDefaultState());
-		((TileEntityCrankAnimal) worldIn.getTileEntity(setpos)).setPrimaryPos(setpos);
+		
+		TileEntityCrankAnimal tile = (TileEntityCrankAnimal) worldIn.getTileEntity(setpos);
+		if (tile == null)
+			return EnumActionResult.FAIL;
+		
+		tile.setPrimaryPos(setpos);
 		for (int i = 0; i < structure.length; i++) {
 			worldIn.setBlockState(setpos.add(structure[i][0], 0, structure[i][1]), ModBlocks.crankAnimal.getDefaultState());
-			((TileEntityCrankAnimal) worldIn.getTileEntity(setpos.add(structure[i][0], 0, structure[i][1]))).setPrimaryPos(setpos);
+			TileEntityCrankAnimal tileSub = (TileEntityCrankAnimal) worldIn.getTileEntity(setpos.add(structure[i][0], 0, structure[i][1]));
+			if (tileSub == null)
+				return EnumActionResult.FAIL;
+			tileSub.setPrimaryPos(setpos);
 		}
 
 		return EnumActionResult.SUCCESS;

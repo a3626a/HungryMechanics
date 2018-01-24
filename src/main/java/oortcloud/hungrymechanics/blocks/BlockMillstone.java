@@ -30,7 +30,7 @@ public class BlockMillstone extends Block {
 
 	@CapabilityInject(IItemHandler.class)
 	static Capability<IItemHandler> ITEM_HANDLER_CAPABILITY = null;
-	
+
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
 	public static final float exhaustion = 0.5F;
@@ -42,10 +42,10 @@ public class BlockMillstone extends Block {
 
 		setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.SOUTH));
 		setRegistryName(Strings.blockMillstoneName);
-		setUnlocalizedName(References.MODID+"."+Strings.blockMillstoneName);
+		setUnlocalizedName(References.MODID + "." + Strings.blockMillstoneName);
 		setCreativeTab(HungryMechanics.tabHungryMechanics);
 	}
-	
+
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
@@ -55,27 +55,27 @@ public class BlockMillstone extends Block {
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 		return new AxisAlignedBB(0, 0, 0, 1.0, 0.625, 1.0);
 	}
-	
+
 	@Override
 	protected BlockStateContainer createBlockState() {
 		return new BlockStateContainer(this, new IProperty[] { FACING });
 	}
-	
+
 	@Override
 	public boolean hasTileEntity(IBlockState state) {
 		return true;
 	}
-	
+
 	@Override
 	public TileEntity createTileEntity(World world, IBlockState state) {
 		return new TileEntityMillstone();
 	}
-	
+
 	@Override
 	public boolean isFullCube(IBlockState state) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
@@ -88,8 +88,12 @@ public class BlockMillstone extends Block {
 	}
 
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX,
+			float hitY, float hitZ) {
 		TileEntityMillstone tileEntity = (TileEntityMillstone) worldIn.getTileEntity(pos);
+
+		if (tileEntity == null)
+			return false;
 
 		if (tileEntity.hasCapability(ITEM_HANDLER_CAPABILITY, null)) {
 			return InventoryUtil.interactInventory(playerIn, hand, tileEntity.getCapability(ITEM_HANDLER_CAPABILITY, null), 0);
@@ -107,16 +111,17 @@ public class BlockMillstone extends Block {
 	public int getMetaFromState(IBlockState state) {
 		return ((EnumFacing) state.getValue(FACING)).getHorizontalIndex();
 	}
-	
-	@Override
-	public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
-    {
-        TileEntity tileentity = worldIn.getTileEntity(pos);
 
-		if (tileentity.hasCapability(ITEM_HANDLER_CAPABILITY, null)) {
-			InventoryUtil.dropInventoryItems(worldIn, pos, tileentity.getCapability(ITEM_HANDLER_CAPABILITY, null));
+	@Override
+	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+		TileEntity tileentity = worldIn.getTileEntity(pos);
+
+		if (tileentity != null) {
+			if (tileentity.hasCapability(ITEM_HANDLER_CAPABILITY, null)) {
+				InventoryUtil.dropInventoryItems(worldIn, pos, tileentity.getCapability(ITEM_HANDLER_CAPABILITY, null));
+			}
 		}
-		
-        super.breakBlock(worldIn, pos, state);
-    }
+
+		super.breakBlock(worldIn, pos, state);
+	}
 }

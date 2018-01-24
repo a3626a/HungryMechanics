@@ -20,6 +20,10 @@ public class HandlerPlayerServer implements IMessageHandler<PacketPlayerServer, 
 	public PacketPlayerClient onMessage(PacketPlayerServer message, MessageContext ctx) {
 		
 		EntityPlayer player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(message.name);
+		
+		if (player == null)
+			return null;
+		
 		switch (message.index) {
 		case SyncIndex.PLANTPOPPY:
 			int dim = message.getInt();

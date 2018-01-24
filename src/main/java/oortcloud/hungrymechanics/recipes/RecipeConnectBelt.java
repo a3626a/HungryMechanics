@@ -19,7 +19,7 @@ public class RecipeConnectBelt extends IForgeRegistryEntry.Impl<IRecipe> impleme
 	public RecipeConnectBelt() {
 		setRegistryName(new ResourceLocation(References.MODID, "recipeconnectbelt"));
 	}
-	
+
 	@Override
 	public boolean matches(InventoryCrafting inventory, World worldIn) {
 		ArrayList<ItemStack> arraylist = Lists.newArrayList();
@@ -61,13 +61,18 @@ public class RecipeConnectBelt extends IForgeRegistryEntry.Impl<IRecipe> impleme
 		return ItemStack.EMPTY;
 	}
 
+	@SuppressWarnings("null")
 	@Override
 	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inventoryCrafting) {
 		NonNullList<ItemStack> aitemstack = NonNullList.withSize(inventoryCrafting.getSizeInventory(), ItemStack.EMPTY);
 
 		for (int i = 0; i < aitemstack.size(); ++i) {
 			ItemStack itemstack = inventoryCrafting.getStackInSlot(i);
-			aitemstack.set(i, net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack));
+			if (itemstack != null) {
+				aitemstack.set(i, net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack));
+			} else {
+				aitemstack.set(i, net.minecraftforge.common.ForgeHooks.getContainerItem(ItemStack.EMPTY));
+			}
 		}
 
 		return aitemstack;
@@ -75,6 +80,6 @@ public class RecipeConnectBelt extends IForgeRegistryEntry.Impl<IRecipe> impleme
 
 	@Override
 	public boolean canFit(int width, int height) {
-		return width*height >= 2;
+		return width * height >= 2;
 	}
 }
