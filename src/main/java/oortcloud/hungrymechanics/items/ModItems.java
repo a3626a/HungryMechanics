@@ -45,5 +45,6 @@ public class ModItems {
 	    event.getRegistry().register(new ItemBlock(ModBlocks.crankPlayer).setRegistryName(ModBlocks.crankPlayer.getRegistryName()));
 	    event.getRegistry().register(new ItemBlock(ModBlocks.millStone).setRegistryName(ModBlocks.millStone.getRegistryName()));
 	    event.getRegistry().register(new ItemBlock(ModBlocks.thresher).setRegistryName(ModBlocks.thresher.getRegistryName()));
+	    event.getRegistry().register(new ItemBlock(ModBlocks.generator).setRegistryName(ModBlocks.generator.getRegistryName()));
 	}
 }

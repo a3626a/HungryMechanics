@@ -31,7 +31,7 @@ import oortcloud.hungrymechanics.entities.attributes.ModAttributes;
 /**
  * UUID and ID is different
  * UUID is consistent every run, but client's UUID and server'UUID is different
- * ID is consistent between server and client but not evern run.
+ * ID is consistent between server and client but not every run.
  * @author LeeChangHwan
  *
  */

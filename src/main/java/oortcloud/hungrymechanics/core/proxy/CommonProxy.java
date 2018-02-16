@@ -10,6 +10,7 @@ import oortcloud.hungrymechanics.tileentities.TileEntityAxle;
 import oortcloud.hungrymechanics.tileentities.TileEntityBlender;
 import oortcloud.hungrymechanics.tileentities.TileEntityCrankAnimal;
 import oortcloud.hungrymechanics.tileentities.TileEntityCrankPlayer;
+import oortcloud.hungrymechanics.tileentities.TileEntityGenerator;
 import oortcloud.hungrymechanics.tileentities.TileEntityMillstone;
 import oortcloud.hungrymechanics.tileentities.TileEntityThresher;
 
@@ -22,6 +23,7 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileEntityMillstone.class, References.MODID+"."+Strings.blockMillstoneName);
 		GameRegistry.registerTileEntity(TileEntityBlender.class, References.MODID+"."+Strings.blockBlenderName);
 		GameRegistry.registerTileEntity(TileEntityCrankAnimal.class, References.MODID+"."+Strings.blockCrankAnimalName);
+		GameRegistry.registerTileEntity(TileEntityGenerator.class, References.MODID+"."+Strings.blockGeneratorName);
 	}
 
 	public void registerTileEntityRendering() {
