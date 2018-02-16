@@ -21,6 +21,7 @@ import oortcloud.hungrymechanics.blocks.render.RenderTileEntityAxle;
 import oortcloud.hungrymechanics.blocks.render.RenderTileEntityBlender;
 import oortcloud.hungrymechanics.blocks.render.RenderTileEntityCrankAnimal;
 import oortcloud.hungrymechanics.blocks.render.RenderTileEntityCrankPlayer;
+import oortcloud.hungrymechanics.blocks.render.RenderTileEntityGenerator;
 import oortcloud.hungrymechanics.blocks.render.RenderTileEntityMillstone;
 import oortcloud.hungrymechanics.blocks.render.RenderTileEntityThresher;
 import oortcloud.hungrymechanics.core.lib.References;
@@ -31,6 +32,7 @@ import oortcloud.hungrymechanics.tileentities.TileEntityAxle;
 import oortcloud.hungrymechanics.tileentities.TileEntityBlender;
 import oortcloud.hungrymechanics.tileentities.TileEntityCrankAnimal;
 import oortcloud.hungrymechanics.tileentities.TileEntityCrankPlayer;
+import oortcloud.hungrymechanics.tileentities.TileEntityGenerator;
 import oortcloud.hungrymechanics.tileentities.TileEntityMillstone;
 import oortcloud.hungrymechanics.tileentities.TileEntityThresher;
 
@@ -113,6 +115,7 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMillstone.class, new RenderTileEntityMillstone());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBlender.class, new RenderTileEntityBlender());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrankAnimal.class, new RenderTileEntityCrankAnimal());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityGenerator.class, new RenderTileEntityGenerator());
 	}
 
 	@Override
