@@ -9,6 +9,7 @@ import oortcloud.hungrymechanics.HungryMechanics;
 import oortcloud.hungrymechanics.blocks.ModBlocks;
 import oortcloud.hungrymechanics.core.lib.References;
 import oortcloud.hungrymechanics.core.lib.Strings;
+import oortcloud.hungrymechanics.multiblock.MultiBlocks;
 
 @Mod.EventBusSubscriber
 public class ModItems {
@@ -22,6 +23,7 @@ public class ModItems {
 	public static Item crankAnimal;
 	public static Item oilpipet;
 	public static Item belt;
+	public static Item generator;
 	
 	public static void init() {
 		poppyseed = new ItemPoppySeed();
@@ -34,17 +36,18 @@ public class ModItems {
 		mixedFeed = new Item().setRegistryName(Strings.itemMixedFeedName).setUnlocalizedName(References.MODID+"."+Strings.itemMixedFeedName).setCreativeTab(HungryMechanics.tabHungryMechanics);
 		compositeWoodCasing = new Item().setRegistryName(Strings.itemCompositeWoodCasingName).setUnlocalizedName(References.MODID+"."+Strings.itemCompositeWoodCasingName).setCreativeTab(HungryMechanics.tabHungryMechanics);
 		blade = new Item().setRegistryName(Strings.itemBladeName).setUnlocalizedName(References.MODID+"."+Strings.itemBladeName).setCreativeTab(HungryMechanics.tabHungryMechanics);
+		generator = new ItemMultiblockPlacer(MultiBlocks.generator, ModBlocks.generator);
+		generator.setRegistryName(Strings.itemGeneratorName).setUnlocalizedName(References.MODID + "." + Strings.itemGeneratorName).setCreativeTab(HungryMechanics.tabHungryMechanics);
 	}
 	
 	@SubscribeEvent
 	public static void registerItems(RegistryEvent.Register<Item> event) {
-	    event.getRegistry().registerAll(poppyseed, crankAnimal, oilpipet, belt, wheel, straw, poppycrop, mixedFeed, compositeWoodCasing, blade);
+	    event.getRegistry().registerAll(poppyseed, crankAnimal, oilpipet, belt, wheel, straw, poppycrop, mixedFeed, compositeWoodCasing, blade, generator);
 	    
 	    event.getRegistry().register(new ItemBlock(ModBlocks.axle).setRegistryName(ModBlocks.axle.getRegistryName()));
 	    event.getRegistry().register(new ItemBlock(ModBlocks.blender).setRegistryName(ModBlocks.blender.getRegistryName()));
 	    event.getRegistry().register(new ItemBlock(ModBlocks.crankPlayer).setRegistryName(ModBlocks.crankPlayer.getRegistryName()));
 	    event.getRegistry().register(new ItemBlock(ModBlocks.millStone).setRegistryName(ModBlocks.millStone.getRegistryName()));
 	    event.getRegistry().register(new ItemBlock(ModBlocks.thresher).setRegistryName(ModBlocks.thresher.getRegistryName()));
-	    event.getRegistry().register(new ItemBlock(ModBlocks.generator).setRegistryName(ModBlocks.generator.getRegistryName()));
 	}
 }

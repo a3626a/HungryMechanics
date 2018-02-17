@@ -2,6 +2,7 @@ package oortcloud.hungrymechanics.tileentities;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -10,14 +11,17 @@ import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
+import oortcloud.hungrymechanics.multiblock.ITEMultiBlock;
 
-public class TileEntityGenerator extends TileEntityPowerTransporter {
+public class TileEntityGenerator extends TileEntityPowerTransporter implements ITEMultiBlock {
 
 	@CapabilityInject(IEnergyStorage.class)
 	static Capability<IEnergyStorage> ENERGY_STORAGE_CAPABILITY = null;
 
 	private IEnergyStorage storage = new EnergyStorage(8000, 80, 80, 0);
-
+	private BlockPos main;
+	private EnumFacing facing;
+	
 	public static int maxRF = 8;
 	public static double toRFRate = 4.0;
 
@@ -66,6 +70,8 @@ public class TileEntityGenerator extends TileEntityPowerTransporter {
 		super.readFromNBT(compound);
 		NBTBase nbt = compound.getTag("energy_storage");
 		ENERGY_STORAGE_CAPABILITY.getStorage().readNBT(ENERGY_STORAGE_CAPABILITY, storage, null, nbt);
+		main = NBTUtil.getPosFromTag(compound.getCompoundTag("hungrymechanics.generator.main"));
+		facing = EnumFacing.getFront(compound.getInteger("hungrymechanics.generator.facing"));
 	}
 	
 	@Override
@@ -78,6 +84,33 @@ public class TileEntityGenerator extends TileEntityPowerTransporter {
 		compound = super.writeToNBT(compound);
 		NBTBase nbt =  ENERGY_STORAGE_CAPABILITY.getStorage().writeNBT(ENERGY_STORAGE_CAPABILITY, storage, null);
 		compound.setTag("energy_storage", nbt);
+		compound.setTag("hungrymechanics.generator.main", NBTUtil.createPosTag(main));
+		compound.setInteger("hungrymechanics.generator.facing", facing.getIndex());
 		return compound;
+	}
+
+	@Override
+	public void setMain(BlockPos main) {
+		this.main = main;
+	}
+
+	@Override
+	public void setFacing(EnumFacing facing) {
+		this.facing = facing;
+	}
+
+	@Override
+	public boolean isMain() {
+		return this.main.equals(getPos());
+	}
+
+	@Override
+	public BlockPos getMain() {
+		return main;
+	}
+	
+	@Override
+	public EnumFacing getFacing() {
+		return facing;
 	}
 }

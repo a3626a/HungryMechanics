@@ -19,9 +19,11 @@ public class Strings {
 	public static final String itemCompositeWoodCasingName = "compositewoodcasing";
 	public static final String itemBladeName = "blade";
 	public static final String itemCrankAnimalName = "crankanimal";
+	public static final String itemGeneratorName = "generator";
 	public static final String itemOilPipetName = "oilpipet";
 	public static final String itemBeltName = "belt";
 	
 	public static final String fluidSeedOilName = "seedoil";
+
 
 }

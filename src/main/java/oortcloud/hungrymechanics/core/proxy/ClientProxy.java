@@ -51,8 +51,6 @@ public class ClientProxy extends CommonProxy {
 				new ModelResourceLocation(ModBlocks.thresher.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ItemBlock.getItemFromBlock(ModBlocks.blender), 0,
 				new ModelResourceLocation(ModBlocks.blender.getRegistryName(), "inventory"));
-		ModelLoader.setCustomModelResourceLocation(ItemBlock.getItemFromBlock(ModBlocks.generator), 0,
-				new ModelResourceLocation(ModBlocks.generator.getRegistryName(), "inventory"));
 		
 		ModelLoader.setCustomModelResourceLocation(ModItems.wheel, 0, new ModelResourceLocation(ModItems.wheel.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ModItems.straw, 0, new ModelResourceLocation(ModItems.straw.getRegistryName(), "inventory"));
@@ -62,6 +60,7 @@ public class ClientProxy extends CommonProxy {
 		ModelLoader.setCustomModelResourceLocation(ModItems.compositeWoodCasing, 0, new ModelResourceLocation(ModItems.compositeWoodCasing.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ModItems.blade, 0, new ModelResourceLocation(ModItems.blade.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ModItems.crankAnimal, 0, new ModelResourceLocation(ModItems.crankAnimal.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(ModItems.generator, 0, new ModelResourceLocation(ModItems.generator.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(ModItems.oilpipet, 0, new ModelResourceLocation(ModItems.oilpipet.getRegistryName(), "inventory"));
 		ModelLoader.setCustomMeshDefinition(ModItems.belt, new ItemMeshDefinition() {
 			@Override

@@ -1,9 +1,15 @@
 package oortcloud.hungrymechanics.blocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import oortcloud.hungrymechanics.HungryMechanics;
+import oortcloud.hungrymechanics.core.lib.References;
+import oortcloud.hungrymechanics.core.lib.Strings;
+import oortcloud.hungrymechanics.multiblock.MultiBlocks;
+import oortcloud.hungrymechanics.tileentities.TileEntityGenerator;
 
 @Mod.EventBusSubscriber
 public class ModBlocks {
@@ -26,7 +32,11 @@ public class ModBlocks {
 		millStone = new BlockMillstone();
 		blender = new BlockBlender();
 		crankAnimal = new BlockCrankAnimal();
-		generator = new BlockGenerator();
+		generator = new BlockMultiBlock(Material.WOOD, MultiBlocks.generator, (world, state)->{
+			return new TileEntityGenerator();
+		});
+		generator.setHarvestLevel("axe", 0);
+		generator.setHardness(2.0F).setRegistryName(Strings.blockGeneratorName).setUnlocalizedName(References.MODID + "." + Strings.blockGeneratorName).setCreativeTab(null);
 	}
 	
 	@SubscribeEvent
