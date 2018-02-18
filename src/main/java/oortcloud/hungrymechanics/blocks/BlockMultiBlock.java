@@ -3,12 +3,12 @@ package oortcloud.hungrymechanics.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import oortcloud.hungrymechanics.items.ModItems;
 import oortcloud.hungrymechanics.multiblock.IMultiBlockExposure;
 import oortcloud.hungrymechanics.multiblock.MultiBlockInformationRotatable;
 
@@ -76,8 +76,8 @@ public class BlockMultiBlock extends Block {
 					}
 				}
 			}
-			// TODO Generalize drop item
-			spawnAsEntity(worldIn, pos, new ItemStack(ModItems.generator));
+			// TODO [ENHANCEMENT] ItemMultiblockPlacer and BlockMultiblock reference each other. need BETTER way to wrap this
+			spawnAsEntity(worldIn, pos, new ItemStack(Item.REGISTRY.getObject(getRegistryName())));
 		} else {
 			if (!isDestroying(teMultiBlock, worldIn)) {
 				worldIn.destroyBlock(teMultiBlock.getMain(), false);

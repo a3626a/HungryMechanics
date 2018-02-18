@@ -33,7 +33,6 @@ public class MultiBlockInformationRotatable {
 	}
 
 	private Rotation getRotation(EnumFacing from, EnumFacing to) {
-		// TODO CHECK VALIDITY
 		return Rotation.values()[(to.getHorizontalIndex() - from.getHorizontalIndex() + 4) % 4];
 	}
 

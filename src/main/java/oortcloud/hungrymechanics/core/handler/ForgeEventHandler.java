@@ -37,14 +37,4 @@ public class ForgeEventHandler {
 		}
 	}
 
-	/*
-	 * TODO 
-	@SubscribeEvent
-	public void onAIContainerRegisterEvent(AIContainerRegisterEvent event) {
-		if (event.getEntityClass() == EntityCow.class) {
-			event.getContainer().putFirst((entity) -> new EntityAICrank(entity));
-		}
-	}
-    */
-	
 }

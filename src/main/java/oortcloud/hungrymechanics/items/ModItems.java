@@ -36,8 +36,7 @@ public class ModItems {
 		mixedFeed = new Item().setRegistryName(Strings.itemMixedFeedName).setUnlocalizedName(References.MODID+"."+Strings.itemMixedFeedName).setCreativeTab(HungryMechanics.tabHungryMechanics);
 		compositeWoodCasing = new Item().setRegistryName(Strings.itemCompositeWoodCasingName).setUnlocalizedName(References.MODID+"."+Strings.itemCompositeWoodCasingName).setCreativeTab(HungryMechanics.tabHungryMechanics);
 		blade = new Item().setRegistryName(Strings.itemBladeName).setUnlocalizedName(References.MODID+"."+Strings.itemBladeName).setCreativeTab(HungryMechanics.tabHungryMechanics);
-		generator = new ItemMultiblockPlacer(MultiBlocks.generator, ModBlocks.generator);
-		generator.setRegistryName(Strings.itemGeneratorName).setUnlocalizedName(References.MODID + "." + Strings.itemGeneratorName).setCreativeTab(HungryMechanics.tabHungryMechanics);
+		generator = new ItemMultiblockPlacer(MultiBlocks.generator, ModBlocks.generator).setRegistryName(Strings.itemGeneratorName).setUnlocalizedName(References.MODID + "." + Strings.itemGeneratorName).setCreativeTab(HungryMechanics.tabHungryMechanics);
 	}
 	
 	@SubscribeEvent
