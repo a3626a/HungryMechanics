@@ -2,7 +2,6 @@ package oortcloud.hungrymechanics.blocks.render;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 
 /**
  * ModelGenerator - a3626a
@@ -126,23 +125,23 @@ public class ModelGenerator extends ModelBase {
         this.core.addChild(this.red2);
     }
 
-    @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) { 
-        this.wire3.render(f5);
-        this.frame1.render(f5);
-        this.frontBox.render(f5);
-        this.rearBox.render(f5);
-        this.core.render(f5);
-        this.wire4.render(f5);
-        this.frame3.render(f5);
-        this.wire1.render(f5);
-        this.frame4.render(f5);
-        this.plug1.render(f5);
-        this.plug2.render(f5);
-        this.wire2.render(f5);
-        this.plug3.render(f5);
-        this.frame2.render(f5);
-        this.plug4.render(f5);
+    public void render(float angle, float scale) { 
+    	this.setRotateAngle(core, 0, 0, (float)((angle)*Math.PI/180));
+        this.wire3.render(scale);
+        this.frame1.render(scale);
+        this.frontBox.render(scale);
+        this.rearBox.render(scale);
+        this.core.render(scale);
+        this.wire4.render(scale);
+        this.frame3.render(scale);
+        this.wire1.render(scale);
+        this.frame4.render(scale);
+        this.plug1.render(scale);
+        this.plug2.render(scale);
+        this.wire2.render(scale);
+        this.plug3.render(scale);
+        this.frame2.render(scale);
+        this.plug4.render(scale);
     }
 
     /**
@@ -153,4 +152,5 @@ public class ModelGenerator extends ModelBase {
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
     }
+    
 }

@@ -1,5 +1,7 @@
 package oortcloud.hungrymechanics.tileentities;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
@@ -26,13 +28,13 @@ abstract public class TileEntityMultiBlock extends TileEntity implements ITickab
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
 		BlockPos start = getMain().subtract(MultiBlocks.generator.getMain(facing));
 		TileEntity teMain = getWorld().getTileEntity(getMain());
 		if (teMain instanceof TileEntityMultiBlock) {
 			TileEntityMultiBlock teMultiBlockMain = (TileEntityMultiBlock) teMain;
 			if (teMultiBlockMain.isMain()) {
-				if (teMultiBlockMain.hasCapability(capability, facing, getPos().subtract(start))) {
+				if (teMultiBlockMain.hasCapabilityMain(capability, facing, getPos().subtract(start))) {
 					return true;
 				}
 			}
@@ -48,16 +50,16 @@ abstract public class TileEntityMultiBlock extends TileEntity implements ITickab
 	 *            position according to multi-block structure ex) (0,0,0), (1,0,1)
 	 * @return
 	 */
-	abstract public boolean hasCapability(Capability<?> capability, EnumFacing facing, BlockPos pos);
+	abstract public boolean hasCapabilityMain(Capability<?> capability, EnumFacing facing, BlockPos pos);
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
 		BlockPos start = getMain().subtract(MultiBlocks.generator.getMain(facing));
 		TileEntity teMain = getWorld().getTileEntity(getMain());
 		if (teMain instanceof TileEntityMultiBlock) {
 			TileEntityMultiBlock teMultiBlockMain = (TileEntityMultiBlock) teMain;
 			if (teMultiBlockMain.isMain()) {
-				T cap = teMultiBlockMain.getCapability(capability, facing, getPos().subtract(start));
+				T cap = teMultiBlockMain.getCapabilityMain(capability, facing, getPos().subtract(start));
 				if (cap != null) {
 					return cap;
 				}
@@ -75,7 +77,7 @@ abstract public class TileEntityMultiBlock extends TileEntity implements ITickab
 	 *            position according to multi-block structure
 	 * @return
 	 */
-	abstract public <T> T getCapability(Capability<?> capability, EnumFacing facing, BlockPos pos);
+	abstract public <T> T getCapabilityMain(Capability<?> capability, EnumFacing facing, BlockPos pos);
 
 	@Override
 	public void update() {

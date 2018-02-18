@@ -54,8 +54,7 @@ public class RenderTileEntityGenerator extends TileEntitySpecialRenderer<TileEnt
 		
 		
 		this.bindTexture(texture);
-		
-		this.modelGenerator.render(null, 0, 0, 0, 0, 0, 0.0625F);
+		modelGenerator.render(generator.angle*partialTick+generator.prevAngle*(1-partialTick), 0.0625F);
 		
 		GL11.glPopMatrix();
 	}
