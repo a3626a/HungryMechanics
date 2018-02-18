@@ -9,8 +9,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import oortcloud.hungrymechanics.HungryMechanics;
-import oortcloud.hungrymechanics.multiblock.ITEMultiBlock;
+import oortcloud.hungrymechanics.multiblock.IMultiBlockExposure;
 import oortcloud.hungrymechanics.multiblock.MultiBlockInformationRotatable;
 
 public class ItemMultiblockPlacer extends Item {
@@ -58,8 +57,8 @@ public class ItemMultiblockPlacer extends Item {
 					BlockPos worldPos = buildPos.subtract(offset).add(iPos);
 					worldIn.setBlockState(worldPos, BLOCK.getDefaultState());
 					TileEntity tileSub = worldIn.getTileEntity(worldPos);
-					if (tileSub instanceof ITEMultiBlock) {
-						ITEMultiBlock teMultiBlock = (ITEMultiBlock) tileSub;
+					if (tileSub instanceof IMultiBlockExposure) {
+						IMultiBlockExposure teMultiBlock = (IMultiBlockExposure) tileSub;
 						teMultiBlock.setMain(main);
 						teMultiBlock.setFacing(buildFacing);
 					} else {

@@ -3,7 +3,7 @@ package oortcloud.hungrymechanics.multiblock;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
-public interface ITEMultiBlock {
+public interface IMultiBlockExposure {
 
 	public boolean isMain();
 	public void setMain(BlockPos main);

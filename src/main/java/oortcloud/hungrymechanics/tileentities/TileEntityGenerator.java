@@ -2,7 +2,7 @@ package oortcloud.hungrymechanics.tileentities;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTUtil;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -11,50 +11,57 @@ import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import oortcloud.hungrymechanics.multiblock.ITEMultiBlock;
+import oortcloud.hungrymechanics.energy.PowerNetwork;
+import oortcloud.hungrymechanics.multiblock.MultiBlocks;
 
-public class TileEntityGenerator extends TileEntityPowerTransporter implements ITEMultiBlock {
+public class TileEntityGenerator extends TileEntityMultiBlock {
 
 	@CapabilityInject(IEnergyStorage.class)
 	static Capability<IEnergyStorage> ENERGY_STORAGE_CAPABILITY = null;
 
 	private IEnergyStorage storage = new EnergyStorage(8000, 80, 80, 0);
-	private BlockPos main;
-	private EnumFacing facing;
 	
 	public static int maxRF = 8;
 	public static double toRFRate = 4.0;
-
-	public TileEntityGenerator() {
-	}
-
+	
 	@Override
-	public BlockPos[] getConnectedBlocks() {
-		return new BlockPos[] { pos.up() };
-	}
-
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing, BlockPos pos) {
 		if (capability == ENERGY_STORAGE_CAPABILITY) {
-			return true;
+			if (MultiBlocks.generator.isRF(getFacing(), pos, facing)) {
+				return true;
+			}
 		}
-		return super.hasCapability(capability, facing);
+		return false;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+	public <T> T getCapability(Capability<?> capability, EnumFacing facing, BlockPos pos) {
 		if (capability == ENERGY_STORAGE_CAPABILITY) {
-			return (T) storage;
+			if (MultiBlocks.generator.isRF(getFacing(), pos, facing)) {
+				return (T) storage;
+			}
 		}
-		return super.getCapability(capability, facing);
+		return null;
 	}
 
 	@Override
-	public void update() {
-		super.update();
+	public void readFromNBTMain(NBTTagCompound compound) {
+		NBTBase nbt = compound.getTag("hungrymechanics.generator.energy_storage");
+		ENERGY_STORAGE_CAPABILITY.getStorage().readNBT(ENERGY_STORAGE_CAPABILITY, storage, null, nbt);
+	}
+	
+	@Override
+	public NBTTagCompound writeToNBTMain(NBTTagCompound compound) {
+		NBTBase nbt =  ENERGY_STORAGE_CAPABILITY.getStorage().writeNBT(ENERGY_STORAGE_CAPABILITY, storage, null);
+		compound.setTag("hungrymechanics.generator.energy_storage", nbt);
+		return compound;
+	}
+	
+	@Override
+	public void updateMain() {
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
-			if (storage.canReceive()) {
+			if (storage.canReceive() && getPowerNetwork() != null) {
 				int storedRF = storage.getMaxEnergyStored() - storage.getEnergyStored();
 				int storedPowerInRF = (int) (getPowerNetwork().getPowerStored() * toRFRate);
 
@@ -64,53 +71,16 @@ public class TileEntityGenerator extends TileEntityPowerTransporter implements I
 			}
 		}
 	}
-	
-	@Override
-	public void readFromNBT(NBTTagCompound compound) {
-		super.readFromNBT(compound);
-		NBTBase nbt = compound.getTag("energy_storage");
-		ENERGY_STORAGE_CAPABILITY.getStorage().readNBT(ENERGY_STORAGE_CAPABILITY, storage, null, nbt);
-		main = NBTUtil.getPosFromTag(compound.getCompoundTag("hungrymechanics.generator.main"));
-		facing = EnumFacing.getFront(compound.getInteger("hungrymechanics.generator.facing"));
-	}
-	
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		return writeToNBT(new NBTTagCompound());
+
+	// TODO Capability
+	public PowerNetwork getPowerNetwork() {
+		BlockPos start = getMain().subtract(MultiBlocks.generator.getMain(getFacing()));
+		TileEntity te = getWorld().getTileEntity(start.up().up());
+		if (te instanceof IPowerTransporter) {
+			IPowerTransporter powerTransporter = (IPowerTransporter) te;
+			return powerTransporter.getPowerNetwork();
+		}
+		return null;
 	}
 	
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		compound = super.writeToNBT(compound);
-		NBTBase nbt =  ENERGY_STORAGE_CAPABILITY.getStorage().writeNBT(ENERGY_STORAGE_CAPABILITY, storage, null);
-		compound.setTag("energy_storage", nbt);
-		compound.setTag("hungrymechanics.generator.main", NBTUtil.createPosTag(main));
-		compound.setInteger("hungrymechanics.generator.facing", facing.getIndex());
-		return compound;
-	}
-
-	@Override
-	public void setMain(BlockPos main) {
-		this.main = main;
-	}
-
-	@Override
-	public void setFacing(EnumFacing facing) {
-		this.facing = facing;
-	}
-
-	@Override
-	public boolean isMain() {
-		return this.main.equals(getPos());
-	}
-
-	@Override
-	public BlockPos getMain() {
-		return main;
-	}
-	
-	@Override
-	public EnumFacing getFacing() {
-		return facing;
-	}
 }

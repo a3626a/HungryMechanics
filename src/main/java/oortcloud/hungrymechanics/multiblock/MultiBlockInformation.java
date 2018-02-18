@@ -43,19 +43,16 @@ public class MultiBlockInformation {
 		this.matrixRF = matrixRF;
 	}
 	
-	public boolean isMadeUp(BlockPos main, BlockPos pos) {
-		BlockPos relative = main.subtract(pos);
-		return matrixStructure[relative.getX()][relative.getY()][relative.getZ()];
+	public boolean isMadeUp(BlockPos pos) {
+		return matrixStructure[pos.getX()][pos.getY()][pos.getZ()];
 	}
 	
-	public boolean isPower(BlockPos main, BlockPos pos, EnumFacing side) {
-		BlockPos relative = main.subtract(pos);
-		return matrixPower[relative.getX()][relative.getY()][relative.getZ()].contains(side);
+	public boolean isPower(BlockPos pos, EnumFacing side) {
+		return matrixPower[pos.getX()][pos.getY()][pos.getZ()].contains(side);
 	}
 	
-	public boolean isRF(BlockPos main, BlockPos pos, EnumFacing side) {
-		BlockPos relative = main.subtract(pos);
-		return matrixRF[relative.getX()][relative.getY()][relative.getZ()].contains(side);
+	public boolean isRF(BlockPos pos, EnumFacing side) {
+		return matrixRF[pos.getX()][pos.getY()][pos.getZ()].contains(side);
 	}
 	
 }

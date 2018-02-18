@@ -9,6 +9,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class MultiBlocks {
 	private static final List<EnumFacing> EMPTY = Lists.newArrayList();
+	@SuppressWarnings("unchecked")
 	public static final MultiBlockInformationRotatable generator = 
 			new MultiBlockInformationRotatable (
 				new MultiBlockInformation(

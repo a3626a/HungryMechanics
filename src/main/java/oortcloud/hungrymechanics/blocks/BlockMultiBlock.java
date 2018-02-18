@@ -9,7 +9,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import oortcloud.hungrymechanics.items.ModItems;
-import oortcloud.hungrymechanics.multiblock.ITEMultiBlock;
+import oortcloud.hungrymechanics.multiblock.IMultiBlockExposure;
 import oortcloud.hungrymechanics.multiblock.MultiBlockInformationRotatable;
 
 public class BlockMultiBlock extends Block {
@@ -42,17 +42,16 @@ public class BlockMultiBlock extends Block {
 	@Override
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
 		TileEntity te = worldIn.getTileEntity(pos);
-		if (!(te instanceof ITEMultiBlock)) {
+		if (!(te instanceof IMultiBlockExposure)) {
 			super.breakBlock(worldIn, pos, state);
 			return;
 		}
 
-		ITEMultiBlock teMultiBlock = (ITEMultiBlock) te;
+		IMultiBlockExposure teMultiBlock = (IMultiBlockExposure) te;
 
 		if (teMultiBlock.isMain()) {
 			EnumFacing facing = teMultiBlock.getFacing();
 			BlockPos shape = INFO.getShape(facing);
-			BlockPos offset = INFO.getOffset(facing);
 			BlockPos main = INFO.getMain(facing);
 			BlockPos worldMain = teMultiBlock.getMain();
 			BlockPos start = worldMain.subtract(main);
@@ -67,10 +66,10 @@ public class BlockMultiBlock extends Block {
 						}
 
 						TileEntity iTE = worldIn.getTileEntity(iWorldPos);
-						if (!(iTE instanceof ITEMultiBlock)) {
+						if (!(iTE instanceof IMultiBlockExposure)) {
 							continue;
 						}
-						ITEMultiBlock iTEMultiBlock = (ITEMultiBlock) te;
+						IMultiBlockExposure iTEMultiBlock = (IMultiBlockExposure) te;
 						if (iTEMultiBlock.getMain().equals(worldMain)) {
 							worldIn.destroyBlock(iWorldPos, false);
 						}
@@ -88,13 +87,13 @@ public class BlockMultiBlock extends Block {
 		super.breakBlock(worldIn, pos, state);
 	}
 
-	private boolean isDestroying(ITEMultiBlock teMultiBlock, World worldIn) {
+	private boolean isDestroying(IMultiBlockExposure teMultiBlock, World worldIn) {
 		TileEntity te = worldIn.getTileEntity(teMultiBlock.getMain());
-		if (!(te instanceof ITEMultiBlock)) {
+		if (!(te instanceof IMultiBlockExposure)) {
 			return true;
 		}
 
-		ITEMultiBlock teMultiBlockMain = (ITEMultiBlock) te;
+		IMultiBlockExposure teMultiBlockMain = (IMultiBlockExposure) te;
 
 		return !teMultiBlockMain.getMain().equals(teMultiBlock.getMain());
 	}

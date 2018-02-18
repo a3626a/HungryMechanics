@@ -37,6 +37,7 @@ public class MultiBlockInformationRotatable {
 		return Rotation.values()[(to.getHorizontalIndex() - from.getHorizontalIndex() + 4) % 4];
 	}
 
+	@SuppressWarnings("unchecked")
 	private MultiBlockInformation rotate(Rotation rotation, MultiBlockInformation info) {
 		BlockPos newShape = rotateShape(rotation, info.shape);
 		BlockPos newMain = rotate(rotation, info.main, info.shape);
@@ -114,16 +115,16 @@ public class MultiBlockInformationRotatable {
 		return infos.get(facing.getHorizontalIndex()).offset;
 	}
 
-	public boolean isMadeUp(EnumFacing facing, BlockPos main, BlockPos pos) {
-		return infos.get(facing.getHorizontalIndex()).isMadeUp(main, pos);
+	public boolean isMadeUp(EnumFacing facing, BlockPos pos) {
+		return infos.get(facing.getHorizontalIndex()).isMadeUp(pos);
 	}
 
-	public boolean isPower(EnumFacing facing, BlockPos main, BlockPos pos, EnumFacing side) {
-		return infos.get(facing.getHorizontalIndex()).isPower(main, pos, side);
+	public boolean isPower(EnumFacing facing, BlockPos pos, EnumFacing side) {
+		return infos.get(facing.getHorizontalIndex()).isPower(pos, side);
 	}
 
-	public boolean isRF(EnumFacing facing, BlockPos main, BlockPos pos, EnumFacing side) {
-		return infos.get(facing.getHorizontalIndex()).isRF(main, pos, side);
+	public boolean isRF(EnumFacing facing, BlockPos pos, EnumFacing side) {
+		return infos.get(facing.getHorizontalIndex()).isRF(pos, side);
 	}
 
 }
