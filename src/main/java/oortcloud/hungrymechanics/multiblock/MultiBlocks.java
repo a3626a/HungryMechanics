@@ -23,13 +23,13 @@ public class MultiBlocks {
 							 {true,true,true,true}}},
 						new List[][][] {
 							{{EMPTY,EMPTY,EMPTY,EMPTY},
-							 {Lists.newArrayList(EnumFacing.UP),EMPTY,EMPTY,EMPTY}},
+							 {Lists.newArrayList(EnumFacing.UP, null),EMPTY,EMPTY,EMPTY}},
 							{{EMPTY,EMPTY,EMPTY,EMPTY},
-							 {Lists.newArrayList(EnumFacing.UP),EMPTY,EMPTY,EMPTY}}}, 
+							 {Lists.newArrayList(EnumFacing.UP, null),EMPTY,EMPTY,EMPTY}}}, 
 						new List[][][] {
 							{{EMPTY,EMPTY,EMPTY,EMPTY},
-							 {EMPTY,EMPTY,EMPTY,Lists.newArrayList(EnumFacing.SOUTH)}},
+							 {EMPTY,EMPTY,EMPTY,Lists.newArrayList(EnumFacing.SOUTH, null)}},
 							{{EMPTY,EMPTY,EMPTY,EMPTY},
-							 {EMPTY,EMPTY,EMPTY,Lists.newArrayList(EnumFacing.SOUTH)}}}),
+							 {EMPTY,EMPTY,EMPTY,Lists.newArrayList(EnumFacing.SOUTH, null)}}}),
 				EnumFacing.SOUTH);
 }

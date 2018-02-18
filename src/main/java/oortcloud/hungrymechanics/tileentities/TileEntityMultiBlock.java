@@ -9,6 +9,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import oortcloud.hungrymechanics.HungryMechanics;
 import oortcloud.hungrymechanics.multiblock.IMultiBlockExposure;
 import oortcloud.hungrymechanics.multiblock.MultiBlocks;
 
@@ -28,45 +29,45 @@ abstract public class TileEntityMultiBlock extends TileEntity implements ITickab
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-		BlockPos start = getMain().subtract(MultiBlocks.generator.getMain(facing));
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing side) {
+		BlockPos start = getMain().subtract(MultiBlocks.generator.getMain(getFacing()));
 		TileEntity teMain = getWorld().getTileEntity(getMain());
 		if (teMain instanceof TileEntityMultiBlock) {
 			TileEntityMultiBlock teMultiBlockMain = (TileEntityMultiBlock) teMain;
 			if (teMultiBlockMain.isMain()) {
-				if (teMultiBlockMain.hasCapabilityMain(capability, facing, getPos().subtract(start))) {
+				if (teMultiBlockMain.hasCapabilityMain(capability, side, getPos().subtract(start))) {
 					return true;
 				}
 			}
 		}
-		return super.hasCapability(capability, facing);
+		return super.hasCapability(capability, side);
 	}
 
 	/**
 	 * 
 	 * @param capability
-	 * @param facing
+	 * @param side
 	 * @param pos
 	 *            position according to multi-block structure ex) (0,0,0), (1,0,1)
 	 * @return
 	 */
-	abstract public boolean hasCapabilityMain(Capability<?> capability, EnumFacing facing, BlockPos pos);
+	abstract public boolean hasCapabilityMain(Capability<?> capability, EnumFacing side, BlockPos pos);
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-		BlockPos start = getMain().subtract(MultiBlocks.generator.getMain(facing));
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing side) {
+		BlockPos start = getMain().subtract(MultiBlocks.generator.getMain(getFacing()));
 		TileEntity teMain = getWorld().getTileEntity(getMain());
 		if (teMain instanceof TileEntityMultiBlock) {
 			TileEntityMultiBlock teMultiBlockMain = (TileEntityMultiBlock) teMain;
 			if (teMultiBlockMain.isMain()) {
-				T cap = teMultiBlockMain.getCapabilityMain(capability, facing, getPos().subtract(start));
+				T cap = teMultiBlockMain.getCapabilityMain(capability, side, getPos().subtract(start));
 				if (cap != null) {
 					return cap;
 				}
 			}
 		}
 
-		return super.getCapability(capability, facing);
+		return super.getCapability(capability, side);
 	}
 
 	/**

@@ -63,7 +63,7 @@ public class MultiBlockInformationRotatable {
 	private List<EnumFacing> rotate(Rotation rotation, List<EnumFacing> sides) {
 		List<EnumFacing> newSides = new ArrayList<>();
 		for (EnumFacing side : sides) {
-			if (side != EnumFacing.UP && side != EnumFacing.DOWN) {
+			if (side != null && side != EnumFacing.UP && side != EnumFacing.DOWN) {
 				EnumFacing rotated;
 				switch (rotation) {
 				case NONE:
@@ -81,6 +81,8 @@ public class MultiBlockInformationRotatable {
 					break;
 				}
 				newSides.add(rotated);
+			} else {
+				newSides.add(side);
 			}
 		}
 		return newSides;

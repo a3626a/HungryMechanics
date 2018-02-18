@@ -36,9 +36,9 @@ public class TileEntityGenerator extends TileEntityMultiBlock {
 	public boolean isRunning = false;
 
 	@Override
-	public boolean hasCapabilityMain(Capability<?> capability, EnumFacing facing, BlockPos pos) {
+	public boolean hasCapabilityMain(Capability<?> capability, EnumFacing side, BlockPos pos) {
 		if (capability == ENERGY_STORAGE_CAPABILITY) {
-			if (MultiBlocks.generator.isRF(getFacing(), pos, facing)) {
+			if (MultiBlocks.generator.isRF(getFacing(), pos, side)) {
 				return true;
 			}
 		}
@@ -47,9 +47,9 @@ public class TileEntityGenerator extends TileEntityMultiBlock {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getCapabilityMain(Capability<?> capability, EnumFacing facing, BlockPos pos) {
+	public <T> T getCapabilityMain(Capability<?> capability, EnumFacing side, BlockPos pos) {
 		if (capability == ENERGY_STORAGE_CAPABILITY) {
-			if (MultiBlocks.generator.isRF(getFacing(), pos, facing)) {
+			if (MultiBlocks.generator.isRF(getFacing(), pos, side)) {
 				return (T) storage;
 			}
 		}
