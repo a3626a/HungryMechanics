@@ -29,18 +29,20 @@ public class ItemBelt extends Item {
 	public ItemBelt() {
 		super();
 		setRegistryName(Strings.itemBeltName);
-		setUnlocalizedName(References.MODID+"."+Strings.itemBeltName);
+		setUnlocalizedName(References.MODID + "." + Strings.itemBeltName);
 		setCreativeTab(HungryMechanics.tabHungryMechanics);
 
 		setMaxStackSize(1);
 	}
-	
+
 	@Override
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
-		ItemStack itemStack = new ItemStack(this,1,16);
-		subItems.add(itemStack);
+		if (tab == HungryMechanics.tabHungryMechanics) {
+			ItemStack itemStack = new ItemStack(this, 1, 16);
+			subItems.add(itemStack);
+		}
 	}
-	
+
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
 		tooltip.add("Length: " + stack.getItemDamage() + " m");
@@ -51,21 +53,21 @@ public class ItemBelt extends Item {
 	}
 
 	@Override
-	public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX,
-			float hitY, float hitZ) {
+	public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY,
+			float hitZ) {
 		ItemStack stack = playerIn.getHeldItem(hand);
-		
+
 		if (!TileEntityAxle.isValidAxle(worldIn, pos)) {
 			return EnumActionResult.PASS;
 		}
-		
+
 		NBTTagCompound tag = stack.getTagCompound();
 		if (tag != null && tag.hasKey("SelectedBlockPos")) {
 			BlockPos selectedPos = BlockPos.fromLong(tag.getLong("SelectedBlockPos"));
 			if (pos.equals(selectedPos)) {
 				return EnumActionResult.PASS;
 			}
-			if (pos.getY()!=selectedPos.getY()) {
+			if (pos.getY() != selectedPos.getY()) {
 				return EnumActionResult.PASS;
 			}
 			if (!TileEntityAxle.isValidAxle(worldIn, selectedPos)) {
@@ -97,9 +99,9 @@ public class ItemBelt extends Item {
 			return EnumActionResult.FAIL;
 		} else {
 			TileEntityAxle axle = (TileEntityAxle) worldIn.getTileEntity(pos);
-			
+
 			tag = new NBTTagCompound();
-			
+
 			if (axle != null && !axle.isConnected()) {
 				if (!stack.hasTagCompound()) {
 					stack.setTagCompound(tag);
@@ -110,5 +112,5 @@ public class ItemBelt extends Item {
 			return EnumActionResult.PASS;
 		}
 	}
-	
+
 }
