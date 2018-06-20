@@ -2,10 +2,10 @@ package oortcloud.hungrymechanics.entities.ai;
 
 import com.google.gson.JsonElement;
 
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAIFollowParent;
 import net.minecraft.entity.ai.EntityAISwimming;
-import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.BlockPos;
@@ -31,12 +31,12 @@ public class EntityAICrank extends EntityAIBase {
 	public TileEntityCrankAnimal crankAnimal;
 	private ICapabilityHungryAnimal capHungry;
 	private ICapabilityTamableAnimal capTaming;
-	private EntityAnimal entity;
+	private EntityLiving entity;
 	private World world;
 
 	private double speed = 1.5D;
 
-	public EntityAICrank(EntityAnimal entity) {
+	public EntityAICrank(EntityLiving entity) {
 		this.entity = entity;
 		this.capHungry = entity.getCapability(ProviderHungryAnimal.CAP, null);
 		this.capTaming = entity.getCapability(ProviderTamableAnimal.CAP, null);
